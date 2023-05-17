@@ -5,13 +5,39 @@
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
-    "lint": "eslint .",
     "start": "react-native start",
-    "test": "jest"
+    "test": "jest",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "update:settingProvider": "node settingProvider",
+    "postinstall": "./node_modules/.bin/rn-nodeify --hack --yarn --install buffer,crypto,events,stream,vm,process,http,https,os,url,net,fs && npx jetify"
   },
   "dependencies": {
+    "@ethereumjs/tx": "^4.1.2",
+    "@react-native-async-storage/async-storage": "^1.18.1",
+    "@react-native-clipboard/clipboard": "^1.11.2",
+    "@tradle/react-native-http": "^2.0.0",
+    "bignumber.js": "^9.1.1",
+    "buffer": "^4.9.1",
+    "crypto-js": "^4.1.1",
+    "ethers": "^6.3.0",
+    "events": "^1.0.0",
+    "https-browserify": "~0.0.0",
+    "jetifier": "^2.0.0",
+    "patch-package": "^7.0.0",
+    "process": "^0.11.0",
     "react": "18.2.0",
-    "react-native": "0.71.8"
+    "react-native": "0.71.8",
+    "react-native-crypto": "^2.1.0",
+    "react-native-level-fs": "^3.0.0",
+    "react-native-os": "^1.0.1",
+    "react-native-randombytes": "^3.0.0",
+    "react-native-svg-transformer": "^1.0.0",
+    "react-native-tcp": "^3.2.1",
+    "readable-stream": "1.0.33",
+    "rn-nodeify": "^10.3.0",
+    "stream-browserify": "^1.0.0",
+    "url": "~0.10.1",
+    "vm-browserify": "0.0.4"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
@@ -32,5 +58,55 @@
   },
   "jest": {
     "preset": "react-native"
+  },
+  "react-native": {
+    "crypto": "react-native-crypto",
+    "net": "react-native-tcp",
+    "http": "@tradle/react-native-http",
+    "https": "https-browserify",
+    "os": "react-native-os",
+    "fs": "react-native-level-fs",
+    "_stream_transform": "readable-stream/transform",
+    "_stream_readable": "readable-stream/readable",
+    "_stream_writable": "readable-stream/writable",
+    "_stream_duplex": "readable-stream/duplex",
+    "_stream_passthrough": "readable-stream/passthrough",
+    "stream": "stream-browserify",
+    "vm": "vm-browserify"
+  },
+  "browser": {
+    "crypto": "react-native-crypto",
+    "net": "react-native-tcp",
+    "http": "@tradle/react-native-http",
+    "https": "https-browserify",
+    "os": "react-native-os",
+    "fs": "react-native-level-fs",
+    "_stream_transform": "readable-stream/transform",
+    "_stream_readable": "readable-stream/readable",
+    "_stream_writable": "readable-stream/writable",
+    "_stream_duplex": "readable-stream/duplex",
+    "_stream_passthrough": "readable-stream/passthrough",
+    "stream": "stream-browserify",
+    "vm": "vm-browserify"
+  },
+  "lavamoat": {
+    "allowScripts": {
+      "@sentry/cli": true,
+      "detox": true,
+      "husky": true,
+      "secp256k1": true,
+      "keccak": true,
+      "@lavamoat/preinstall-always-fail": false,
+      "core-js-pure": false,
+      "dtrace-provider": false,
+      "core-js": false,
+      "fsevents": false,
+      "sharp": true,
+      "web3": false,
+      "web3-bzz": false,
+      "bufferutil": false,
+      "utf-8-validate": false,
+      "web3-shh": false
+    }
   }
 }
