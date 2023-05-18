@@ -1,8 +1,13 @@
 import React from 'react';
-import { View } from 'react-native';
+import { View, Text } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const SignUp = () => {
-  return <View></View>;
+  return (
+    <SafeAreaView>
+      <Text>Signup</Text>
+    </SafeAreaView>
+  );
 };
 
 export default SignUp;
