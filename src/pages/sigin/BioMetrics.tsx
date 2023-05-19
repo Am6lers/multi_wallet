@@ -12,7 +12,6 @@ const BioMetrics = () => {
         <View
           style={{
             flex: 1,
-            // backgroundColor: 'pink',
             justifyContent: 'flex-end',
           }}
         >
