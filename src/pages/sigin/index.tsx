@@ -1,9 +1,20 @@
+import { ParamListBase, useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React from 'react';
-import { View, Text, TextInput, StyleSheet, Image } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  Image,
+  Touchable,
+  TouchableOpacity,
+} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const SignUp = () => {
+const Sign = () => {
+  const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   return (
     <LinearGradient
       colors={['#FDF0E9', '#FFB5C0']}
@@ -19,12 +30,18 @@ const SignUp = () => {
         <View style={girdStyle(1).grid}>
           <View style={girdStyle(1).grid} />
           <View style={girdStyle(1).grid}>
-            <View style={styles.createBtn}>
+            <TouchableOpacity
+              style={styles.createBtn}
+              onPress={() => navigation.navigate('SignUp')}
+            >
               <Text style={styles.createBtnText}>새 지갑 생성하기</Text>
-            </View>
-            <View style={styles.callBackBtn}>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.callBackBtn}
+              onPress={() => navigation.navigate('Import')}
+            >
               <Text style={styles.callBackBtnText}>쓰던 지갑 불러오기</Text>
-            </View>
+            </TouchableOpacity>
           </View>
           <View style={girdStyle(1).grid}>
             <View style={styles.slogunBox}>
@@ -95,4 +112,4 @@ const girdStyle = (value: number) =>
     },
   });
 
-export default SignUp;
+export default Sign;
