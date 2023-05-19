@@ -1,8 +1,14 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import SignUp from '@pages/signup';
 import { useRecoilState } from 'recoil';
 import { accountState } from '@atom/walletState';
+import SignUp from '@pages/sigin/signup';
+import Import from '@pages/sigin/import';
+import Sign from '@pages/sigin';
+import PinInput from '@components/PinInput';
+import Agree from '@pages/sigin/signup/Agree';
+import BioMetrics from '@pages/sigin/BioMetrics';
+import MainStackNavigator from './MainStackNavigator';
 
 export interface LoginInfo {
   loginId: string;
@@ -26,10 +32,43 @@ const SignStackNavigator = () => {
   const [isExistAccount] = useRecoilState(accountState);
   return (
     <Stack.Navigator
-      initialRouteName={isExistAccount ? 'Login' : 'Signup'}
+      initialRouteName={isExistAccount ? 'Login' : 'Sign'}
       screenOptions={{ headerShown: false, animation: 'none' }}
     >
-      <Stack.Screen name="Signup" component={SignUp} />
+      <Stack.Screen name="Sign" component={Sign} />
+      <Stack.Screen
+        name="SignUp"
+        component={SignUp}
+        options={{ headerShown: true }}
+      />
+      <Stack.Screen
+        name="Import"
+        component={Import}
+        options={{ headerShown: true }}
+      />
+      <Stack.Screen
+        name="PinInput"
+        component={PinInput}
+        options={{ headerShown: true }}
+      />
+      <Stack.Screen
+        name="Agree"
+        component={Agree}
+        options={{ headerShown: true }}
+      />
+      <Stack.Screen
+        name="BioMetrics"
+        component={BioMetrics}
+        options={{ headerShown: true }}
+      />
+      <Stack.Screen
+        name="MainStackNavigator"
+        component={MainStackNavigator}
+        options={{
+          headerShown: false,
+        }}
+      />
+      {/* <Stack.Screen name="Login" component={Login} /> */}
     </Stack.Navigator>
   );
 };
