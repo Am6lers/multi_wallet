@@ -191,6 +191,6 @@ const styles = StyleSheet.create({
     color: 'white',
     alignItems: 'center',
     fontWeight: 'bold',
-    fontSize: 20,
+    fontSize: 18,
   },
 });
