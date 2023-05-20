@@ -24,7 +24,10 @@ const MainStackNavigator = () => {
   return (
     <Stack.Navigator
       initialRouteName={'Tab'}
-      screenOptions={{ headerShown: false, animation: 'none' }}
+      screenOptions={{
+        headerShown: false,
+        animation: 'none',
+      }}
     >
       <Stack.Screen
         name="Tab"
