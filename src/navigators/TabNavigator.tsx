@@ -14,6 +14,10 @@ const TabNavigator = () => {
         component={Main}
         options={{
           tabBarIcon: () => <Icon name="wallet" size={32} color="gray" />,
+          tabBarStyle: {
+            borderTopLeftRadius: 20,
+            borderTopRightRadius: 20,
+          },
         }}
       />
       <Tab.Screen
@@ -23,6 +27,10 @@ const TabNavigator = () => {
           tabBarIcon: () => (
             <Icon name="settings-sharp" size={32} color="gray" />
           ),
+          tabBarStyle: {
+            borderTopLeftRadius: 20,
+            borderTopRightRadius: 20,
+          },
         }}
       />
     </Tab.Navigator>
