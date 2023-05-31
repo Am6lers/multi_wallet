@@ -9,7 +9,12 @@ import {
   ScrollView,
 } from 'react-native';
 
-const Agree = () => {
+interface AgreeProps {
+  setPage: React.Dispatch<React.SetStateAction<number>>;
+  page: number;
+}
+
+const Agree = ({ setPage, page }: AgreeProps) => {
   const [isScrolledToBottom, setIsScrolledToBottom] = useState(false);
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
 
@@ -145,7 +150,7 @@ const Agree = () => {
         ) : (
           <TouchableOpacity
             style={styles.afterBottomBox}
-            onPress={() => navigation.navigate('BioMetrics')}
+            onPress={() => setPage(page + 1)}
           >
             <Text style={styles.bottomText}>동의합니다.</Text>
           </TouchableOpacity>
