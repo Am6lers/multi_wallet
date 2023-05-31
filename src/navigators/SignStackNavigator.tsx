@@ -2,11 +2,9 @@ import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useRecoilState } from 'recoil';
 import { accountState } from '@atom/walletState';
-import SignUp from '@pages/sigin/signup';
+import SignUp from '@pages/sigin/signup/index';
 import Import from '@pages/sigin/import';
 import Sign from '@pages/sigin';
-import PinInput from '@components/PinInput';
-import Agree from '@pages/sigin/signup/Agree';
 import BioMetrics from '@pages/sigin/BioMetrics';
 import MainStackNavigator from './MainStackNavigator';
 
@@ -44,16 +42,6 @@ const SignStackNavigator = () => {
       <Stack.Screen
         name="Import"
         component={Import}
-        options={{ headerShown: true }}
-      />
-      <Stack.Screen
-        name="PinInput"
-        component={PinInput}
-        options={{ headerShown: true }}
-      />
-      <Stack.Screen
-        name="Agree"
-        component={Agree}
         options={{ headerShown: true }}
       />
       <Stack.Screen

@@ -5,11 +5,11 @@
  * @format
  */
 
-const {getDefaultConfig} = require('metro-config');
+const { getDefaultConfig } = require('metro-config');
 
 module.exports = (async () => {
   const {
-    resolver: {sourceExts, assetExts},
+    resolver: { sourceExts, assetExts },
   } = await getDefaultConfig();
 
   return {
@@ -25,6 +25,18 @@ module.exports = (async () => {
     resolver: {
       assetExts: assetExts.filter(ext => ext !== 'svg'),
       sourceExts: [...sourceExts, 'svg', 'cjs'],
+    },
+    dependencies: {
+      'react-native-vector-icons': {
+        platforms: {
+          ios: null,
+        },
+      },
+      'react-native-aes-crypto-forked': {
+        platforms: {
+          ios: null, // disable Android platform, other platforms will still autolink if provided
+        },
+      },
     },
   };
 })();

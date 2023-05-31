@@ -38,7 +38,7 @@ export interface KeyringState extends BaseState {
  * biport 지갑의 계정의 생성 및 추가 그리고 암호화 및 복호화를 관리합니다.
  */
 
-export default class BiportKeyringController extends BaseController<
+export default class MultiKeyringController extends BaseController<
   BaseConfig,
   KeyringState
 > {
@@ -119,8 +119,9 @@ export default class BiportKeyringController extends BaseController<
         return firstKeyring.getAccounts();
       })
       .then(account => {
+        console.log('account:', account);
         if (isInvalidAccount(account)) {
-          throw new Error('BiportKeyringController - First Account not found.');
+          throw new Error('MultiKeyringController - First Account not found.');
         }
         return null;
       })
@@ -195,7 +196,7 @@ export default class BiportKeyringController extends BaseController<
       })
       .then(account => {
         if (isInvalidAccount(account)) {
-          throw new Error('BiportKeyringController - First Account not found.');
+          throw new Error('MultiKeyringController - First Account not found.');
         }
         return account;
       });
@@ -243,12 +244,12 @@ export default class BiportKeyringController extends BaseController<
           newKeyringAccounts?.evm &&
           kr.accounts.evm === newKeyringAccounts.evm,
       );
-      const btcDup = Boolean(
-        kr.accounts?.btc &&
-          newKeyringAccounts?.btc &&
-          kr.accounts.btc === newKeyringAccounts.btc,
-      );
-      if (evmDup || btcDup) {
+      // const btcDup = Boolean(
+      //   kr.accounts?.btc &&
+      //     newKeyringAccounts?.btc &&
+      //     kr.accounts.btc === newKeyringAccounts.btc,
+      // );
+      if (evmDup) {
         duplicate = true;
       }
     });
@@ -390,7 +391,7 @@ export default class BiportKeyringController extends BaseController<
       .then(account => {
         if (isInvalidAccount(account)) {
           throw new Error(
-            'BiportKeyringController - No account found on keychain.',
+            'MultiKeyringController - No account found on keychain.',
           );
         }
         return null;
@@ -400,7 +401,7 @@ export default class BiportKeyringController extends BaseController<
   persistAllKeyrings(password = this.password) {
     if (typeof password !== 'string') {
       return Promise.reject(
-        new Error('BiportKeyringController - password is not a string'),
+        new Error('MultiKeyringController - password is not a string'),
       );
     }
 
@@ -645,7 +646,7 @@ export default class BiportKeyringController extends BaseController<
     }, {});
     return allKeyrings.map(kr => {
       if (!kr.id) {
-        throw new Error('BiportKeyringController - keyring id is null');
+        throw new Error('MultiKeyringController - keyring id is null');
       }
       if (kr.id in childrenId) {
         kr.children = childrenId[kr.id];
@@ -670,7 +671,7 @@ export default class BiportKeyringController extends BaseController<
     }, {});
     return allKeyrings.map(kr => {
       if (!kr.id) {
-        throw new Error('BiportKeyringController - keyring id is null');
+        throw new Error('MultiKeyringController - keyring id is null');
       }
       if (kr.id in childrenId) {
         kr.children = childrenId[kr.id];
@@ -696,7 +697,7 @@ export default class BiportKeyringController extends BaseController<
       this.keyrings.filter(keyring => keyring.id === existKeyringIdKey)?.[0] ??
       undefined;
     if (!existKeyring) {
-      throw new Error('BiportKeyringController - not exist duplicate keyring.');
+      throw new Error('MultiKeyringController - not exist duplicate keyring.');
     }
 
     const keyring = new MultiKeyring({
@@ -708,7 +709,7 @@ export default class BiportKeyringController extends BaseController<
     return Promise.resolve(keyring.getAccounts())
       .then(accounts => {
         if (!accounts) {
-          throw new Error('BiportKeyringController - wrong replace process.');
+          throw new Error('MultiKeyringController - wrong replace process.');
         }
 
         const availableNum = keyring.getAvailableNumber();
@@ -729,7 +730,7 @@ export default class BiportKeyringController extends BaseController<
       })
       .then(accounts => {
         if (!accounts) {
-          throw new Error('BiportKeyringController - wrong replace process.');
+          throw new Error('MultiKeyringController - wrong replace process.');
         }
 
         if (typeof existKeyring.removeAccount === 'function') {

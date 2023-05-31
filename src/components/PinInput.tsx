@@ -1,37 +1,9 @@
-// import { ParamListBase, useNavigation } from '@react-navigation/native';
-// import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-// import React from 'react';
-// import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-
-// const PinInput = () => {
-//   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
-//   return (
-//     <View style={styles.container}>
-//       <TouchableOpacity onPress={() => navigation.navigate('Agree')}>
-//         <Text style={styles.fontSize}>다음ㅁㄴㅁㅁㅁ</Text>
-//       </TouchableOpacity>
-//     </View>
-//   );
-// };
-
-// export default PinInput;
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//   },
-//   fontSize: {
-//     fontSize: 20,
-//   },
-// });
 import { ParamListBase, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-const PinInput = () => {
+const InputPin = ({ nextStepAction }: { nextStepAction: () => void }) => {
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   const [passCode, setPassCode] = useState(['', '', '', '', '', '']);
 
@@ -76,9 +48,8 @@ const PinInput = () => {
     <View style={styles.container}>
       {/* 상단 제목 */}
       <View style={styles.headerContainer}>
-        <Text style={styles.title}>PIN 비밀번호 재입력</Text>
+        <Text style={styles.title}>PIN 비밀번호 입력</Text>
         <Text style={styles.subTitle}>6자리 숫자를 입력해주세요</Text>
-        <Text style={styles.subTitle}>동일한 번호를 입력해주세요</Text>
       </View>
       {/* 핀 입력 동그라미 */}
       <View style={styles.codeContainer}>
@@ -108,7 +79,7 @@ const PinInput = () => {
         <TouchableOpacity onPress={() => onPressCancel()}>
           <Text style={styles.fontSize}>지우기</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('Agree')}>
+        <TouchableOpacity onPress={nextStepAction}>
           <Text style={styles.fontSize}>다음</Text>
         </TouchableOpacity>
       </View>
@@ -116,7 +87,7 @@ const PinInput = () => {
   );
 };
 
-export default PinInput;
+export default InputPin;
 
 const styles = StyleSheet.create({
   container: {

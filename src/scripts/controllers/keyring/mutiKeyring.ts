@@ -95,18 +95,18 @@ export default class MultiKeyring extends EventEmitter {
   }
 
   public getAccounts(): Addresses {
-    let btcAddress: string | null = null;
-    if (this.btcWallet) {
-      const p2wpkhParams: Payment = {
-        pubkey: this.btcWallet.publicKey,
-      };
-      btcAddress = payments.p2wpkh(p2wpkhParams).address ?? null;
-    }
+    // let btcAddress: string | null = null;
+    // if (this.btcWallet) {
+    //   const p2wpkhParams: Payment = {
+    //     pubkey: this.btcWallet.publicKey,
+    //   };
+    //   btcAddress = payments.p2wpkh(p2wpkhParams).address ?? null;
+    // }
     return {
       evm: this.evmWallet
         ? normalize(ethUtil.bufferToHex(this.evmWallet.getAddress()))
         : null,
-      btc: btcAddress,
+      btc: null,
     };
   }
 
