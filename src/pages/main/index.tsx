@@ -22,7 +22,7 @@ const Main = () => {
         </View>
       </View>
       <View style={styles.assetContainer}>
-        <Text style={styles.subText}>총 자산</Text>
+        <Text style={styles.subText}>총 자산 Address: 0x19...cec7</Text>
         <Text style={styles.title}>$ {cost}</Text>
         <View style={styles.subBtnGroup2}>
           <TouchableOpacity style={styles.sendBtn}>
@@ -39,10 +39,10 @@ const Main = () => {
         <View style={styles.listGroup}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <View style={styles.sampleImg} />
-            <Text style={styles.listTitle}>종목 샘플 이름</Text>
+            <Text style={styles.listTitle}>ETH</Text>
           </View>
           <View>
-            <Text style={styles.listCost}>$ 0</Text>
+            <Text style={styles.listCost}>0 ~ $ 0</Text>
             <Text style={styles.listSub}>0.0000 BTC</Text>
           </View>
         </View>
@@ -50,10 +50,10 @@ const Main = () => {
         <View style={styles.listGroup}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <View style={styles.sampleImg} />
-            <Text style={styles.listTitle}>종목 샘플 이름</Text>
+            <Text style={styles.listTitle}>BFC</Text>
           </View>
           <View>
-            <Text style={styles.listCost}>$ 0</Text>
+            <Text style={styles.listCost}>0 ~ $ 0</Text>
             <Text style={styles.listSub}>0.0000 BTC</Text>
           </View>
         </View>

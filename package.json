@@ -12,7 +12,6 @@
     "postinstall": "./node_modules/.bin/rn-nodeify --hack --yarn --install buffer,crypto,events,stream,vm,process,http,https,os,url,net,fs && yarn patch-package && npx jetify"
   },
   "dependencies": {
-    "@bifrost-platform/biport-tiny-obs-store": "^1.0.0",
     "@ethereumjs/tx": "^4.1.2",
     "@metamask/controllers": "^33.0.0",
     "@metamask/obs-store": "^8.1.0",
