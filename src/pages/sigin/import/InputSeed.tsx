@@ -2,7 +2,7 @@ import { ParamListBase, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import OKBTN from '../../../images/obbtn.svg';
-import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
 import constants from '@constants/index';
 
 interface DoneProps {
@@ -10,24 +10,27 @@ interface DoneProps {
   page: number;
 }
 
-const Done = ({ setPage, page }: DoneProps) => {
+const InputSeed = ({ setPage, page }: DoneProps) => {
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   return (
     <SafeAreaView style={styles.container}>
-      <OKBTN style={styles.svg} />
+      <TextInput
+        style={styles.svg}
+        placeholder="시드를 입력해주세요"
+        placeholderTextColor={'balck'}
+        secureTextEntry={true}
+      />
       <TouchableOpacity
         style={styles.afterBottomBox}
-        onPress={() =>
-          navigation.reset({ routes: [{ name: 'MainStackNavigator' }] })
-        }
+        onPress={() => setPage(page + 1)}
       >
-        <Text style={styles.bottomText}>동의합니다.</Text>
+        <Text style={styles.bottomText}>지갑 가져오기</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
 };
 
-export default Done;
+export default InputSeed;
 
 const styles = StyleSheet.create({
   container: {
@@ -36,8 +39,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   svg: {
-    maxWidth: constants.WINDOW_WIDTH - 60,
-    maxHeight: constants.WINDOW_WIDTH - 60,
+    height: 60,
+    borderRadius: 20,
+    width: '90%',
+    borderBottomWidth: 1,
   },
   afterBottomBox: {
     display: 'flex',

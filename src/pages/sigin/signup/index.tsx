@@ -15,7 +15,7 @@ const SignUp = () => {
       case 1:
         return <PinInput setPage={setPage} page={page} />;
       case 2:
-        return <Done />;
+        return <Done setPage={setPage} page={page} />;
     }
   }, [page]);
 

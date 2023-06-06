@@ -4,6 +4,7 @@ import Agree from '../signup/Agree';
 import { StyleSheet } from 'react-native';
 import PinInput from '../signup/InputPin';
 import Done from '../signup/Done';
+import InputSeed from './InputSeed';
 
 const Import = () => {
   const [page, setPage] = useState<number>(0);
@@ -15,9 +16,9 @@ const Import = () => {
       case 1:
         return <PinInput setPage={setPage} page={page} />;
       case 2:
-        return <InputSeed />;
+        return <InputSeed setPage={setPage} page={page} />;
       case 3:
-        return <Done />;
+        return <Done setPage={setPage} page={page} />;
     }
   }, [page]);
 

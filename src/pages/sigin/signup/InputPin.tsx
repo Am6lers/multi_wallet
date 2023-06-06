@@ -14,8 +14,8 @@ const PinInput = ({ page, setPage }: PinInputProps) => {
   const engine = Engine();
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   const moveToNextStep = async () => {
-    const vault = await engine.CreateNewWallet('1235');
-    console.log('vault', vault);
+    // const vault = await engine.CreateNewWallet('1235');
+    // console.log('vault', vault);
     setPage(page + 1);
   };
   return <InputPin nextStepAction={moveToNextStep} />;
