@@ -10,53 +10,50 @@ import {
   Touchable,
   TouchableOpacity,
 } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Colors from '@constants/colors';
 
 const Sign = () => {
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
+
   return (
-    <LinearGradient
-      colors={['#FDF0E9', '#FFB5C0']}
-      style={{ width: '100%', height: '100%' }}
-    >
-      <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <View style={girdStyle(1).grid}>
+        <Image
+          source={require('../../assets/images/logo.png')}
+          style={styles.logo}
+        />
+      </View>
+      <View style={girdStyle(1).grid}>
+        <View style={girdStyle(1).grid} />
         <View style={girdStyle(1).grid}>
-          <Image
-            source={require('../../images/logo.png')}
-            style={styles.logo}
-          />
+          <TouchableOpacity
+            style={styles.createBtn}
+            onPress={() => navigation.navigate('SignUp')}
+          >
+            <Text style={styles.createBtnText}>새 지갑 생성하기</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.callBackBtn}
+            onPress={() => navigation.navigate('Import')}
+          >
+            <Text style={styles.callBackBtnText}>쓰던 지갑 불러오기</Text>
+          </TouchableOpacity>
         </View>
         <View style={girdStyle(1).grid}>
-          <View style={girdStyle(1).grid} />
-          <View style={girdStyle(1).grid}>
-            <TouchableOpacity
-              style={styles.createBtn}
-              onPress={() => navigation.navigate('SignUp')}
-            >
-              <Text style={styles.createBtnText}>새 지갑 생성하기</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.callBackBtn}
-              onPress={() => navigation.navigate('Import')}
-            >
-              <Text style={styles.callBackBtnText}>쓰던 지갑 불러오기</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={girdStyle(1).grid}>
-            <View style={styles.slogunBox}>
-              <Text style={styles.slogunText}>All Assets At A Glance</Text>
-            </View>
+          <View style={styles.slogunBox}>
+            <Text style={styles.slogunText}>All Assets At A Glance</Text>
           </View>
         </View>
-      </SafeAreaView>
-    </LinearGradient>
+      </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: Colors.White,
   },
   logo: {
     height: '100%',

@@ -73,7 +73,7 @@
       "@lib/*": ["lib/*"],
       "@models/*": ["models/*"],
       "@pages/*": ["pages/*"],
-      "@atom/*": ["atom/*"],
+      "@atoms/*": ["atoms/*"],
       "@store/*": ["store/*"],
       "@providers/*": ["providers/*"],
       "@reducers/*": ["reducers/*"],

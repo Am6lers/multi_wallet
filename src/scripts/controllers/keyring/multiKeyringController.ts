@@ -20,6 +20,9 @@ import { BaseController, BaseConfig, BaseState } from '@metamask/controllers';
 import MultiKeyring from './mutiKeyring';
 import objectToHash from 'object-hash';
 
+export const EVM_KEY = 'evm';
+export const BTC_KEY = 'btc';
+
 export interface KeyringParam {
   initState: any;
   encryptor?: any;

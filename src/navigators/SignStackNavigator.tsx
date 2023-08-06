@@ -1,7 +1,7 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { useRecoilState } from 'recoil';
-import { accountState } from '@atom/walletState';
+import { useRecoilValue } from 'recoil';
+import { accountState } from '@atoms/walletState';
 import SignUp from '@pages/sigin/signup/index';
 import Import from '@pages/sigin/import';
 import Sign from '@pages/sigin';
@@ -27,7 +27,7 @@ export type SignUpStackParamList = {
 const Stack = createNativeStackNavigator();
 
 const SignStackNavigator = () => {
-  const [isExistAccount] = useRecoilState(accountState);
+  const isExistAccount = useRecoilValue(accountState);
   return (
     <Stack.Navigator
       initialRouteName={isExistAccount ? 'Login' : 'Sign'}

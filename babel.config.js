@@ -25,7 +25,7 @@ module.exports = {
           '@core': './src/core',
           '@hooks': './src/hooks',
           '@pages': './src/pages',
-          '@atom': './src/atom',
+          '@atoms': './src/atoms',
           '@lib': './src/lib',
           '@models': './src/models',
           '@store': './src/store',

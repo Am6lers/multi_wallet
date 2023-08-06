@@ -47,6 +47,8 @@ export const FONTS = {
 const SYSTEMLANGUAGE: string = getSystemLanguage();
 const CURRENCY: string = getSystemLanguage() === 'English' ? 'usd' : 'krw';
 const USER_AGENT = 'Biport';
+const PADDING_HORIZONTAL_DEFAULT = 20;
+const PADDING_VERTICAL_DEFAULT = 20;
 const WEBVIEW_USER_AGENT =
   PLATFORM === 'android'
     ? 'Mozilla/5.0 (Linux; Android 10; Android SDK built for x86 Build/OSM1.180201.023) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.92 Mobile Safari/537.36'
@@ -65,5 +67,7 @@ export default {
   CURRENCY,
   USER_AGENT,
   WEBVIEW_USER_AGENT,
+  PADDING_HORIZONTAL_DEFAULT,
+  PADDING_VERTICAL_DEFAULT,
   isIos,
 };

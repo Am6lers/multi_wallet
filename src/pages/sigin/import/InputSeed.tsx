@@ -1,7 +1,6 @@
 import { ParamListBase, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import OKBTN from '../../../images/obbtn.svg';
 import { StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
 import constants from '@constants/index';
 
