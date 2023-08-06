@@ -290,7 +290,7 @@ export const SPEED_UP_RATE = 1.1;
  * Controller responsible for submitting and managing transactions
  * ether 계열의 토큰 전송, transaction sign 및 제출, 그리고 tracking을 관리하는 컨트롤러입니다.
  */
-export class BiportMobileTransactionController extends BaseController<
+export class MobileTransactionController extends BaseController<
   TransactionConfig,
   TransactionState
 > {
@@ -1699,4 +1699,4 @@ export class BiportMobileTransactionController extends BaseController<
   }
 }
 
-export default BiportMobileTransactionController;
+export default MobileTransactionController;

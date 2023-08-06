@@ -1,7 +1,7 @@
 import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useCallback, useState } from 'react';
 import Agree from './Agree';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import PinInput from './InputPin';
 import Done from './Done';
 
@@ -19,7 +19,7 @@ const SignUp = () => {
     }
   }, [page]);
 
-  return <SafeAreaView style={styles.container}>{pages()}</SafeAreaView>;
+  return <View style={styles.container}>{pages()}</View>;
 };
 
 export default SignUp;

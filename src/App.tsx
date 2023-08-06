@@ -25,6 +25,10 @@ import {
   useRecoilValue,
 } from 'recoil';
 import SignStackNavigator from './navigators/SignStackNavigator';
+import { Provider, useDispatch, useSelector } from 'react-redux';
+import { PersistGate } from 'redux-persist/lib/integration/react';
+import { persistor, store } from './store';
+
 const AppWrapper = () => {
   return (
     <NavigationContainer>
@@ -35,11 +39,15 @@ const AppWrapper = () => {
 
 const App = (): JSX.Element => {
   return (
-    <Suspense fallback={<></>}>
-      <RecoilRoot>
-        <AppWrapper />
-      </RecoilRoot>
-    </Suspense>
+    <Provider store={store}>
+      <PersistGate persistor={persistor}>
+        <Suspense fallback={<></>}>
+          <RecoilRoot>
+            <AppWrapper />
+          </RecoilRoot>
+        </Suspense>
+      </PersistGate>
+    </Provider>
   );
 };
 

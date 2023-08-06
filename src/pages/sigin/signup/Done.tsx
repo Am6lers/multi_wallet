@@ -1,7 +1,7 @@
 import { ParamListBase, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import OKBTN from '../../../images/obbtn.svg';
+// import OKBTN from '@assets/images/okbtn.svg';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import constants from '@constants/index';
 
@@ -14,7 +14,7 @@ const Done = ({ setPage, page }: DoneProps) => {
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   return (
     <SafeAreaView style={styles.container}>
-      <OKBTN style={styles.svg} />
+      {/* <OKBTN style={styles.svg} /> */}
       <TouchableOpacity
         style={styles.afterBottomBox}
         onPress={() =>
