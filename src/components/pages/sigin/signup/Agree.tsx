@@ -23,7 +23,7 @@ interface AgreeProps {
 const Agree = ({}: AgreeProps) => {
   const [agree, setAgree] = useState<boolean>(false);
   const [visible, setVisible] = useState<boolean>(false);
-  const logo = useMemo(() => require('../../../assets/images/logo.png'), []);
+  const logo = useMemo(() => require('../../../../assets/images/logo.png'), []);
 
   const openModal = () => {
     setVisible(true);
