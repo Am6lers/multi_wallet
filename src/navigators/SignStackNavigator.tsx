@@ -2,10 +2,10 @@ import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useRecoilValue } from 'recoil';
 import { accountState } from '@atoms/walletState';
-import SignUp from '@pages/sigin/signup/index';
-import Import from '@pages/sigin/import';
-import Sign from '@pages/sigin';
-import BioMetrics from '@pages/sigin/BioMetrics';
+import SignUp from '@components/pages/sigin/signup/index';
+import Import from '@components/pages/sigin/import';
+import Sign from '@components/pages/sigin';
+import BioMetrics from '@components/pages/sigin/BioMetrics';
 import MainStackNavigator from './MainStackNavigator';
 
 export interface LoginInfo {
