@@ -10,9 +10,10 @@ import rootReducer from '../reducers';
 import EngineService from '../core/EngineService';
 import { migrations, version } from './migrations';
 import { has } from 'lodash';
-import config from '@constants/index';
-import MMKVStorage from '@utils/global/mmkvStorage';
-import SecureStorage from '@utils/global/EncryptedStorage';
+import Constants from '@constants/app';
+import SecureStorage from '@utils/storage/SecureStorage';
+import MMKVStorage from '@utils/storage/mmkvStorage';
+
 // import Logger from '@common/Logger';
 // timeout: null 값을 명시적으로 전달해야 초기화를 방지할 수 있음
 const TIMEOUT = null;
@@ -68,7 +69,7 @@ const MigratedStorage = {
                 ...parsedItem,
                 engine: JSON.stringify(parsedEngine),
               }),
-              config.isIos(),
+              Constants.PLATFORM == 'ios',
             );
           }
         }

@@ -24,15 +24,16 @@ import {
   useRecoilState,
   useRecoilValue,
 } from 'recoil';
-import SignStackNavigator from './navigators/SignStackNavigator';
+// import SignStackNavigator from './navigators/SignStackNavigator';
 import { Provider, useDispatch, useSelector } from 'react-redux';
 import { PersistGate } from 'redux-persist/lib/integration/react';
 import { persistor, store } from './store';
+import InitialStackNavigator from './components/navigator/InitialNavigator';
 
 const AppWrapper = () => {
   return (
     <NavigationContainer>
-      <SignStackNavigator />
+      <InitialStackNavigator />
     </NavigationContainer>
   );
 };

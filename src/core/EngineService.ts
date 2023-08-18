@@ -1,5 +1,4 @@
-import UntypedEngine from './engine';
-import { setEngineIsReady } from '../actions/memoryInfo';
+import UntypedEngine from './Engine';
 
 const UPDATE_BG_STATE_KEY = 'UPDATE_BG_STATE';
 const INIT_BG_STATE_KEY = 'INIT_BG_STATE';
@@ -25,7 +24,25 @@ class EngineService {
 
     const controllers = [
       { name: 'KeyringController' },
+      { name: 'NetworkController' },
+      { name: 'PreferencesController' },
+      { name: 'PhishingController' },
+      { name: 'TransactionController' },
+      { name: 'MessageManager' },
+      { name: 'PersonalMessageManager' },
+      { name: 'TypedMessageManager' },
+      { name: 'MultiChainBalanceTracker' },
+      {
+        name: 'ApprovalController',
+        key: `${Engine.context.ApprovalController.name}:stateChange`,
+      },
+      { name: 'AccountAssetTracker' },
+      { name: 'WalletConnectController' },
+      { name: 'GasFeeController' },
+      { name: 'HistoryController' },
+      { name: 'TrendyTokenController' },
       { name: 'EncryptionController' },
+      { name: 'PricesController' },
     ];
 
     Engine?.datamodel?.subscribe?.(() => {
@@ -46,7 +63,6 @@ class EngineService {
       }
 
       if (idx === controllers.length - 1) {
-        // store.dispatch(setEngineIsReady(true));
       }
     });
   };

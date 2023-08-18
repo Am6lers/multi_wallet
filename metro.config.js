@@ -23,6 +23,10 @@ module.exports = (async () => {
       babelTransformerPath: require.resolve('react-native-svg-transformer'),
     },
     resolver: {
+      extraNodeModules: {
+        stream: require.resolve('stream-browserify'),
+        _stream_transform: require.resolve('readable-stream'),
+      },
       assetExts: assetExts.filter(ext => ext !== 'svg'),
       sourceExts: [...sourceExts, 'svg', 'cjs'],
     },
