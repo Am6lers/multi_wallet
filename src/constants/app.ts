@@ -28,6 +28,9 @@ const getSystemLanguage = () => {
     systemLanguage.toLowerCase().indexOf('ko') >= 0 ? '한국어' : 'English';
   return language;
 };
+const WINDOW_HEIGHT = Dimensions.get('window').height;
+const WINDOW_WIDTH = Dimensions.get('window').width;
+const SCREEN_HEIGHT = Dimensions.get('screen').height;
 export const MILLISECOND = 1;
 export const SECOND = MILLISECOND * 1000;
 export const MINUTE = SECOND * 60;
@@ -53,4 +56,7 @@ export default {
   USER_AGENT,
   REQUEST_TIMEOUT,
   WEB3_REQUEST_TIMEOUT,
+  WINDOW_HEIGHT,
+  WINDOW_WIDTH,
+  SCREEN_HEIGHT,
 };
