@@ -1,14 +1,12 @@
 import { BaseConfig, BaseController, BaseState } from '@metamask/controllers';
 import EventEmitter from 'events';
-import MultiKeyringController from '@scripts/controllers/keyring/multiKeyringController';
+import BiportKeyringController from '@scripts/controllers/keyring';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Encryptor from '@core/Encryptor';
 import ReactNativeBiometrics, { BiometryTypes } from 'react-native-biometrics';
-import Toast from 'react-native-root-toast';
-import { DefaultToastMessageOptions } from '@common/ToastMessage';
-import { Platform } from 'react-native';
+import BiportPreferencesController from '@scripts/controllers/preferences';
 import BackgroundTimer from 'react-native-background-timer';
-import SecureStorage from '@utils/global/EncryptedStorage';
+import SecureStorage from '@utils/storage/SecureStorage';
 
 /*
   *** BPW-008 무차별 대입 공격에 취약한 비밀번호 정책 ***
@@ -88,7 +86,8 @@ export interface EncryptionControlState extends BaseState {
 
 export interface EncryptionControlOpts {
   initState: EncryptionControlState | undefined;
-  keyringController: MultiKeyringController;
+  keyringController: BiportKeyringController;
+  preferencesController: BiportPreferencesController;
   encryptor: Encryptor;
 }
 
@@ -103,7 +102,8 @@ export default class EncryptionController extends BaseController<
   private remainLockTime: number;
   private bgTimerIntervalId: number | undefined;
   private numberOfWrongPwd: number;
-  private _keyring: MultiKeyringController;
+  private _keyring: BiportKeyringController;
+  private _preferences: BiportPreferencesController;
   private _bio: ReactNativeBiometrics;
   private _errorCount: number;
   private _encryptor: Encryptor;
@@ -119,6 +119,7 @@ export default class EncryptionController extends BaseController<
     this.numberOfWrongPwd = opts.initState?.remainLockTime || 0;
     this._errorCount = opts.initState?.errorCount || 0;
     this._keyring = opts.keyringController;
+    this._preferences = opts.preferencesController;
     this._encryptor = opts.encryptor;
     this._isLock = false;
     this._isBackground = false;
@@ -319,7 +320,6 @@ export default class EncryptionController extends BaseController<
         }
       }
     } catch (e) {
-      Toast.show('bio metrics login failed', DefaultToastMessageOptions({}));
       return undefined;
     }
   }
@@ -337,6 +337,7 @@ export default class EncryptionController extends BaseController<
       }
       const { password } = loginData;
       await this._keyring.submitPassword(password);
+      const selectedEvmAddress = this._preferences.getSelectedAddress();
       // await this._history.registerWalletAddressAsMonitoringTarget({
       //   account: selectedEvmAddress,
       //   fcmToken,
@@ -351,6 +352,7 @@ export default class EncryptionController extends BaseController<
   }
 
   registFCMToken = async (fcmToken: string) => {
+    const selectedEvmAddress = this._preferences.getSelectedAddress();
     // await this._history.registerWalletAddressAsMonitoringTarget({
     //   account: selectedEvmAddress,
     //   fcmToken,

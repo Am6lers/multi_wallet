@@ -1,4 +1,4 @@
-import Engine from '@core/engine';
+import Engine from '@core/Engine';
 
 const initialState = {
   backgroundState: {},

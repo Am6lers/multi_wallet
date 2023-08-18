@@ -1,4 +1,3 @@
-import { bufferToHex, toBuffer } from 'ethereumjs-util';
 import { PrivateKeys } from './types';
 
 export function isInvalidAccount(account: PrivateKeys): boolean {
@@ -21,20 +20,12 @@ export const addHexPrefix = (str: string) => {
   return `0x${str}`;
 };
 
-export const normalize = (input: number | string): string => {
-  if (typeof input === 'number') {
-    if (input < 0) {
-      return '0x';
-    }
-    const buffer = toBuffer(input);
-    input = bufferToHex(buffer);
+export const toString = (mnemonic: string | number[] | Buffer): string => {
+  if (typeof mnemonic === 'string') {
+    return mnemonic;
+  } else if (Array.isArray(mnemonic)) {
+    return Buffer.from(mnemonic).toString('utf8');
+  } else {
+    return mnemonic.toString('utf8');
   }
-
-  if (typeof input !== 'string') {
-    let msg = 'eth-sig-util.normalize() requires hex string or integer input.';
-    msg += ` received ${typeof input}: ${input as any as string}`;
-    throw new Error(msg);
-  }
-
-  return addHexPrefix(input.toLowerCase());
 };

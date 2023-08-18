@@ -65,24 +65,17 @@
     "paths": {
       "~/*": ["./*"],
       "@components/*": ["components/*"],
-      "@common/*": ["common/*"],
       "@assets/*": ["assets/*"],
       "@core/*": ["core/*"],
-      "@hooks/*": ["hooks/*"],
-      "@i18n/*": ["i18n/*"],
       "@lib/*": ["lib/*"],
       "@models/*": ["models/*"],
       "@pages/*": ["pages/*"],
-      "@atoms/*": ["atoms/*"],
+      "@atomStates/*": ["atomStates/*"],
       "@store/*": ["store/*"],
-      "@providers/*": ["providers/*"],
       "@reducers/*": ["reducers/*"],
       "@scripts/*": ["scripts/*"],
       "@utils/*": ["utils/*"],
-      "@util/*": ["util/*"],
-      "@constants/*": ["constants/*"],
-      "@config/*": ["config/*"]
-      // "@query/*": ["query/*"]
+      "@constants/*": ["constants/*"]
     }
   },
   "exclude": [
