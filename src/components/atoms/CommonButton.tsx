@@ -19,7 +19,7 @@ const CommonButton = ({
     <Button
       label={lable}
       size={size}
-      style={style}
+      style={[styles.button, style]}
       labelStyle={reverse ? styles.reverseLabel : styles.label}
       backgroundColor={reverse ? Colors.Light2 : Colors.Dark}
     />
@@ -31,6 +31,9 @@ export default CommonButton;
 const styles = StyleSheet.create({
   label: {
     color: Colors.White,
+  },
+  button: {
+    height: 60,
   },
   reverseLabel: {
     color: Colors.Dark,
