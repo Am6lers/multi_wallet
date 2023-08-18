@@ -75,7 +75,8 @@
       "@reducers/*": ["reducers/*"],
       "@scripts/*": ["scripts/*"],
       "@utils/*": ["utils/*"],
-      "@constants/*": ["constants/*"]
+      "@constants/*": ["constants/*"],
+      "@translate/*": ["translate/*"]
     }
   },
   "exclude": [
