@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import {
   View,
   Image,
@@ -27,6 +27,8 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
+import { ParamListBase, useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 export const LottieItem = ({
   source,
@@ -46,6 +48,7 @@ export const LottieItem = ({
 };
 
 const Auth = () => {
+  const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   const [page, setPage] = React.useState(0);
   const offset = useSharedValue(0);
 
@@ -63,6 +66,13 @@ const Auth = () => {
       opacity: offset.value,
     };
   });
+
+  const moveToCreate = useCallback(() => {
+    navigation.navigate('Create');
+  }, []);
+  const moveToImport = useCallback(() => {
+    navigation.navigate('Import');
+  }, []);
 
   return (
     <View useSafeArea={true} style={styles.bg}>
@@ -88,14 +98,16 @@ const Auth = () => {
         </Carousel>
         <Animated.View style={animatedStyles}>
           <CommonButton
-            lable={TL.t('initial.auth.create')}
+            label={TL.t('initial.auth.create')}
             size={Button.sizes.large}
+            onPress={moveToCreate}
           />
           <CommonButton
-            lable={TL.t('initial.auth.import')}
+            label={TL.t('initial.auth.import')}
             size={Button.sizes.large}
             reverse={true}
             style={styles.button}
+            onPress={moveToImport}
           />
         </Animated.View>
       </View>
@@ -120,7 +132,7 @@ const styles = StyleSheet.create({
     marginTop: 50,
   },
   button: {
-    marginTop: 10,
+    marginTop: Constant.BUTTON_S1,
   },
   lottie: {
     alignSelf: 'center',

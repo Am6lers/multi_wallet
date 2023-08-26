@@ -26,28 +26,16 @@ import CipherNetworkController, {
 import CipherPreferencesController, {
   PreferencesState,
   AddressEntry,
-  PREFERENCES_EVENTS,
 } from '../scripts/controllers/preferences';
-import CipherMobileTransactionController, {
-  TransactionState,
-} from '../scripts/controllers/transaction/CipherMobileTransactionController';
+import { TransactionState } from '../scripts/controllers/transaction/CipherMobileTransactionController';
 import * as bip39 from 'bip39';
 import Encryptor from './Encryptor';
 import { MAINNET, NETWORKS } from '@constants/network';
-import { cloneDeep } from 'lodash';
-import Web3 from 'web3';
 import { addressesObjectToString } from '../utils/address';
 import { Mutex } from 'await-semaphore';
 import { MessageManagerState } from '@metamask/controllers/dist/message-manager/AbstractMessageManager';
-import GasFeeController from '@scripts/controllers/gasFee';
 import AppStateController from '@scripts/controllers/app-state';
-import EncryptionController from '@scripts/controllers/encryption';
 import DeepLinkController from '@scripts/controllers/deepLink';
-import {
-  DEFAULT_TOKEN,
-  NATIVE_TOKEN_ADDRESS,
-  defaultInvisibleCoin,
-} from '@constants/asset';
 
 const encryptor = new Encryptor();
 let currentChainId: any;
@@ -57,12 +45,12 @@ export interface EngineContext {
   NetworkController: CipherNetworkController;
   PreferencesController: CipherPreferencesController;
   PhishingController: PhishingController;
-  TransactionController: CipherMobileTransactionController;
+  // TransactionController: CipherMobileTransactionController;
   MessageManager: MessageManager;
   PersonalMessageManager: PersonalMessageManager;
   TypedMessageManager: TypedMessageManager;
   ApprovalController: ApprovalController;
-  EncryptionController: EncryptionController;
+  // EncryptionController: EncryptionController;
   DeepLinkController: DeepLinkController;
 }
 
@@ -71,13 +59,13 @@ export type EngineInitState = {
   NetworkController?: NetworkControllerState | undefined;
   PreferencesController?: PreferencesState | undefined;
   PhishingController?: PhishingState | undefined;
-  TransactionController?: TransactionState | undefined;
+  // TransactionController?: TransactionState | undefined;
   MessageManager?: MessageManagerState<any> | undefined;
   PersonalMessageManager?: undefined;
   TypedMessageManager?: undefined;
   ApprovalController?: ApprovalControllerState | undefined;
-  GasFeeController?: GasFeeController | undefined;
-  EncryptionController?: EncryptionControlState | undefined;
+  // GasFeeController?: GasFeeController | undefined;
+  // EncryptionController?: EncryptionControlState | undefined;
   DeepLinkController?: DeepLinkController | undefined;
 };
 
@@ -90,12 +78,12 @@ export type Controllers = [
   CipherNetworkController,
   CipherPreferencesController,
   PhishingController,
-  CipherMobileTransactionController,
+  // CipherMobileTransactionController,
   MessageManager,
   PersonalMessageManager,
   TypedMessageManager,
   ApprovalController,
-  EncryptionController,
+  // EncryptionController,
   DeepLinkController,
 ];
 
@@ -104,12 +92,12 @@ export const controllerNames: EngineContextNames[] = [
   'NetworkController',
   'PreferencesController',
   'PhishingController',
-  'TransactionController',
+  // 'TransactionController',
   'MessageManager',
   'PersonalMessageManager',
   'TypedMessageManager',
   'ApprovalController',
-  'EncryptionController',
+  // 'EncryptionController',
   'DeepLinkController',
 ];
 
@@ -138,12 +126,12 @@ class Engine {
     NetworkController: {} as CipherNetworkController,
     PreferencesController: {} as CipherPreferencesController,
     PhishingController: {} as PhishingController,
-    TransactionController: {} as CipherMobileTransactionController,
+    // TransactionController: {} as CipherMobileTransactionController,
     MessageManager: {} as MessageManager,
     PersonalMessageManager: {} as PersonalMessageManager,
     TypedMessageManager: {} as TypedMessageManager,
     ApprovalController: {} as ApprovalController,
-    EncryptionController: {} as EncryptionController,
+    // EncryptionController: {} as EncryptionController,
     DeepLinkController: {} as DeepLinkController,
   };
 
@@ -179,16 +167,16 @@ class Engine {
       });
       this.controllerMessenger = new ControllerMessenger();
 
-      const transactionController = new CipherMobileTransactionController({
-        getNetworkState: () => networkController?.getProviderConfig(),
-        onNetworkStateChange: (listener: Listener<NetworkControllerState>) =>
-          networkController.subscribe(listener),
-        getProvider: () =>
-          networkController?.getProviderAndBlockTracker().provider,
-        getNetworkByChainId:
-          networkController.getNetworkByChainId.bind(networkController),
-        preferencesController,
-      });
+      // const transactionController = new CipherMobileTransactionController({
+      //   getNetworkState: () => networkController?.getProviderConfig(),
+      //   onNetworkStateChange: (listener: Listener<NetworkControllerState>) =>
+      //     networkController.subscribe(listener),
+      //   getProvider: () =>
+      //     networkController?.getProviderAndBlockTracker().provider,
+      //   getNetworkByChainId:
+      //     networkController.getNetworkByChainId.bind(networkController),
+      //   preferencesController,
+      // });
 
       // const gasFeeController = new GasFeeController({
       //   initState: initialState.GasFeeController,
@@ -197,12 +185,12 @@ class Engine {
       //   interval: 15000,
       // });
 
-      const encryptionController = new EncryptionController({
-        initState: initialState.EncryptionController,
-        keyringController: keyringController,
-        preferencesController: preferencesController,
-        encryptor: encryptor,
-      });
+      // const encryptionController = new EncryptionController({
+      //   initState: initialState.EncryptionController,
+      //   keyringController: keyringController,
+      //   preferencesController: preferencesController,
+      //   encryptor: encryptor,
+      // });
 
       const deepLinkController = new DeepLinkController({
         initState: {},
@@ -217,7 +205,7 @@ class Engine {
         networkController,
         preferencesController,
         new PhishingController(),
-        transactionController,
+        // transactionController,
         new MessageManager(),
         new PersonalMessageManager(),
         new TypedMessageManager(),
@@ -227,7 +215,7 @@ class Engine {
           }),
           showApprovalRequest: () => undefined,
         }),
-        encryptionController,
+        // encryptionController,
         deepLinkController,
       ];
 
@@ -255,19 +243,19 @@ class Engine {
         NetworkController: controllers[1],
         PreferencesController: controllers[2],
         PhishingController: controllers[3],
-        TransactionController: controllers[4],
-        MessageManager: controllers[5],
-        PersonalMessageManager: controllers[6],
-        TypedMessageManager: controllers[7],
-        ApprovalController: controllers[8],
-        EncryptionController: controllers[9],
-        DeepLinkController: controllers[10],
+        // TransactionController: controllers[4],
+        MessageManager: controllers[4],
+        PersonalMessageManager: controllers[5],
+        TypedMessageManager: controllers[6],
+        ApprovalController: controllers[7],
+        // EncryptionController: controllers[8],
+        DeepLinkController: controllers[8],
       };
 
       const {
         KeyringController: keyring,
         NetworkController: network,
-        TransactionController: transaction,
+        // TransactionController: transaction,
         PreferencesController: preferences,
       } = this.context;
 
@@ -290,24 +278,24 @@ class Engine {
       //   currencyPriceController.start();
       // };
 
-      transaction.configure({ sign: keyring.signTransaction.bind(keyring) });
-      network.subscribe((state: NetworkControllerState) => {
-        //{network: string; provider: {chainId: any}}
-        if (
-          state.network !== 'loading' &&
-          state.provider &&
-          state.provider.chainId !== currentChainId
-        ) {
-          // We should add a state or event emitter saying the provider changed
-          setTimeout(() => {
-            if (!state.provider) {
-              return;
-            }
-            // this.configureControllersOnNetworkChange();
-            currentChainId = state.provider.chainId;
-          }, 500);
-        }
-      });
+      // transaction.configure({ sign: keyring.signTransaction.bind(keyring) });
+      // network.subscribe((state: NetworkControllerState) => {
+      //   //{network: string; provider: {chainId: any}}
+      //   if (
+      //     state.network !== 'loading' &&
+      //     state.provider &&
+      //     state.provider.chainId !== currentChainId
+      //   ) {
+      //     // We should add a state or event emitter saying the provider changed
+      //     setTimeout(() => {
+      //       if (!state.provider) {
+      //         return;
+      //       }
+      //       // this.configureControllersOnNetworkChange();
+      //       currentChainId = state.provider.chainId;
+      //     }, 500);
+      //   }
+      // });
       // preferences.hub.on(PREFERENCES_EVENTS.ACCOUNT_CHANGED, () => {
       //   setTimeout(syncTokens.bind(this), 100);
       // });
@@ -391,13 +379,12 @@ class Engine {
     // } = this.context;
 
     try {
-      const { TransactionController } = this.context;
-      //Clear assets info
-
-      TransactionController.update({
-        methodData: {},
-        transactions: [],
-      });
+      // const { TransactionController } = this.context;
+      // //Clear assets info
+      // TransactionController.update({
+      //   methodData: {},
+      //   transactions: [],
+      // });
     } catch (e) {
       return;
     }
@@ -797,13 +784,13 @@ export default {
       NetworkController,
       PreferencesController,
       PhishingController,
-      TransactionController,
+      // TransactionController,
       MessageManager,
       PersonalMessageManager,
       TypedMessageManager,
       ApprovalController,
-      GasFeeController,
-      EncryptionController,
+      // GasFeeController,
+      // EncryptionController,
       DeepLinkController,
     } = instance.datamodel.state;
 
@@ -820,13 +807,13 @@ export default {
       NetworkController,
       PreferencesController,
       PhishingController,
-      TransactionController,
+      // TransactionController,
       MessageManager,
       PersonalMessageManager,
       TypedMessageManager,
       ApprovalController,
-      GasFeeController,
-      EncryptionController,
+      // GasFeeController,
+      // EncryptionController,
       DeepLinkController,
     };
   },
@@ -853,7 +840,6 @@ export default {
       getAllKeyrings: instance.getAllKeyrings,
       getNetworkByChainId: instance.getNetworkByChainId,
       getDefaultNetworks: instance.getDefaultNetworks,
-      getNetworks: instance.getNetworks,
       getWeb3Provider: instance.getWeb3Provider,
     };
   },
