@@ -1,5 +1,6 @@
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Keychain from 'react-native-keychain';
+import Constants from '@constants/app';
 // import Logger, { SentryVaultAction } from '@common/Logger';
 
 interface SecureStorageType {
@@ -10,7 +11,7 @@ interface SecureStorageType {
 }
 
 const setItem = async (key: string, value: string) => {
-  if (config.isIos()) {
+  if (Constants.PLATFORM === 'ios') {
     let objData: Object | undefined;
     const data = await Keychain.getGenericPassword();
     if (data) {
@@ -20,7 +21,6 @@ const setItem = async (key: string, value: string) => {
         [key]: value,
       };
     } else {
-      isLogin;
       // &&Logger.sendVaultErrorContext(SentryVaultAction.Hydrate);
       objData = {
         [key]: value,
@@ -34,7 +34,7 @@ const setItem = async (key: string, value: string) => {
 
 const getItem = async (key: string) => {
   try {
-    if (config.isIos() && key) {
+    if (Constants.PLATFORM === 'ios' && key) {
       const oldValue = await EncryptedStorage.getItem(key);
       if (oldValue) {
         EncryptedStorage.removeItem(key);
@@ -47,7 +47,6 @@ const getItem = async (key: string) => {
         const objData = JSON.parse(jsonData)?.[key];
         return objData;
       } else {
-        isLogin;
         // && Logger.sendVaultErrorContext(SentryVaultAction.Hydrate);
       }
     }
@@ -58,7 +57,7 @@ const getItem = async (key: string) => {
 };
 
 const removeItem = async (key: string) => {
-  if (config.isIos()) {
+  if (Constants.PLATFORM === 'ios') {
     const data = await Keychain.getGenericPassword();
     if (data) {
       const savedData = JSON.parse(data.password);

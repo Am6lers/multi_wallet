@@ -16,55 +16,51 @@ class EngineService {
    * @param store - Redux store
    */
   initalizeEngine = (store: any) => {
-    const reduxState = store.getState?.();
-    const state = reduxState?.engine?.backgroundState || {};
+    console.log("EngineService's initalizeEngine called", store);
+    const backgroundState = store.getState().backgroundState || {};
     const Engine = UntypedEngine as any;
 
-    Engine.init(state);
+    // Engine.init(backgroundState);
 
-    const controllers = [
-      { name: 'KeyringController' },
-      { name: 'NetworkController' },
-      { name: 'PreferencesController' },
-      { name: 'PhishingController' },
-      { name: 'TransactionController' },
-      { name: 'MessageManager' },
-      { name: 'PersonalMessageManager' },
-      { name: 'TypedMessageManager' },
-      { name: 'MultiChainBalanceTracker' },
-      {
-        name: 'ApprovalController',
-        key: `${Engine.context.ApprovalController.name}:stateChange`,
-      },
-      { name: 'AccountAssetTracker' },
-      { name: 'WalletConnectController' },
-      { name: 'GasFeeController' },
-      { name: 'HistoryController' },
-      { name: 'TrendyTokenController' },
-      { name: 'EncryptionController' },
-      { name: 'PricesController' },
-    ];
+    // const controllers = [
+    //   { name: 'KeyringController' },
+    //   { name: 'NetworkController' },
+    //   { name: 'PreferencesController' },
+    //   { name: 'PhishingController' },
+    //   { name: 'TransactionController' },
+    //   { name: 'MessageManager' },
+    //   { name: 'PersonalMessageManager' },
+    //   { name: 'TypedMessageManager' },
+    //   { name: 'MultiChainBalanceTracker' },
+    //   {
+    //     name: 'ApprovalController',
+    //     key: `${Engine.context.ApprovalController.name}:stateChange`,
+    //   },
 
-    Engine?.datamodel?.subscribe?.(() => {
-      if (!this.engineInitialized) {
-        store.dispatch({ type: INIT_BG_STATE_KEY });
-        this.engineInitialized = true;
-      }
-    });
+    //   { name: 'GasFeeController' },
+    //   { name: 'EncryptionController' },
+    // ];
 
-    controllers.forEach((controller, idx) => {
-      const { name, key = undefined } = controller;
-      const update_bg_state_cb = () =>
-        store.dispatch({ type: UPDATE_BG_STATE_KEY, key: name });
-      if (!key) {
-        Engine.context[name].subscribe(update_bg_state_cb);
-      } else {
-        Engine.controllerMessenger.subscribe(key, update_bg_state_cb);
-      }
+    // Engine?.datamodel?.subscribe?.(() => {
+    //   if (!this.engineInitialized) {
+    //     store.dispatch({ type: INIT_BG_STATE_KEY });
+    //     this.engineInitialized = true;
+    //   }
+    // });
 
-      if (idx === controllers.length - 1) {
-      }
-    });
+    // controllers.forEach((controller, idx) => {
+    //   const { name, key = undefined } = controller;
+    //   const update_bg_state_cb = () =>
+    //     store.dispatch({ type: UPDATE_BG_STATE_KEY, key: name });
+    //   if (!key) {
+    //     Engine.context[name].subscribe(update_bg_state_cb);
+    //   } else {
+    //     Engine.controllerMessenger.subscribe(key, update_bg_state_cb);
+    //   }
+
+    //   if (idx === controllers.length - 1) {
+    //   }
+    // });
   };
 }
 

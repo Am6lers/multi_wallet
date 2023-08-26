@@ -13,6 +13,14 @@ module.exports = (async () => {
   } = await getDefaultConfig();
 
   return {
+    presets: [
+      [
+        'module:metro-react-native-babel-preset',
+        {
+          unstable_transformProfile: 'hermes-stable',
+        },
+      ],
+    ],
     transformer: {
       getTransformOptions: async () => ({
         transform: {

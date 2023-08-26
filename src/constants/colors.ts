@@ -23,6 +23,7 @@ const Theme = {
   Yellow: '#FFBE17',
   Pupple: '#5F5BE2',
   Pink: '#F561A6',
+  Gray: '#B7BDD2',
 };
 
 const Palette = {

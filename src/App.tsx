@@ -26,13 +26,16 @@ import {
 } from 'recoil';
 // import SignStackNavigator from './navigators/SignStackNavigator';
 import { Provider, useDispatch, useSelector } from 'react-redux';
-import { PersistGate } from 'redux-persist/lib/integration/react';
-import { persistor, store } from './store';
+import { store } from './store';
 import InitialStackNavigator from './components/navigator/InitialNavigator';
+import { Loading, loadingState } from './store/atoms';
+import LoadingView from './components/atoms/Loading';
 
 const AppWrapper = () => {
+  const isLoaiding = useRecoilValue<Loading>(loadingState);
   return (
     <NavigationContainer>
+      <LoadingView loadingData={isLoaiding} />
       <InitialStackNavigator />
     </NavigationContainer>
   );
@@ -41,13 +44,11 @@ const AppWrapper = () => {
 const App = (): JSX.Element => {
   return (
     <Provider store={store}>
-      <PersistGate persistor={persistor}>
-        <Suspense fallback={<></>}>
-          <RecoilRoot>
-            <AppWrapper />
-          </RecoilRoot>
-        </Suspense>
-      </PersistGate>
+      <Suspense fallback={<></>}>
+        <RecoilRoot>
+          <AppWrapper />
+        </RecoilRoot>
+      </Suspense>
     </Provider>
   );
 };

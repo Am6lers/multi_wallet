@@ -4,7 +4,10 @@ import { useRecoilValue } from 'recoil';
 import { isExistAccountState } from '@store/atoms';
 import Auth from '../screens/auth';
 import Login from '../screens/login';
-// import { accountState } from '@atoms/walletState';
+import Create from '../screens/auth/create';
+import Done from '../screens/auth/done';
+import MainStackNavigator from './MainNavigator';
+import Import from '../screens/auth/import';
 
 export interface LoginInfo {
   loginId: string;
@@ -31,8 +34,36 @@ const InitialStackNavigator = () => {
       initialRouteName={isExistAccount ? 'Login' : 'Auth'}
       screenOptions={{ headerShown: false, animation: 'none' }}
     >
-      <Stack.Screen name="Auth" component={Auth} />
+      <Stack.Screen
+        name="Auth"
+        component={Auth}
+        options={{
+          animationTypeForReplace: 'push',
+        }}
+      />
       <Stack.Screen name="Login" component={Login} />
+      <Stack.Screen
+        name="Create"
+        component={Create}
+        options={{
+          animationTypeForReplace: 'push',
+        }}
+      />
+      <Stack.Screen
+        name="Import"
+        component={Import}
+        options={{
+          animationTypeForReplace: 'push',
+        }}
+      />
+      <Stack.Screen
+        name="Done"
+        component={Done}
+        options={{
+          animationTypeForReplace: 'push',
+        }}
+      />
+      <Stack.Screen name="MainStackNavigator" component={MainStackNavigator} />
     </Stack.Navigator>
   );
 };
