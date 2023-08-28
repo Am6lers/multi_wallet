@@ -9,7 +9,7 @@ import {
   POLYGON_CHAIN_ID,
   POLYGON_MUMBAI_CHAIN_ID,
 } from '@constants/network';
-import Engine from '@core/Engine';
+import Engine from '@core/engine';
 import {
   FormattedPriceInfo,
   getFormattedPriceInfo,

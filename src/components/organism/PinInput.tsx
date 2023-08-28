@@ -30,10 +30,12 @@ const Pin = ({ entered }: { entered: boolean }) => {
 
 const PinInput = ({
   isCreate = false,
+  cTitle = undefined,
   setPin,
 }: {
   isCreate?: boolean;
-  setPin: (pins: string) => void;
+  cTitle?: string;
+  setPin: (pins: string) => void | Promise<boolean>;
 }) => {
   const [inputPins, setInputPins] = useState<string[]>(new Array(6).fill(''));
   const [verifyPins, setVerifyPins] = useState<string[]>(new Array(6).fill(''));
@@ -50,12 +52,15 @@ const PinInput = ({
   useEffect(() => {
     if (verifyPins.filter((pin: String) => pin != '').length >= 6) {
       if (isCreate && inputPins.toString() === verifyPins.toString()) {
-        setPin(inputPins.toString());
+        setPin(inputPins.join(''));
       } else if (isCreate) {
         setErrorMessage(TL.t('initial.error.pin'));
         setTimeout(clearPins, 2000);
       } else {
-        setPin(verifyPins.toString());
+        setPin(verifyPins.join(''))?.then(result => {
+          !result && setErrorMessage(TL.t('initial.error.pin'));
+          setTimeout(clearPins, 2000);
+        });
       }
     }
   }, [inputPins, verifyPins]);
@@ -74,7 +79,7 @@ const PinInput = ({
         return TL.t('initial.password.onemore');
       }
     } else {
-      return TL.t('initial.password.verify');
+      return cTitle ?? TL.t('initial.password.verify');
     }
   }, [isCreate, isConfirmPwd]);
 

@@ -21,7 +21,7 @@ import Logger, {
   SentryTransactionSendStatus,
   SentryTransactionSendType,
 } from '@common/Logger';
-import Engine from '@core/Engine';
+import Engine from '@core/engine';
 
 const checkPkRegex = new RegExp('^0?[xX]?[0-9a-fA-F]{64}$');
 

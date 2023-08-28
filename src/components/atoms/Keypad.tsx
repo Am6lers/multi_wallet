@@ -44,6 +44,7 @@ const Keypad = ({
       {keypads.map((pads, index) => {
         return (
           <GridList
+            key={`${pads}+${index}`}
             data={pads}
             scrollEnabled={false}
             itemSpacing={0}

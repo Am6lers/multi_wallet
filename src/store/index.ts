@@ -3,18 +3,30 @@ import {
   createAsyncThunk,
   createSlice,
 } from '@reduxjs/toolkit';
+import {
+  persistStore,
+  persistReducer,
+  createMigrate,
+  createTransform,
+} from 'redux-persist';
 import EngineService from '../core/EngineService';
 import SecureStorage from '@utils/storage/SecureStorage';
 import MMKVStorage from '@utils/storage/mmkvStorage';
 import { has } from 'lodash';
+import rootReducer from '../reducers';
+import { legacy_createStore as createStore } from 'redux';
 
-export const loadState = createAsyncThunk(
-  'migratedStorage/loadState',
-  async () => {
+const TIMEOUT = null;
+/*
+  *** BPW-005 민감 데이터 암호화 개선 ***
+  keyringController의 데이터만 EncryptedStorage를 사용하도록 변경.
+*/
+const MigratedStorage = {
+  async getItem(key: string) {
     try {
       const [rawItem, rawKeyringController] = await Promise.all([
-        MMKVStorage.getItem('root'),
-        SecureStorage.getItem('root'),
+        MMKVStorage.getItem(key),
+        SecureStorage.getItem(key),
       ]);
       if (rawItem) {
         let resultItem = rawItem;
@@ -33,35 +45,26 @@ export const loadState = createAsyncThunk(
             });
           }
         }
-        return JSON.parse(resultItem);
+        // Using new storage system
+        return resultItem;
       }
     } catch {
-      // Fail silently
+      //Fail silently
     }
-    return undefined; // default state
   },
-);
-
-// createAsyncThunk for saving state
-export const saveState = createAsyncThunk(
-  'migratedStorage/saveState',
-  async (state: any) => {
+  async setItem(key: string, value: any) {
     try {
-      const serializedState = JSON.stringify(state);
-      if (serializedState && typeof serializedState === 'string') {
-        const parsedItem = JSON.parse(serializedState);
+      if (value && typeof value === 'string') {
+        const parsedItem = JSON.parse(value);
         if (typeof parsedItem.engine === 'string') {
           const parsedEngine = JSON.parse(parsedItem.engine);
           const keyringController =
             parsedEngine?.backgroundState?.KeyringController;
           if (keyringController) {
-            await SecureStorage.setItem(
-              'root',
-              JSON.stringify(keyringController),
-            );
+            await SecureStorage.setItem(key, JSON.stringify(keyringController));
             delete parsedEngine.backgroundState.KeyringController;
-            await MMKVStorage.setItem(
-              'root',
+            return MMKVStorage.setItem(
+              key,
               JSON.stringify({
                 ...parsedItem,
                 engine: JSON.stringify(parsedEngine),
@@ -70,51 +73,40 @@ export const saveState = createAsyncThunk(
           }
         }
       }
+      return MMKVStorage.setItem(key, value);
     } catch (error) {
-      console.warn(error, { message: 'Failed to save state' });
+      // Logger.error(error, { message: 'Failed to set item' });
     }
   },
-);
-
-// createSlice for migratedStorage
-const migratedStorageSlice = createSlice({
-  name: 'migratedStorage',
-  initialState: {},
-  reducers: {},
-  extraReducers: builder => {
-    builder.addCase(loadState.fulfilled, (state, action) => {
-      // EngineService.initalizeEngine(store); // 초기화
-      return action.payload;
-    });
+  async removeItem(key: string) {
+    try {
+      await SecureStorage.removeItem(key);
+      return MMKVStorage.removeItem(key);
+    } catch (error) {
+      // Logger.error(error, { message: 'Failed to remove item' });
+    }
   },
-});
+};
 
-export const store = configureStore({
-  reducer: migratedStorageSlice.reducer,
-});
+const persistConfig = {
+  key: 'root',
+  version: 1,
+  storage: MigratedStorage,
+  transforms: [],
+  timeout: TIMEOUT,
+  writeFailHandler: (error: any) => {},
+  // Logger.error(error, { message: 'Error persisting data' }), // Log error if saving state fails
+};
 
-store.dispatch(loadState()).then(() => {
+const pReducer = persistReducer(persistConfig, rootReducer);
+
+export const store = createStore(pReducer);
+
+/**
+ * Initialize services after persist is completed
+ */
+const onPersistComplete = () => {
   EngineService.initalizeEngine(store);
-});
+};
 
-store.subscribe(() => {
-  const state = store.getState();
-  saveState(state);
-});
-
-// export const configureAppStore = async () => {
-//   // const preloadedState = await loadState();
-//   const store = configureStore({
-//     reducer: appSlice.reducer,
-//     preloadedState: loadState(),
-//   });
-
-//   store.subscribe(() => {
-//     const state = store.getState();
-//     MigratedStorage.saveState(state);
-//   });
-
-//   // EngineService.initalizeEngine(store);
-
-//   return 'store';
-// };
+export const persistor = persistStore(store, null, onPersistComplete);

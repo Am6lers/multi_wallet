@@ -6,7 +6,7 @@
  */
 
 import { NavigationContainer } from '@react-navigation/native';
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import type { PropsWithChildren } from 'react';
 import {
   SafeAreaView,
@@ -26,13 +26,21 @@ import {
 } from 'recoil';
 // import SignStackNavigator from './navigators/SignStackNavigator';
 import { Provider, useDispatch, useSelector } from 'react-redux';
-import { store } from './store';
+import { persistor, store } from './store';
 import InitialStackNavigator from './components/navigator/InitialNavigator';
-import { Loading, loadingState } from './store/atoms';
+import { isExistAccountState, Loading, loadingState } from './store/atoms';
 import LoadingView from './components/atoms/Loading';
+import Engine from './core/engine';
+import { PersistGate } from 'redux-persist/integration/react';
 
 const AppWrapper = () => {
   const isLoaiding = useRecoilValue<Loading>(loadingState);
+
+  // setIsInitial(KeyringController.store.);
+
+  // const { KeyringController } = Engine.context;
+  // console.log('vault ', KeyringController.store.vault);
+
   return (
     <NavigationContainer>
       <LoadingView loadingData={isLoaiding} />
@@ -44,11 +52,13 @@ const AppWrapper = () => {
 const App = (): JSX.Element => {
   return (
     <Provider store={store}>
-      <Suspense fallback={<></>}>
-        <RecoilRoot>
-          <AppWrapper />
-        </RecoilRoot>
-      </Suspense>
+      <PersistGate persistor={persistor}>
+        <Suspense fallback={<></>}>
+          <RecoilRoot>
+            <AppWrapper />
+          </RecoilRoot>
+        </Suspense>
+      </PersistGate>
     </Provider>
   );
 };

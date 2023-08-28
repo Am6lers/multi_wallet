@@ -91,12 +91,14 @@ export default class CipherMobileNetworkController extends BaseController<
   public web3Providers: Web3Group = {};
   private _web3RpcEntries: { [chainId: string]: string } = {};
   private _defaultRpcTargets: { [key: string]: NetworkState } = {};
+  private _customRpcTargets: CustomRpcTargets = {};
 
   private mutex = new Mutex();
   constructor(opts: NetworkControllerOpts = { defaultRpcTargets: {} }) {
     const initState = opts.initState || {};
     super(undefined, initState);
     this._defaultRpcTargets = opts.defaultRpcTargets;
+    this._customRpcTargets = opts.initState?.customRpcTargets || {};
     Object.keys(opts.defaultRpcTargets).forEach((key: string) => {
       if (
         !opts.defaultRpcTargets[key] ||
@@ -106,34 +108,33 @@ export default class CipherMobileNetworkController extends BaseController<
       }
     });
 
-    this.syncWeb3Providers();
+    this.syncWeb3Providers.bind(this)();
     this.initialize();
   }
   getPermittedRpcTargets(): { [key: string]: string } {
     try {
       if (isEmpty(this._defaultRpcTargets)) {
         throw new Error(
-          'BiportNetworkController - _configureMultiProvider - empty urls',
+          'CipherNetworkController - _configureMultiProvider - empty urls',
         );
       }
       const multiProviderUrls: MultiProviderUrls = {};
-      //   const customRpcTargets =
-      //     this._getState<CustomRpcTargets>('customRpcTargets');
-      //   const customRpcTargetsKeys = customRpcTargets
-      //     ? Object.keys(customRpcTargets)
-      // : [];
+      const customRpcTargets = this._customRpcTargets;
+      const customRpcTargetsKeys = customRpcTargets
+        ? Object.keys(customRpcTargets)
+        : [];
       Object.keys(this._defaultRpcTargets).forEach((key: string) => {
         const target = this._defaultRpcTargets[key];
         if (typeof target.rpcTarget === 'string') {
           multiProviderUrls[target.chainId] = target.rpcTarget;
         }
       });
-      //   customRpcTargetsKeys.forEach((key: string) => {
-      //     const target = customRpcTargets[key];
-      //     if (typeof target.rpcTarget === 'string') {
-      //       multiProviderUrls[target.chainId] = target.rpcTarget;
-      //     }
-      //   });
+      customRpcTargetsKeys.forEach((key: string) => {
+        const target = customRpcTargets[key];
+        if (typeof target.rpcTarget === 'string') {
+          multiProviderUrls[target.chainId] = target.rpcTarget;
+        }
+      });
       return multiProviderUrls;
     } catch (e) {
       // Logger.error(
@@ -148,62 +149,73 @@ export default class CipherMobileNetworkController extends BaseController<
   syncWeb3Providers() {
     this._web3RpcEntries = this.getPermittedRpcTargets() ?? {};
     if (isEmpty(this.web3Providers)) {
-      this.web3Providers = Object.entries(this._web3RpcEntries).reduce(
-        (acc, [chainId, rpcTarget]) => {
-          acc[chainId] = new Web3(new Web3.providers.HttpProvider(rpcTarget));
-          return acc;
-        },
-        {} as Web3Group,
-      );
-    } else {
-      Object.entries(this._web3RpcEntries).forEach(([chainId, rpcTarget]) => {
-        const currProvider = this.web3Providers[chainId];
-        if (
-          !currProvider ||
-          !(currProvider instanceof Web3) ||
-          currProvider.givenProvider !== rpcTarget
-        ) {
-          this.web3Providers[chainId] = new Web3(
-            new Web3.providers.HttpProvider(rpcTarget),
-          );
-        }
+      Object.entries(this._web3RpcEntries).map(([chainId, rpcTarget]) => {
+        console.log(
+          'web3 test: ',
+          new Web3(new Web3.providers.HttpProvider(rpcTarget)),
+        );
       });
+      // this.web3Providers = Object.entries(this._web3RpcEntries).reduce(
+      //   (acc, [chainId, rpcTarget]) => {
+      //     acc[chainId] = new Web3(new Web3.providers.HttpProvider(rpcTarget));
+      //     return acc;
+      //   },
+      //   {} as Web3Group,
+      // );
+    } else {
+      // Object.entries(this._web3RpcEntries).forEach(([chainId, rpcTarget]) => {
+      //   const currProvider = this.web3Providers[chainId];
+      //   if (
+      //     !currProvider ||
+      //     !(currProvider instanceof Web3)
+      //     // || currProvider.givenProvider !== rpcTarget
+      //   ) {
+      //     this.web3Providers[chainId] = new Web3(
+      //       new Web3.providers.HttpProvider(rpcTarget),
+      //     );
+      //   }
+      // });
     }
   }
 
   // return web3 provider
   getWeb3Provider(chainId: string) {
-    if (this.web3Providers && chainId && has(this.web3Providers, [chainId])) {
-      return this.web3Providers[chainId];
-    } else {
-      return new Web3();
-    }
+    // if (this.web3Providers && chainId && has(this.web3Providers, [chainId])) {
+    //   return this.web3Providers[chainId];
+    // } else {
+    //   return new Web3();
+    // }
+  }
+
+  //return web3 providers
+  getWeb3Providers() {
+    return this.web3Providers;
   }
 
   getDefaultNetworks(useNetwork?: 'mainnet' | 'testnet'): NetworkState[] {
-    const networks = Object.values(NETWORKS);
-    if (useNetwork && useNetwork === 'mainnet') {
-      // return networks.filter(network => !network?.isTest || network.chainId === '0xbfc0');
-      return networks.filter(network => !network?.isTest);
-    }
-    if (useNetwork && useNetwork === 'testnet') {
-      // return networks.filter(network => network?.isTest && network.chainId !== '0xbfc0');
-      return networks.filter(network => network?.isTest);
-    }
-    return networks;
+    // const networks = Object.values(NETWORKS);
+    // if (useNetwork && useNetwork === 'mainnet') {
+    //   // return networks.filter(network => !network?.isTest || network.chainId === '0xbfc0');
+    //   return networks.filter(network => !network?.isTest);
+    // }
+    // if (useNetwork && useNetwork === 'testnet') {
+    //   // return networks.filter(network => network?.isTest && network.chainId !== '0xbfc0');
+    //   return networks.filter(network => network?.isTest);
+    // }
+    // return networks;
   }
 
   getNetworkByChainId(chainId: string): NetworkState | null {
-    const defaultNetworks = this.getDefaultNetworks();
-    const network = find(defaultNetworks, { chainId });
-    if (network) {
-      return network;
-    }
-    // const customRpcTargets =
-    //   this._getState<CustomRpcTargets>('customRpcTargets') || {};
-    // if (customRpcTargets[chainId]) {
-    //   return customRpcTargets[chainId];
+    // const defaultNetworks = this.getDefaultNetworks();
+    // const network = find(defaultNetworks, { chainId });
+    // if (network) {
+    //   return network;
     // }
-    return null;
+    // // const customRpcTargets =
+    // //   this._getState<CustomRpcTargets>('customRpcTargets') || {};
+    // // if (customRpcTargets[chainId]) {
+    // //   return customRpcTargets[chainId];
+    // // }
+    // return null;
   }
 }

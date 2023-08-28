@@ -48,6 +48,7 @@ import {
   getTokenType,
 } from '../../../types/token';
 import Constants from '@constants/app';
+import { defaultPreferencesState } from './utils';
 
 axios.defaults.withCredentials = true;
 
@@ -176,8 +177,8 @@ export default class CipherPreferencesController extends BaseController<
   }
 
   public resetState() {
-    // this.store.update(defaultPreferencesState);
-    // this.update(defaultPreferencesState);
+    this.store.update(defaultPreferencesState);
+    this.update(defaultPreferencesState);
   }
 
   private _getDataIncludeAddress(oldData: Identities, address: string) {

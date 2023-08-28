@@ -2,7 +2,7 @@ import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useRecoilValue } from 'recoil';
 import { isExistAccountState } from '@store/atoms';
-import Home from '../screens/home';
+import HomeTabNavigator from './HomeTabNavigator';
 
 export interface LoginInfo {
   loginId: string;
@@ -12,15 +12,14 @@ export interface LoginInfo {
 const Stack = createNativeStackNavigator();
 
 const MainStackNavigator = () => {
-  const isExistAccount = useRecoilValue(isExistAccountState);
   return (
     <Stack.Navigator
-      initialRouteName={'home'}
+      initialRouteName={'MainStackNavigator'}
       screenOptions={{ headerShown: false, animation: 'none' }}
     >
       <Stack.Screen
-        name="Home"
-        component={Home}
+        name="HomeTabNavigator"
+        component={HomeTabNavigator}
         options={{
           animationTypeForReplace: 'push',
         }}

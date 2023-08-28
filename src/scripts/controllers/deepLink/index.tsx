@@ -47,11 +47,9 @@ export default class DeepLinkController extends BaseController<
 
   checkRecieveDeepLinkData() {
     Linking.getInitialURL().then(url => {
-      console.log('DL checkRecieveDeepLinkData', url);
       if (url && this._keyrings.getIsUnlocked()) {
         this.hub.emit(DEEPLINK_EVENT.RECIEVE_DEEPLINK_DATA, url);
       } else {
-        console.log('DL checkRecieveDeepLinkData save: ', url);
         this.savedLink = url ?? undefined;
       }
     });
