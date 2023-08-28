@@ -64,6 +64,14 @@ export interface RpcPreferences {
   blockExplorerUrl: string;
 }
 
+export interface AccountToken {
+  [chainId: string]: EthToken[];
+}
+
+export interface AccountTokens {
+  [accountKey: string]: AccountToken;
+}
+
 export interface AddressEntry {
   evm?: string | null;
   btc?: string | null;
@@ -111,6 +119,7 @@ export interface PreferencesState extends BaseState {
   selectedAddress: string;
   selectedBtcAddress: string;
   currencyType: string;
+  accountTokens?: AccountTokens;
   name?: string;
 }
 
@@ -155,9 +164,13 @@ export default class CipherPreferencesController extends BaseController<
     initState: PreferencesState | undefined;
     network: CipherMobileNetworkController;
   }) {
-    super(undefined, initState);
+    const defaultInitState: PreferencesState = Object.assign(
+      defaultPreferencesState,
+      initState ?? {},
+    );
+    super(undefined, defaultInitState);
     this.network = network;
-    this.store = new ObservableStore(initState);
+    this.store = new ObservableStore(defaultInitState);
     this.store.setMaxListeners(30);
     this.randomArray = [];
     this.initialize();
@@ -196,15 +209,21 @@ export default class CipherPreferencesController extends BaseController<
 
     const oldAccountTokens = cloneDeep(this.store.getState().accountTokens);
     const updateStateDefault: {
+      accountTokens: AccountTokens;
       identities: Identities;
-    } = { identities: {} };
+    } = { identities: {}, accountTokens: {} };
 
     const updateStateValue = keys.reduce((state, key, index) => {
       const oldId = this._getDataIncludeAddress(oldIdentities, key);
+      const oldTokens = this._getDataIncludeAddress(
+        oldAccountTokens,
+        key,
+      ) as AccountToken;
       state.identities[key] = Object.assign(oldId, {
         name: (oldId as ContactEntry)?.name || `Account ${index + 1}`,
         address: this._getSplitedKey(key),
       });
+      state.accountTokens[key] = oldTokens;
       return state;
     }, updateStateDefault);
     this.update(updateStateValue);
@@ -232,8 +251,6 @@ export default class CipherPreferencesController extends BaseController<
     this.hub.emit(PREFERENCES_EVENTS.ACCOUNT_LABEL_CHANGED, accountKey);
     return Promise.resolve(label);
   }
-
-  public setNativeTokensWithNewWallet() {}
 
   private _getAccountKeyIncludeAddress(address: string) {
     const { identities } = this.store.getState();
@@ -329,6 +346,10 @@ export default class CipherPreferencesController extends BaseController<
 
   public getSelectedBtcAddress() {
     return this.store.getState().selectedBtcAddress;
+  }
+
+  public getIdentities() {
+    return this.store.getState().identities;
   }
 
   public getSelectedIdentity() {

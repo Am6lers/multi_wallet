@@ -1,26 +1,32 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Card, Carousel, Text, View } from 'react-native-ui-lib';
 import { StyleSheet } from 'react-native';
 import Colors from '@constants/colors';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Constants from '@constants/app';
 import Engine from '@core/engine';
+import { DEFAULT_TOKEN } from '@constants/asset';
+import Header from '@components/organism/home/Header';
+import MMKVStorage from '@utils/storage/mmkvStorage';
+import SecureStorage from '@utils/storage/SecureStorage';
 
 const Tab = createBottomTabNavigator();
 
 const Wallet = () => {
+  const [addresses, setAddresses] = React.useState<string[]>([]);
+
   useEffect(() => {
-    const { PreferencesController } = Engine.context;
-    console.log(PreferencesController.getSelectedAddress());
+    const { KeyringController, PreferencesController } = Engine.context;
+    console.log(KeyringController.getAllKeyrings());
+    // MMKVStorage.clear();
+    // SecureStorage.clear();
   }, []);
+
   return (
     <View style={styles.container} useSafeArea>
-      <Card
-        flex
-        center
-        onPress={() => console.log('pressed')}
-        style={styles.card}
-      ></Card>
+      <View style={styles.container}>
+        <Header />
+      </View>
     </View>
   );
 };
@@ -29,11 +35,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.White,
-  },
-  card: {
-    maxHeight: Constants.WINDOW_HEIGHT / 5,
-    width: '100%',
-    backgroundColor: Colors.Dark,
+    paddingHorizontal: Constants.PAGE_M1,
   },
 });
 

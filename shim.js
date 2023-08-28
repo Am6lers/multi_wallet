@@ -8,6 +8,8 @@ if (!global.atob) {
   global.atob = decode;
 }
 
+global.TextEncoder = global.TextEncoder || require('text-encoding').TextEncoder;
+
 // Fix for https://github.com/facebook/react-native/issues/5667
 if (typeof global.self === 'undefined') {
   global.self = global;

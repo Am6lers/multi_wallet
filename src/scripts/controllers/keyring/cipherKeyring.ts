@@ -53,6 +53,7 @@ export const WALLETTYPE_MULTY = 'MULTY';
 
 export default class CipherKeyring extends EventEmitter {
   public type: TypeSimpleKeyPair | TypeHdKeyTree = TYPE_HD_KEY_TREE;
+  public superMaster: boolean = false;
   // kering unique key
   public id: string | null = null;
   // parent wallet id
