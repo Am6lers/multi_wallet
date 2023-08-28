@@ -6,6 +6,11 @@ import { getAddressBalances } from 'eth-balance-checker/lib/web3';
 import CipherMobileNetworkController from '../network';
 import { getContractAddress } from './lib/utils';
 import { BalanceMap } from 'eth-balance-checker/lib/common';
+import EventEmitter from 'events';
+
+export const B_TRACKER_EVENTS = {
+  BALANCES_UPDATE: 'balancesUpdate',
+};
 
 interface ActivateTokens {
   [key: string]: string[];
@@ -19,8 +24,13 @@ interface BalancesData {
   [chainId: string]: BalanceMap;
 }
 
+interface AddressesBalances {
+  [address: string]: BalancesData;
+}
+
 export interface BalanceTrackerState extends BaseState {
   activatedTokensByAddr: ActivateTokens;
+  addressesBalances: AddressesBalances;
 }
 
 export interface BalanceTrackerOpts {
@@ -40,6 +50,9 @@ export default class BalanceTrackingController extends BaseController<
   private keyrings: CipherKeyringController;
   private network: CipherMobileNetworkController;
   private providers: Proviers;
+  private addressesBalances: AddressesBalances;
+
+  hub = new EventEmitter();
 
   constructor(opts: BalanceTrackerOpts) {
     super(undefined, opts.initState ?? {});
@@ -48,6 +61,7 @@ export default class BalanceTrackingController extends BaseController<
     this.network = opts.networkController;
     this.providers = this.network?.getWeb3Providers();
     this.seletedAddress = this.preferences.getSelectedAddress();
+    this.addressesBalances = opts.initState?.addressesBalances ?? {};
     this.activatedTokensByAddr = opts.initState?.activatedTokensByAddr ?? {};
   }
 
@@ -70,7 +84,9 @@ export default class BalanceTrackingController extends BaseController<
           return { [chainId]: balances };
         }),
       );
-      const balancesData = Object.assign({}, ...result);
+      const balancesData: BalancesData = Object.assign({}, ...result);
+      this.addressesBalances[this.seletedAddress] = balancesData;
+      this.hub.emit(B_TRACKER_EVENTS.BALANCES_UPDATE, balancesData);
     } catch (e) {}
   }
 }

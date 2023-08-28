@@ -149,19 +149,13 @@ export default class CipherMobileNetworkController extends BaseController<
   syncWeb3Providers() {
     this._web3RpcEntries = this.getPermittedRpcTargets() ?? {};
     if (isEmpty(this.web3Providers)) {
-      Object.entries(this._web3RpcEntries).map(([chainId, rpcTarget]) => {
-        console.log(
-          'web3 test: ',
-          new Web3(new Web3.providers.HttpProvider(rpcTarget)),
-        );
-      });
-      // this.web3Providers = Object.entries(this._web3RpcEntries).reduce(
-      //   (acc, [chainId, rpcTarget]) => {
-      //     acc[chainId] = new Web3(new Web3.providers.HttpProvider(rpcTarget));
-      //     return acc;
-      //   },
-      //   {} as Web3Group,
-      // );
+      this.web3Providers = Object.entries(this._web3RpcEntries).reduce(
+        (acc, [chainId, rpcTarget]) => {
+          acc[chainId] = new Web3(new Web3.providers.HttpProvider(rpcTarget));
+          return acc;
+        },
+        {} as Web3Group,
+      );
     } else {
       // Object.entries(this._web3RpcEntries).forEach(([chainId, rpcTarget]) => {
       //   const currProvider = this.web3Providers[chainId];

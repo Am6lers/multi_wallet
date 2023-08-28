@@ -36,6 +36,13 @@ import { Mutex } from 'await-semaphore';
 import { MessageManagerState } from '@metamask/controllers/dist/message-manager/AbstractMessageManager';
 import AppStateController from '@scripts/controllers/app-state';
 import DeepLinkController from '@scripts/controllers/deepLink';
+import { cloneDeep } from 'lodash';
+import Web3 from 'web3';
+import {
+  DEFAULT_TOKEN,
+  NATIVE_TOKEN_ADDRESS,
+  defaultInvisibleCoin,
+} from '@constants/asset';
 
 const encryptor = new Encryptor();
 let currentChainId: any;
@@ -412,7 +419,7 @@ class Engine {
       const accountKey = addressesObjectToString(addresses);
       await PreferencesController.setAddresses(allAccountsAfterAdded);
       await PreferencesController.setAccountLabel(addedAddress, walletName);
-      // await this.setNativeTokensWithNewWallet([accountKey]);
+      await this.setNativeTokensWithNewWallet([accountKey]);
       await PreferencesController.setSelectedAddress(addedAddress);
       if (addresses.evm) {
         const keyring = await KeyringController.getKeyringForAccount(
@@ -481,6 +488,7 @@ class Engine {
       PreferencesController.setAddresses(accountKeys);
       const selectAddressKey = this.selectFirstIdentity();
       await PreferencesController.setAccountLabel(selectAddressKey, walletName);
+      await this.setNativeTokensWithNewWallet([selectAddressKey]);
       await PreferencesController.setSelectedAddress(selectAddressKey);
       return vault;
     } finally {
@@ -584,6 +592,62 @@ class Engine {
     } finally {
       releaseLock();
     }
+  };
+
+  setNativeTokensWithNewWallet = (walletAddresses: string[] = []) => {
+    console.log('preferences getState start', walletAddresses);
+    if (!walletAddresses.length) {
+      return Promise.resolve(false);
+    }
+    const { PreferencesController } = this.context;
+    const { accountTokens, assetImages, nativeCoinInvisible } =
+      PreferencesController.store.getState();
+    console.log('preferences getState', PreferencesController.store.getState());
+    const addAccountTokens = cloneDeep(accountTokens);
+    const newStateNativeCoinInvisible = cloneDeep(nativeCoinInvisible);
+    walletAddresses.forEach(walletAddress => {
+      const newEntries = DEFAULT_TOKEN;
+      addAccountTokens[walletAddress] = {};
+      console.log('preferences walletAddress', walletAddress);
+      newEntries.forEach(entry => {
+        const isNative = NATIVE_TOKEN_ADDRESS === entry.address;
+        if (!Array.isArray(addAccountTokens[walletAddress][entry.chainId])) {
+          addAccountTokens[walletAddress][entry.chainId] = [];
+        }
+        console.log('preferences walletAddress2', walletAddress);
+        const tokenMeta = {
+          address: Web3.utils.toChecksumAddress(entry.address),
+          decimals: entry.decimals,
+          isERC721: false,
+          symbol: entry.symbol,
+          image: entry.image ?? entry.iconUrl,
+          iconUrl: entry.iconUrl ?? entry.image,
+          name: entry.name,
+          isNative,
+        };
+        console.log('preferences tokenMeta', tokenMeta);
+
+        addAccountTokens[walletAddress][entry.chainId].push(tokenMeta);
+        if (!isNative) {
+          assetImages[entry.address] = entry.image;
+        }
+      });
+      const evmAddress = (walletAddress.split('/')[0] ?? '').toLowerCase();
+      // if (evmAddress) {
+      //   newStateNativeCoinInvisible[evmAddress] = defaultInvisibleCoin;
+      // }
+    });
+    console.log('preferences addAccountTokens', addAccountTokens);
+    PreferencesController.update({
+      accountTokens: addAccountTokens,
+      // assetImages,
+      // nativeCoinInvisible: newStateNativeCoinInvisible,
+    });
+    PreferencesController.store.updateState({
+      accountTokens: addAccountTokens,
+      // assetImages,
+      // nativeCoinInvisible: newStateNativeCoinInvisible,
+    });
   };
 
   selectFirstIdentity = () => {

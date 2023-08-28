@@ -25,6 +25,7 @@ import {
   MAX_SAFE_CHAIN_ID,
   NetworkImages,
   PILABTEST,
+  POLYGON,
   POLYGON_CHAIN_ID,
   POLYGON_MUMBAI_CHAIN_ID,
   ROPSTEN_CHAIN_ID,
@@ -209,28 +210,35 @@ export const getRpcUrl = (network: string) => {
     url = 'https://bsc-dataseed.binance.org/';
   } else if (BSCTEST === network) {
     url = 'https://data-seed-prebsc-2-s1.binance.org:8545/';
-  } else if (PILABTEST === network) {
-    url = 'http://192.168.0.155:8889';
   } else if (AVAX === network) {
     url = 'https://api.avax.network/ext/bc/C/rpc';
   } else if (AVAXTEST === network) {
     url = 'https://api.avax-test.network/ext/bc/C/rpc';
   } else if (KLAYTN_CYPRESS === network) {
-    url = 'https://cypress.chain.thebifrost.io';
+    // url = 'https://cypress.chain.thebifrost.io';
+    url = 'https://1rpc.io/klay';
   } else if (KLAYTN_BAOBAB === network) {
-    url = 'https://api.baobab.klaytn.net:8651';
-  } else if (BIFROST === network) {
-    url = distributedUrlByRandomCondition([
-      'https://public-01.mainnet.thebifrost.io/rpc',
-      'https://public-02.mainnet.thebifrost.io/rpc',
-    ]);
-  } else if (BIFROST_TEST === network) {
-    url = distributedUrlByRandomCondition([
-      'https://public-01.testnet.thebifrost.io/rpc',
-      'https://public-02.testnet.thebifrost.io/rpc',
-    ]);
+    url = 'https://1rpc.io/klay';
+    // url = 'https://api.baobab.klaytn.net:8651';
+  }
+  // else if (BIFROST === network) {
+  //   url = distributedUrlByRandomCondition([
+  //     'https://public-01.mainnet.thebifrost.io/rpc',
+  //     'https://public-02.mainnet.thebifrost.io/rpc',
+  //   ]);
+  // } else if (BIFROST_TEST === network) {
+  //   url = distributedUrlByRandomCondition([
+  //     'https://public-01.testnet.thebifrost.io/rpc',
+  //     'https://public-02.testnet.thebifrost.io/rpc',
+  //   ]);
+  // }
+  else if (POLYGON === network) {
+    url = 'https://polygon.llamarpc.com';
+  } else if (GOERLI === network) {
+    url = 'https://ethereum-goerli.publicnode.com';
   } else {
-    url = `https://${network}.infura.io/v3/${INFURA_PROJECT_ID}`;
+    // url = `https://${network}.infura.io/v3/${INFURA_PROJECT_ID}`;
+    url = 'https://eth.llamarpc.com';
   }
   return url;
 };
