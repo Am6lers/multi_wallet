@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { isExistAccountState } from '@store/atoms';
 import Auth from '../screens/auth';
 import Login from '../screens/login';
@@ -8,6 +8,9 @@ import Create from '../screens/auth/create';
 import Done from '../screens/auth/done';
 import MainStackNavigator from './MainNavigator';
 import Import from '../screens/auth/import';
+import Engine from '@core/engine';
+import { has } from 'lodash';
+import { useSelector } from 'react-redux';
 
 export interface LoginInfo {
   loginId: string;
@@ -28,7 +31,20 @@ export type SignUpStackParamList = {
 const Stack = createNativeStackNavigator();
 
 const InitialStackNavigator = () => {
-  const isExistAccount = useRecoilValue(isExistAccountState);
+  const isExistAccount = useSelector((state: any) => {
+    if (
+      has(state, ['engine', 'backgroundState', 'KeyringController', 'vault'])
+    ) {
+      console.log(
+        'Vault',
+        state.engine.backgroundState.KeyringController.vault,
+      );
+      return !!state.engine.backgroundState.KeyringController.vault;
+    } else {
+      return false;
+    }
+  });
+
   return (
     <Stack.Navigator
       initialRouteName={isExistAccount ? 'Login' : 'Auth'}

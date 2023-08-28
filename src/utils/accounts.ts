@@ -23,3 +23,7 @@ export const clipPause = async (setter: (res: string) => void) => {
 export const clipCopy = async (text: string) => {
   await Clipboard.setString(text);
 };
+
+export const removeTrailingCommas = (str: string) => {
+  return str.replace(/,+$|,+$/g, '');
+};

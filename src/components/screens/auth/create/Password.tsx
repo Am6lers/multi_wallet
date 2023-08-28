@@ -18,14 +18,9 @@ const Password = ({
   moveToNext: () => void;
   setPwd: React.Dispatch<React.SetStateAction<string>>;
 }) => {
-  const passwordHandler = (pwd: string) => {
-    setPwd(pwd);
-    moveToNext();
-  };
-
   return (
     <View style={styles.container}>
-      <PinInput isCreate={true} setPin={passwordHandler} />
+      <PinInput isCreate={true} setPin={setPwd} />
     </View>
   );
 };

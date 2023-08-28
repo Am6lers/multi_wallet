@@ -1,4 +1,4 @@
-import UntypedEngine from './Engine';
+import UntypedEngine from './engine';
 
 const UPDATE_BG_STATE_KEY = 'UPDATE_BG_STATE';
 const INIT_BG_STATE_KEY = 'INIT_BG_STATE';
@@ -16,51 +16,50 @@ class EngineService {
    * @param store - Redux store
    */
   initalizeEngine = (store: any) => {
-    console.log("EngineService's initalizeEngine called", store);
-    const backgroundState = store.getState().backgroundState || {};
+    console.log(
+      "store EngineService's initalizeEngine called",
+      store.getState().engine.backgroundState,
+    );
+    const backgroundState = store.getState().engine.backgroundState || {};
     const Engine = UntypedEngine as any;
 
-    // Engine.init(backgroundState);
+    Engine.init(backgroundState);
 
-    // const controllers = [
-    //   { name: 'KeyringController' },
-    //   { name: 'NetworkController' },
-    //   { name: 'PreferencesController' },
-    //   { name: 'PhishingController' },
-    //   { name: 'TransactionController' },
-    //   { name: 'MessageManager' },
-    //   { name: 'PersonalMessageManager' },
-    //   { name: 'TypedMessageManager' },
-    //   { name: 'MultiChainBalanceTracker' },
-    //   {
-    //     name: 'ApprovalController',
-    //     key: `${Engine.context.ApprovalController.name}:stateChange`,
-    //   },
+    const controllers = [
+      { name: 'KeyringController' },
+      { name: 'NetworkController' },
+      { name: 'PreferencesController' },
+      { name: 'PhishingController' },
+      { name: 'MessageManager' },
+      { name: 'PersonalMessageManager' },
+      { name: 'TypedMessageManager' },
+      {
+        name: 'ApprovalController',
+        key: `${Engine.context.ApprovalController.name}:stateChange`,
+      },
+      { name: 'DeepLinkController' },
+    ];
 
-    //   { name: 'GasFeeController' },
-    //   { name: 'EncryptionController' },
-    // ];
+    Engine?.datamodel?.subscribe?.(() => {
+      if (!this.engineInitialized) {
+        store.dispatch({ type: INIT_BG_STATE_KEY });
+        this.engineInitialized = true;
+      }
+    });
 
-    // Engine?.datamodel?.subscribe?.(() => {
-    //   if (!this.engineInitialized) {
-    //     store.dispatch({ type: INIT_BG_STATE_KEY });
-    //     this.engineInitialized = true;
-    //   }
-    // });
+    controllers.forEach((controller, idx) => {
+      const { name, key = undefined } = controller;
+      const update_bg_state_cb = () =>
+        store.dispatch({ type: UPDATE_BG_STATE_KEY, key: name });
+      if (!key) {
+        Engine.context[name].subscribe(update_bg_state_cb);
+      } else {
+        Engine.controllerMessenger.subscribe(key, update_bg_state_cb);
+      }
 
-    // controllers.forEach((controller, idx) => {
-    //   const { name, key = undefined } = controller;
-    //   const update_bg_state_cb = () =>
-    //     store.dispatch({ type: UPDATE_BG_STATE_KEY, key: name });
-    //   if (!key) {
-    //     Engine.context[name].subscribe(update_bg_state_cb);
-    //   } else {
-    //     Engine.controllerMessenger.subscribe(key, update_bg_state_cb);
-    //   }
-
-    //   if (idx === controllers.length - 1) {
-    //   }
-    // });
+      if (idx === controllers.length - 1) {
+      }
+    });
   };
 }
 

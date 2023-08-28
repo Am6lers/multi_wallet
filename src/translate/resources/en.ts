@@ -47,6 +47,9 @@ const resource = {
       pase: 'Paste',
     },
   },
+  login: {
+    title: 'Please enter your password to log in',
+  },
 };
 
 export default resource;

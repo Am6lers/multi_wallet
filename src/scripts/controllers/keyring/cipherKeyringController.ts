@@ -4,7 +4,7 @@ import encryptor from 'browser-passworder';
 import { toBuffer, isValidPrivate, unpadHexString } from 'ethereumjs-util';
 import { networks, ECPair } from 'bitcoinjs-lib';
 import EventEmitter from 'events';
-import BiportKeyring, {
+import CipherKeyring, {
   TYPE_SIMPLE_KEY_PAIR,
   TYPE_HD_KEY_TREE,
   EVM_KEY,
@@ -44,10 +44,10 @@ export interface KeyringState extends BaseState {
 }
 
 /**
- * biport 지갑의 계정의 생성 및 추가 그리고 암호화 및 복호화를 관리합니다.
+ * cipher 지갑의 계정의 생성 및 추가 그리고 암호화 및 복호화를 관리합니다.
  */
 
-export default class BiportKeyringController extends BaseController<
+export default class CipherKeyringController extends BaseController<
   BaseConfig,
   KeyringState
 > {
@@ -57,13 +57,14 @@ export default class BiportKeyringController extends BaseController<
   public store: any;
   public memStore: any;
   protected encryptor: any;
-  protected keyrings: BiportKeyring[];
+  protected keyrings: CipherKeyring[];
   protected password: string | null | undefined = null;
   public isTest = false;
 
   hub = new EventEmitter();
 
   constructor(opts: KeyringParam) {
+    console.log('initState', opts);
     super(undefined, opts?.initState);
     const initState = opts?.initState ?? {};
     this.store = new ObservableStore(initState);
@@ -135,7 +136,7 @@ export default class BiportKeyringController extends BaseController<
       })
       .then(account => {
         if (isInvalidAccount(account)) {
-          throw new Error('BiportKeyringController - First Account not found.');
+          throw new Error('CipherKeyringController - First Account not found.');
         }
         return null;
       })
@@ -217,7 +218,7 @@ export default class BiportKeyringController extends BaseController<
       })
       .then(account => {
         if (isInvalidAccount(account)) {
-          throw new Error('BiportKeyringController - First Account not found.');
+          throw new Error('CipherKeyringController - First Account not found.');
         }
         return account;
       });
@@ -254,7 +255,7 @@ export default class BiportKeyringController extends BaseController<
   }
 
   async addNewKeyring(opts: KeyringOpts) {
-    const keyring = new BiportKeyring(opts);
+    const keyring = new CipherKeyring(opts);
     const { keyrings } = this.memStore.getState();
     // console.log("im keyring", keyring)
     const newKeyringAccounts = keyring.getAccounts();
@@ -309,7 +310,7 @@ export default class BiportKeyringController extends BaseController<
   }
 
   async removeEmptyKeyrings() {
-    const validKeyrings: BiportKeyring[] = [];
+    const validKeyrings: CipherKeyring[] = [];
 
     await Promise.all(
       this.keyrings.map(keyring => {
@@ -423,7 +424,7 @@ export default class BiportKeyringController extends BaseController<
       })
       .then(account => {
         if (isInvalidAccount(account)) {
-          throw new Error('BiportKeyringController - First Account not found.');
+          throw new Error('CipherKeyringController - First Account not found.');
         }
         return { addresses: account, status: 'NEW' };
       });
@@ -432,7 +433,7 @@ export default class BiportKeyringController extends BaseController<
   getDerivedAccounts(keyringId: string, numberOfChild = 10): Promise<any[]> {
     const selectedKeyring = this.keyrings.filter(kr => kr.id === keyringId)[0];
     if (!selectedKeyring) {
-      throw new Error('BiportKeyringController - keyringId is invalid');
+      throw new Error('CipherKeyringController - keyringId is invalid');
     }
     return Promise.resolve(
       Array(numberOfChild)
@@ -579,7 +580,7 @@ export default class BiportKeyringController extends BaseController<
       .then(account => {
         if (isInvalidAccount(account)) {
           throw new Error(
-            'BiportKeyringController - No account found on keychain.',
+            'CipherKeyringController - No account found on keychain.',
           );
         }
         return null;
@@ -589,7 +590,7 @@ export default class BiportKeyringController extends BaseController<
   persistAllKeyrings(password = this.password) {
     if (typeof password !== 'string') {
       return Promise.reject(
-        new Error('BiportKeyringController - password is not a string'),
+        new Error('CipherKeyringController - password is not a string'),
       );
     }
 
@@ -617,7 +618,7 @@ export default class BiportKeyringController extends BaseController<
     this.update({ oldVault: vault });
   }
 
-  async unlockKeyrings(password: string): Promise<BiportKeyring[]> {
+  async unlockKeyrings(password: string): Promise<CipherKeyring[]> {
     const encryptedVault = this.store.getState().vault;
     if (!encryptedVault) {
       throw new Error(UnlockError.WITHOUT_VAULT);
@@ -654,7 +655,7 @@ export default class BiportKeyringController extends BaseController<
   async _restoreKeyring(serialized: any) {
     const options = Object.assign({}, serialized, { isTest: this.isTest });
     // console.log("Restore keyring options - ", options)
-    const keyring = new BiportKeyring(options);
+    const keyring = new CipherKeyring(options);
     this.keyrings.push(keyring);
     return keyring;
   }
@@ -706,7 +707,7 @@ export default class BiportKeyringController extends BaseController<
     return this.keyrings.filter(keyring => keyring.type === type);
   }
 
-  async getKeyringForAccount(address: string): Promise<BiportKeyring> {
+  async getKeyringForAccount(address: string): Promise<CipherKeyring> {
     const hexed = normalize(address);
 
     return Promise.all(
@@ -759,7 +760,7 @@ export default class BiportKeyringController extends BaseController<
     });
   }
 
-  displayForKeyring(keyring: BiportKeyring): DisplayKeyring {
+  displayForKeyring(keyring: CipherKeyring): DisplayKeyring {
     const keys = keyring.getAccounts();
     return {
       id: keyring.id,
@@ -841,7 +842,7 @@ export default class BiportKeyringController extends BaseController<
     }, {});
     return allKeyrings.map(kr => {
       if (!kr.id) {
-        throw new Error('BiportKeyringController - keyring id is null');
+        throw new Error('CipherKeyringController - keyring id is null');
       }
       if (kr.id in childrenId) {
         kr.children = childrenId[kr.id];
@@ -866,7 +867,7 @@ export default class BiportKeyringController extends BaseController<
     }, {});
     return allKeyrings.map(kr => {
       if (!kr.id) {
-        throw new Error('BiportKeyringController - keyring id is null');
+        throw new Error('CipherKeyringController - keyring id is null');
       }
       if (kr.id in childrenId) {
         kr.children = childrenId[kr.id];
@@ -894,10 +895,10 @@ export default class BiportKeyringController extends BaseController<
       this.keyrings.filter(keyring => keyring.id === existKeyringIdKey)?.[0] ??
       undefined;
     if (!existKeyring) {
-      throw new Error('BiportKeyringController - not exist duplicate keyring.');
+      throw new Error('CipherKeyringController - not exist duplicate keyring.');
     }
 
-    const keyring = new BiportKeyring({
+    const keyring = new CipherKeyring({
       type: TYPE_HD_KEY_TREE,
       mnemonic,
       masterId: undefined,
@@ -909,7 +910,7 @@ export default class BiportKeyringController extends BaseController<
     return Promise.resolve(keyring.getAccounts())
       .then(accounts => {
         if (!accounts) {
-          throw new Error('BiportKeyringController - wrong replace process.');
+          throw new Error('CipherKeyringController - wrong replace process.');
         }
 
         const availableNum = keyring.getAvailableNumber();
@@ -930,7 +931,7 @@ export default class BiportKeyringController extends BaseController<
       })
       .then(accounts => {
         if (!accounts) {
-          throw new Error('BiportKeyringController - wrong replace process.');
+          throw new Error('CipherKeyringController - wrong replace process.');
         }
 
         if (typeof existKeyring.removeAccount === 'function') {

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { View, Image, Button, Text, Wizard } from 'react-native-ui-lib';
 import { StyleSheet } from 'react-native';
@@ -10,7 +10,7 @@ import Agree from '@components/screens/auth/create/Agree';
 import Name from '@components/screens/auth/create/Name';
 import Password from '@components/screens/auth/create/Password';
 import InputMnemonic from './InputMnemonic';
-import Engine from '@core/Engine';
+import Engine from '@core/engine';
 
 interface Account {
   account: string;
@@ -23,6 +23,11 @@ const Import = () => {
   const [account, setAccount] = useState<Account>();
   const [name, setName] = useState<string>('');
   const [pwd, setPwd] = useState<string>('');
+
+  useEffect(() => {
+    console.log('pwd1', pwd);
+    pwd.length > 0 && moveToNext();
+  }, [pwd]);
 
   const getPageState = useCallback(
     (num: number) => {
@@ -37,32 +42,34 @@ const Import = () => {
     if (page < 3) {
       setPage(page + 1);
     } else {
+      await importNewAccount();
       navigation.navigate('Done');
     }
-  }, [page]);
+  }, [page, pwd]);
 
   const importNewAccount = useCallback(async () => {
-    // Engine;
-    // if (account) {
-    //   if (account.type === 'mnemonic') {
-    //     const result = await Engine.methods.createNewVaultAndRestore(
-    //       pwd,
-    //       account.account,
-    //       name,
-    //       false,
-    //     );
-    //     console.log('result', result);
-    //   } else {
-    //     await Engine.methods.createNewVaultAndRestoreByPrivateKey(
-    //       pwd,
-    //       {
-    //         evm: account.account,
-    //         btc: null,
-    //       },
-    //       name,
-    //     );
-    //   }
-    // }
+    Engine;
+    if (account) {
+      if (account.type === 'mnemonic') {
+        console.log('pwd', pwd);
+        const result = await Engine.methods.createNewVaultAndRestore(
+          pwd,
+          account.account,
+          name,
+          false,
+        );
+        console.log('result', result);
+      } else {
+        await Engine.methods.createNewVaultAndRestoreByPrivateKey(
+          pwd,
+          {
+            evm: account.account,
+            btc: null,
+          },
+          name,
+        );
+      }
+    }
   }, [account, name, pwd]);
 
   const pageRenderer = useCallback(() => {

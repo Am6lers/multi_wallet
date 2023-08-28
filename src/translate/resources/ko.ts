@@ -45,6 +45,9 @@ const resource = {
       pase: '붙여넣기',
     },
   },
+  login: {
+    title: '로그인을 위해 비밀번호를 입력해주세요',
+  },
 };
 
 export default resource;
