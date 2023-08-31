@@ -43,6 +43,13 @@ import {
   NATIVE_TOKEN_ADDRESS,
   defaultInvisibleCoin,
 } from '@constants/asset';
+import BalanceTrackingController, {
+  BalanceTrackerState,
+} from '@scripts/controllers/balances';
+import {
+  AccountAssetController,
+  AccountAssetState,
+} from '@scripts/controllers/accountAsset';
 
 const encryptor = new Encryptor();
 let currentChainId: any;
@@ -59,6 +66,8 @@ export interface EngineContext {
   ApprovalController: ApprovalController;
   // EncryptionController: EncryptionController;
   DeepLinkController: DeepLinkController;
+  BalanceTrackingController: BalanceTrackingController;
+  AccountAssetController: AccountAssetController;
 }
 
 export type EngineInitState = {
@@ -74,6 +83,8 @@ export type EngineInitState = {
   // GasFeeController?: GasFeeController | undefined;
   // EncryptionController?: EncryptionControlState | undefined;
   DeepLinkController?: DeepLinkController | undefined;
+  BalanceTrackingController?: BalanceTrackerState | undefined;
+  AccountAssetController?: AccountAssetState | undefined;
 };
 
 export type EngineContextNames = keyof EngineContext;
@@ -92,6 +103,8 @@ export type Controllers = [
   ApprovalController,
   // EncryptionController,
   DeepLinkController,
+  BalanceTrackingController,
+  AccountAssetController,
 ];
 
 export const controllerNames: EngineContextNames[] = [
@@ -106,6 +119,8 @@ export const controllerNames: EngineContextNames[] = [
   'ApprovalController',
   // 'EncryptionController',
   'DeepLinkController',
+  'BalanceTrackingController',
+  'AccountAssetController',
 ];
 
 interface SyncParams {
@@ -140,6 +155,8 @@ class Engine {
     ApprovalController: {} as ApprovalController,
     // EncryptionController: {} as EncryptionController,
     DeepLinkController: {} as DeepLinkController,
+    BalanceTrackingController: {} as BalanceTrackingController,
+    AccountAssetController: {} as AccountAssetController,
   };
 
   /**
@@ -204,6 +221,21 @@ class Engine {
         keyringController: keyringController,
       });
 
+      const accountAssetController = new AccountAssetController({
+        initState: initialState?.AccountAssetController,
+        keyringController: keyringController,
+        preferencesController: preferencesController,
+        networkController: networkController,
+      });
+
+      const balanceTrackingController = new BalanceTrackingController({
+        initState: initialState?.BalanceTrackingController,
+        keyringController: keyringController,
+        preferencesController: preferencesController,
+        networkController: networkController,
+        accountAssetController: accountAssetController,
+      });
+
       this.appStateController = new AppStateController();
       this.appStateController.init();
 
@@ -224,6 +256,8 @@ class Engine {
         }),
         // encryptionController,
         deepLinkController,
+        balanceTrackingController,
+        accountAssetController,
       ];
 
       for (const controller of controllers) {
@@ -257,6 +291,8 @@ class Engine {
         ApprovalController: controllers[7],
         // EncryptionController: controllers[8],
         DeepLinkController: controllers[8],
+        BalanceTrackingController: controllers[9],
+        AccountAssetController: controllers[10],
       };
 
       const {
@@ -419,7 +455,7 @@ class Engine {
       const accountKey = addressesObjectToString(addresses);
       await PreferencesController.setAddresses(allAccountsAfterAdded);
       await PreferencesController.setAccountLabel(addedAddress, walletName);
-      await this.setNativeTokensWithNewWallet([accountKey]);
+      // await this.setNativeTokensWithNewWallet([accountKey]);
       await PreferencesController.setSelectedAddress(addedAddress);
       if (addresses.evm) {
         const keyring = await KeyringController.getKeyringForAccount(
@@ -488,7 +524,7 @@ class Engine {
       PreferencesController.setAddresses(accountKeys);
       const selectAddressKey = this.selectFirstIdentity();
       await PreferencesController.setAccountLabel(selectAddressKey, walletName);
-      await this.setNativeTokensWithNewWallet([selectAddressKey]);
+      // await this.setNativeTokensWithNewWallet([selectAddressKey]);
       await PreferencesController.setSelectedAddress(selectAddressKey);
       return vault;
     } finally {
@@ -595,26 +631,22 @@ class Engine {
   };
 
   setNativeTokensWithNewWallet = (walletAddresses: string[] = []) => {
-    console.log('preferences getState start', walletAddresses);
     if (!walletAddresses.length) {
       return Promise.resolve(false);
     }
     const { PreferencesController } = this.context;
     const { accountTokens, assetImages, nativeCoinInvisible } =
       PreferencesController.store.getState();
-    console.log('preferences getState', PreferencesController.store.getState());
     const addAccountTokens = cloneDeep(accountTokens);
     const newStateNativeCoinInvisible = cloneDeep(nativeCoinInvisible);
     walletAddresses.forEach(walletAddress => {
       const newEntries = DEFAULT_TOKEN;
       addAccountTokens[walletAddress] = {};
-      console.log('preferences walletAddress', walletAddress);
       newEntries.forEach(entry => {
         const isNative = NATIVE_TOKEN_ADDRESS === entry.address;
         if (!Array.isArray(addAccountTokens[walletAddress][entry.chainId])) {
           addAccountTokens[walletAddress][entry.chainId] = [];
         }
-        console.log('preferences walletAddress2', walletAddress);
         const tokenMeta = {
           address: Web3.utils.toChecksumAddress(entry.address),
           decimals: entry.decimals,
@@ -856,6 +888,8 @@ export default {
       // GasFeeController,
       // EncryptionController,
       DeepLinkController,
+      BalanceTrackingController,
+      AccountAssetController,
     } = instance.datamodel.state;
 
     // const modifiedCurrencyRateControllerState = {
@@ -879,6 +913,8 @@ export default {
       // GasFeeController,
       // EncryptionController,
       DeepLinkController,
+      BalanceTrackingController,
+      AccountAssetController,
     };
   },
   get datamodel() {

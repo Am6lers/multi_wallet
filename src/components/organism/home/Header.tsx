@@ -4,22 +4,20 @@ import { Text, View } from 'react-native-ui-lib';
 import { StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import EvilIcon from 'react-native-vector-icons/Ionicons';
+import { DisplayKeyring } from '@scripts/controllers/keyring';
+import { useRecoilValue } from 'recoil';
+import { superMasterName } from '@store/atoms';
 
 const Header = () => {
-  const { PreferencesController } = engine.context;
-
-  const accountName = useMemo(() => {
-    const identity = PreferencesController.getSelectedIdentity();
-    return identity.name;
-  }, []);
+  const masterName = useRecoilValue(superMasterName);
   return (
     <View style={styles.container}>
       <View style={styles.row}>
-        <Text text65BO>{accountName}</Text>
+        <Text text65BO>{masterName}</Text>
       </View>
       <View style={styles.row}>
-        <EvilIcon name="search" size={24} />
-        <Icon name="line-scan" size={24} />
+        <EvilIcon name="search" size={24} style={styles.icon} />
+        <Icon name="line-scan" size={24} style={styles.icon} />
         {/* <EvilIcon name="bell" size={24} /> */}
       </View>
     </View>
@@ -37,6 +35,9 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     justifyContent: 'center',
+  },
+  icon: {
+    marginLeft: 10,
   },
 });
 

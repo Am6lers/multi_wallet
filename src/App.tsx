@@ -1,10 +1,4 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
+import { MORALIS_API_KEY } from '@env';
 import { NavigationContainer } from '@react-navigation/native';
 import React, { Suspense, useEffect } from 'react';
 import type { PropsWithChildren } from 'react';
@@ -32,14 +26,17 @@ import { isExistAccountState, Loading, loadingState } from './store/atoms';
 import LoadingView from './components/atoms/Loading';
 import Engine from './core/engine';
 import { PersistGate } from 'redux-persist/integration/react';
+import Moralis from 'moralis';
 
 const AppWrapper = () => {
   const isLoaiding = useRecoilValue<Loading>(loadingState);
 
-  // setIsInitial(KeyringController.store.);
-
-  // const { KeyringController } = Engine.context;
-  // console.log('vault ', KeyringController.store.vault);
+  // Initialize for Moralis API
+  if (!Moralis.Core.isStarted) {
+    Moralis.start({
+      apiKey: MORALIS_API_KEY,
+    });
+  }
 
   return (
     <NavigationContainer>

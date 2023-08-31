@@ -40,6 +40,7 @@ export interface KeyringOpts {
   numbersOfChildren?: number[];
   hdPath?: { [key: string]: HdPathOpts };
   id?: string | null;
+  superMaster: boolean;
 }
 
 export interface GetPrivateKeyOpts {
@@ -72,6 +73,7 @@ export interface DisplayKeyring {
   children?: string[];
   numberOfDeriven?: number;
   numbersOfChildren?: number[];
+  superMaster?: boolean;
 }
 
 export interface OriginalRequest {
