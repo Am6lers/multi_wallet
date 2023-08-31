@@ -21,6 +21,8 @@
       "es2022.object",
       "es2022.string"
     ],
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "allowJs": true,
     "jsx": "react-native",
     "noEmit": true,

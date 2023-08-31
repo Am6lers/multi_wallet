@@ -21,6 +21,9 @@ if linkage != nil
   use_frameworks! :linkage => linkage.to_sym
 end
 
+# WatermelonDB dependency
+pod 'simdjson', path: '../node_modules/@nozbe/simdjson', modular_headers: true
+
 target 'multi_wallet' do
   config = use_native_modules!
 

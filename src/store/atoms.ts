@@ -14,3 +14,8 @@ export const loadingState = atom<Loading>({
   key: 'loadingState',
   default: undefined,
 });
+
+export const superMasterName = atom<string>({
+  key: 'superMasterName',
+  default: '',
+});

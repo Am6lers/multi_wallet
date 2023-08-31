@@ -98,7 +98,7 @@ export default class CipherKeyring extends EventEmitter {
     super();
     this.isTest = Boolean(opts?.isTest);
     this.btcNetwork = this.isTest ? networks.testnet : networks.bitcoin;
-
+    this.superMaster = opts.superMaster ?? false;
     this.type = opts.type;
     if (opts.numberOfDeriven && !isNaN(opts.numberOfDeriven)) {
       this.numberOfDeriven = Number(opts.numberOfDeriven);
@@ -223,6 +223,7 @@ export default class CipherKeyring extends EventEmitter {
           : [],
       walletType: this.walletType,
       hdPath: this.hdPaths,
+      superMaster: this.superMaster,
     };
 
     if (this.type === TYPE_SIMPLE_KEY_PAIR) {

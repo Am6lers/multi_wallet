@@ -12,11 +12,13 @@
     "postinstall": "./node_modules/.bin/rn-nodeify --hack --yarn --install buffer,crypto,events,stream,vm,process,http,https,os,url,net,fs,zlib && yarn patch-package && yarn run update:settingProvider && npx jetify"
   },
   "dependencies": {
+    "@babel/plugin-proposal-decorators": "^7.22.10",
     "@ethereumjs/tx": "^4.1.2",
     "@klarna/react-native-zlib": "^1.0.1",
     "@metamask/controllers": "^33.0.0",
     "@metamask/obs-store": "^8.1.0",
     "@moralisweb3/common-evm-utils": "^2.18.2",
+    "@nozbe/watermelondb": "^0.27.0",
     "@react-native-async-storage/async-storage": "^1.18.1",
     "@react-native-clipboard/clipboard": "^1.11.2",
     "@react-native-community/netinfo": "^9.3.6",
@@ -27,6 +29,7 @@
     "@tradle/react-native-http": "^2.0.0",
     "@types/crypto-js": "^4.1.1",
     "@types/lodash": "^4.14.197",
+    "@types/object-hash": "^3.0.3",
     "@types/react": "^17",
     "@types/react-native-background-timer": "^2.0.0",
     "@types/react-native-vector-icons": "^6.4.14",

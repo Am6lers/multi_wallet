@@ -204,7 +204,7 @@ export function isCustomNetwork(chainId: string) {
   );
 }
 
-export const getTokenIcons = (chainId: string, address: string) => {
+export const Icons = (chainId: string, address: string) => {
   let network = 'ethereum';
   if (chainId === INTERNALLY_USED_BITCOIN_CHAIN_ID) {
     network = 'ethereum';

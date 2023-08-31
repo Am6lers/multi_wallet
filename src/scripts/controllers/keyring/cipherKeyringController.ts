@@ -129,6 +129,7 @@ export default class CipherKeyringController extends BaseController<
           mnemonic: seed,
           isTest: this.isTest,
           hdPath,
+          superMaster: true,
         });
       })
       .then(firstKeyring => {
@@ -179,6 +180,7 @@ export default class CipherKeyringController extends BaseController<
           privateKeys: { [EVM_KEY]: evmPrivateKey, [BTC_KEY]: btcPrivateKey },
           masterId: undefined,
           isTest: this.isTest,
+          superMaster: true,
         });
       })
       .then(firstKeyring => {
@@ -212,6 +214,7 @@ export default class CipherKeyringController extends BaseController<
       walletType: WALLETTYPE_MULTY,
       hdPath,
       seed: seed,
+      superMaster: false,
     })
       .then(keyring => {
         return keyring.getAccounts();
@@ -255,9 +258,11 @@ export default class CipherKeyringController extends BaseController<
   }
 
   async addNewKeyring(opts: KeyringOpts) {
-    const keyring = new CipherKeyring(opts);
     const { keyrings } = this.memStore.getState();
-    // console.log("im keyring", keyring)
+    const keyring =
+      keyrings.length == 0
+        ? new CipherKeyring(Object.assign(opts, { superMaster: true }))
+        : new CipherKeyring(opts);
     const newKeyringAccounts = keyring.getAccounts();
     let duplicate = false;
     keyrings.forEach((kr: DisplayKeyring) => {
@@ -418,6 +423,7 @@ export default class CipherKeyringController extends BaseController<
       masterId: selectedKeyring.id,
       isTest: this.isTest,
       numberOfDeriven: nextDerivenNumber,
+      superMaster: false,
     })
       .then(keyring => {
         return keyring.getAccounts();
@@ -444,6 +450,7 @@ export default class CipherKeyringController extends BaseController<
   }
 
   public getAllKeyrings() {
+    console.log(this.keyrings);
     return this.memStore.getState().keyrings;
   }
 
@@ -573,7 +580,11 @@ export default class CipherKeyringController extends BaseController<
 
   async createFirstKeyTree() {
     this.clearKeyrings();
-    return this.addNewKeyring({ type: TYPE_HD_KEY_TREE, isTest: this.isTest })
+    return this.addNewKeyring({
+      type: TYPE_HD_KEY_TREE,
+      isTest: this.isTest,
+      superMaster: true,
+    })
       .then(keyring => {
         return keyring.getAccounts();
       })
@@ -766,6 +777,7 @@ export default class CipherKeyringController extends BaseController<
       id: keyring.id,
       masterId: keyring.masterId,
       type: keyring.type,
+      superMaster: keyring?.superMaster,
       accounts: {
         [EVM_KEY]: keys[EVM_KEY],
         [BTC_KEY]: keys[BTC_KEY],
@@ -905,6 +917,7 @@ export default class CipherKeyringController extends BaseController<
       isTest: this.isTest,
       walletType: WALLETTYPE_MULTY,
       hdPath,
+      superMaster: existKeyring.superMaster,
     });
 
     return Promise.resolve(keyring.getAccounts())

@@ -356,4 +356,9 @@ export default class CipherPreferencesController extends BaseController<
     const { identities } = this.store.getState();
     return identities[this.getSelectedAccountKey()];
   }
+
+  public getAccountIdentity(account: string) {
+    const { identities } = this.store.getState();
+    return identities[account];
+  }
 }
