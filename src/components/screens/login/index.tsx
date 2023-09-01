@@ -14,8 +14,8 @@ import { ParamListBase, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 const Login = () => {
-  // MMKVStorage.clear();
-  // SecureStorage.clear();
+  MMKVStorage.clear();
+  SecureStorage.clear();
 
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   const verifyHandler = useCallback(async (pins: string) => {

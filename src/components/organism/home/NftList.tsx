@@ -1,75 +1,96 @@
 import {
   EvmNft,
+  EvmNftTransfer,
+  GetWalletNFTTransfersResponse,
   GetWalletNFTTransfersResponseAdapter,
   GetWalletNFTsResponseAdapter,
 } from '@moralisweb3/common-evm-utils';
 import Moralis from 'moralis/.';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import engine from '@core/engine';
-import { Text, View } from 'react-native-ui-lib';
+import { ListItem, Text, View } from 'react-native-ui-lib';
 import { FlatList, Image, StyleSheet } from 'react-native';
+import Constants from '@constants/app';
 
 const NftList = () => {
   const { PreferencesController } = engine.context;
-  const [nfts, setNfts] = React.useState<EvmNft[]>();
+  const [nfts, setNfts] = useState<EvmNft[]>([]);
+  const [nftTransfers, setNftTransfers] = useState<EvmNftTransfer[]>([]);
 
   useEffect(() => {
-    !nfts && getNftData();
+    nfts.length <= 0 && getNftData();
   }, []);
 
   const getNftData = async () => {
-    // const nftsTransfersResponse: GetWalletNFTTransfersResponseAdapter =
-    //   await Moralis.EvmApi.nft.getWalletNFTTransfers({
-    //     chain: '0x5',
-    //     format: 'decimal',
-    //     direction: 'both',
-    //     address: PreferencesController.getSelectedAddress(),
-    //   });
     const nftsResponse: GetWalletNFTsResponseAdapter =
       await Moralis.EvmApi.nft.getWalletNFTs({
         chain: '0x5',
         address: PreferencesController.getSelectedAddress(),
       });
-    setNfts(nftsResponse?.result);
-    console.log('nftsResponse', nftsResponse.result);
+    setNfts(nftsResponse?.result ?? []);
+    // const nftsTransfersResponse: GetWalletNFTTransfersResponseAdapter =
+    //   await Moralis.EvmApi.nft.getWalletNFTTransfers({
+    //     chain: '0x1',
+    //     format: 'decimal',
+    //     direction: 'both',
+    //     address: PreferencesController.getSelectedAddress(),
+    //   });
+    // console.log('setNftTransfers', nftsTransfersResponse?.result);
+    // setNftTransfers(nftsTransfersResponse?.result);
   };
 
   const renderItem = ({ item }: { item: EvmNft }) => {
-    console.log('nftsResponse item', item.tokenUri);
-    const name = item.name;
+    console.log('nftsResponse item', item);
     return (
-      <View style={styles.itemContainer}>
-        <Image source={{ uri: item.tokenUri }} style={styles.image} />
-        <Text style={styles.text}>{item.name || 'Unknown'}</Text>
+      <View style={styles.item}>
+        <ListItem
+          style={styles.itemContainer}
+          onPress={() => console.log('pressed')}
+        >
+          <Image source={{ uri: item.tokenUri }} style={styles.image} />
+          <Text grey10 text60L marginL-10>
+            {item.chain.name}
+          </Text>
+          <Text grey10 text60L marginL-10>
+            {item.name || 'unknown'}
+          </Text>
+        </ListItem>
       </View>
     );
   };
 
   return (
     <FlatList
-      data={nfts ? nfts.result : []}
+      data={nfts ? nfts : []}
       renderItem={renderItem}
-      keyExtractor={(item, index) => index.toString()}
+      keyExtractor={(item, index) => `${item.tokenUri}-${index}`}
     />
   );
 };
 
-export default NftList;
+export default React.memo(NftList);
 
 const styles = StyleSheet.create({
   itemContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: 80,
+    height: 60,
     width: '100%',
     padding: 10,
   },
   image: {
-    width: 60,
-    height: 60,
+    width: Constants.WINDOW_WIDTH / 10,
+    height: Constants.WINDOW_WIDTH / 10,
     marginRight: 10,
+    borderRadius: 20,
   },
   text: {
     fontSize: 16,
+  },
+  item: {
+    marginHorizontal: 10,
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    justifyContent: 'center',
   },
 });

@@ -13,6 +13,7 @@ import { Addresses, DisplayKeyring } from '@scripts/controllers/keyring';
 import WalletCard from '@components/organism/home/WalletCard';
 import TokenList from '@components/organism/home/TokenList';
 import NftList from '@components/organism/home/NftList';
+import AssetView from './AssetView';
 
 const Tab = createBottomTabNavigator();
 
@@ -47,8 +48,9 @@ const Wallet = () => {
       <View style={styles.container}>
         <Header />
         <RenderWalletCard />
-        <TokenList />
-        <NftList />
+        <AssetView />
+        {/* <TokenList />
+        <NftList /> */}
       </View>
     </View>
   );
