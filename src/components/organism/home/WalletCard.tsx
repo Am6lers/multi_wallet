@@ -20,6 +20,10 @@ const WalletCard = ({ account }: { account: Addresses }) => {
     () => `BTC: ${account?.btc?.slice(0, 5)}...${account?.btc?.slice(-5)}`,
     [],
   );
+  const DIDAccount = useMemo(
+    () => `DID:EVM:${account?.evm?.slice(0, 5)}...${account?.evm?.slice(-5)}`,
+    [],
+  );
   const accountName = useMemo(
     () =>
       PreferencesController.getAccountIdentity(
@@ -35,10 +39,12 @@ const WalletCard = ({ account }: { account: Addresses }) => {
         <Text text90BL color={Colors.Gray}>
           {evmAccount}
         </Text>
-        <Text text90BL color={Colors.Gray}>
+        {/* <Text text90BL color={Colors.Gray}>
           {btcAccount}
+        </Text> */}
+        <Text text90BL color={Colors.Gray}>
+          {DIDAccount}
         </Text>
-        <Image style={{ width: 50, height: 50 }} source={CIPHER_LOGO} />
         <LottieView
           source={LOTTIE_CARD_BG_2}
           autoPlay
