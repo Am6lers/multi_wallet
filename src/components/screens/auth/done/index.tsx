@@ -15,7 +15,10 @@ const Done = () => {
     if (page < 1) {
       setPage(page + 1);
     } else {
-      navigation.reset({ routes: [{ name: 'MainStackNavigator' }] });
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'MainStackNavigator' }],
+      });
     }
   }, [page]);
 

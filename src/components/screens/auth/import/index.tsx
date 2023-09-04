@@ -25,7 +25,6 @@ const Import = () => {
   const [pwd, setPwd] = useState<string>('');
 
   useEffect(() => {
-    console.log('pwd1', pwd);
     pwd.length > 0 && moveToNext();
   }, [pwd]);
 
@@ -51,14 +50,12 @@ const Import = () => {
     Engine;
     if (account) {
       if (account.type === 'mnemonic') {
-        console.log('pwd', pwd);
         const result = await Engine.methods.createNewVaultAndRestore(
           pwd,
           account.account,
           name,
           false,
         );
-        console.log('result', result);
       } else {
         await Engine.methods.createNewVaultAndRestoreByPrivateKey(
           pwd,

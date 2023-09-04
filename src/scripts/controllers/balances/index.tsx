@@ -10,9 +10,17 @@ import { getContractAddress } from './lib/utils';
 import { BalanceMap } from 'eth-balance-checker/lib/common';
 import EventEmitter from 'events';
 import { AccountAssetController, Asset } from '../accountAsset';
+import {
+  EvmNft,
+  GetWalletNFTsResponseAdapter,
+} from '@moralisweb3/common-evm-utils';
+import Moralis from 'moralis/.';
 
 export const B_TRACKER_EVENTS = {
-  BALANCES_UPDATE: 'balancesUpdate',
+  BALANCES_UPDATED: 'balancesUpdate',
+  NFTS_UPDATE: 'nftsUpdate',
+  UPDATE_ERROR: 'updateError',
+  UPDATE_BALANCES: 'updateBalances',
 };
 
 interface Proviers {
@@ -36,8 +44,13 @@ interface AddressesBalances {
   [address: string]: BalancesData;
 }
 
+interface AddressesNfts {
+  [address: string]: EvmNft[];
+}
+
 export interface BalanceTrackerState extends BaseState {
   addressesBalances: AddressesBalances;
+  addressesNfts: AddressesNfts;
 }
 
 export interface BalanceTrackerOpts {
@@ -52,6 +65,7 @@ export default class BalanceTrackingController extends BaseController<
   BaseConfig,
   BalanceTrackerState
 > {
+  name = 'BalanceTrackingController';
   private selectedAccount: AccountData;
   private activatedTokensByAddr: {
     [chainId: string]: Asset[];
@@ -62,6 +76,7 @@ export default class BalanceTrackingController extends BaseController<
   private providers: Proviers;
   private _account: AccountAssetController;
   private addressesBalances: AddressesBalances;
+  private addressesNfts: AddressesNfts;
   private intervalId: NodeJS.Timeout | undefined;
 
   hub = new EventEmitter();
@@ -78,13 +93,15 @@ export default class BalanceTrackingController extends BaseController<
       accountKey: this.preferences.getSelectedAccountKey(),
     };
     this.addressesBalances = opts.initState?.addressesBalances ?? {};
-    this.activatedTokensByAddr = this._account.getActivatedAssets(
-      this.selectedAccount.address,
-    );
-
+    this.addressesNfts = opts.initState?.addressesNfts ?? {};
+    this.activatedTokensByAddr = this._account.getActivatedAssets();
     this.preferences.hub.on(
       PREFERENCES_EVENTS.ACCOUNT_CHANGED,
       this.accountChanged.bind(this),
+    );
+    this.hub.on(
+      B_TRACKER_EVENTS.UPDATE_BALANCES,
+      this.startBalancesTracking.bind(this),
     );
     this.initialize();
   }
@@ -94,10 +111,9 @@ export default class BalanceTrackingController extends BaseController<
       address: this.preferences.getSelectedAddress(),
       accountKey: this.preferences.getSelectedAccountKey(),
     };
-    this.activatedTokensByAddr = this._account.getActivatedAssets(
-      this.selectedAccount.address,
-    );
-    this.startPolling.bind(this)();
+    this.activatedTokensByAddr = this._account.getActivatedAssets();
+    this.startBalancesTracking();
+    // this.startPolling.bind(this)();
   }
 
   async updateBalances() {
@@ -108,18 +124,17 @@ export default class BalanceTrackingController extends BaseController<
       const selectedAddress = this.selectedAccount.address;
       //@ts-ignore
       const tokenInfos: DumyTokenInfos = this.activatedTokensByAddr;
-      console.log('activatedTokensByAddr', this.activatedTokensByAddr);
-      const result = await Promise.all(
-        Object.entries(this.providers).map(async ([chainId, provider]) => {
-          try {
-            let options = {
-              contractAddress: getContractAddress(chainId),
-            };
-            const chainTokenList = tokenInfos?.[chainId].map(
-              (token: any) => token.address,
-            );
-            console.log('balancesData chainTokenList: ', chainTokenList);
+      const result = Object.entries(tokenInfos).map(
+        async ([chainId, tokenInfo]) => {
+          let options = {
+            contractAddress: getContractAddress(chainId),
+          };
 
+          const chainTokenList = tokenInfo.map((token: any) =>
+            token.address.toLowerCase(),
+          );
+          const provider = this.providers?.[chainId];
+          try {
             const balances = await getAddressBalances(
               provider,
               selectedAddress,
@@ -128,35 +143,68 @@ export default class BalanceTrackingController extends BaseController<
             );
             return { [chainId]: balances };
           } catch (e) {
-            console.log("Can't get balances", e);
-            return { [chainId]: {} };
+            let zeroBalances: BalanceMap = {};
+            chainTokenList.forEach((token: string) => {
+              zeroBalances[token] = '0';
+            });
+            return { [chainId]: zeroBalances };
           }
-        }),
+        },
       );
       const balancesData: BalancesData = Object.assign({}, ...result);
       this.addressesBalances[selectedAddress] = balancesData;
       this.update({
+        ...this.state,
         addressesBalances: this.addressesBalances,
       });
-      console.log('balancesData', balancesData);
-      this.hub.emit(B_TRACKER_EVENTS.BALANCES_UPDATE, balancesData);
-    } catch (e) {}
+      this.hub.emit(B_TRACKER_EVENTS.BALANCES_UPDATED, balancesData);
+    } catch (e) {
+      console.warn('error', e);
+      this.hub.emit(B_TRACKER_EVENTS.UPDATE_ERROR, e);
+    }
   }
 
-  poll() {
-    this.intervalId && this.stopPolling();
-    this.intervalId = setInterval(() => {
-      this.updateBalances();
-    }, 60000);
+  async updateNftList() {
+    try {
+      const nftsResponse: GetWalletNFTsResponseAdapter =
+        await Moralis.EvmApi.nft.getWalletNFTs({
+          chain: '0x5',
+          address: this.preferences.getSelectedAddress(),
+        });
+      (this.addressesNfts[this.selectedAccount.address] = nftsResponse.result),
+        this.update({
+          ...this.state,
+          addressesNfts: this.addressesNfts,
+        });
+      this.hub.emit(B_TRACKER_EVENTS.NFTS_UPDATE, nftsResponse.result);
+    } catch (e) {
+      console.warn('error', e);
+      this.hub.emit(B_TRACKER_EVENTS.UPDATE_ERROR, e);
+    }
   }
 
-  startPolling() {
-    this.updateBalances();
-    this.poll();
+  async startBalancesTracking() {
+    Promise.all([this.updateBalances(), this.updateNftList()]);
   }
 
-  stopPolling() {
-    clearInterval(this.intervalId!);
-    this.intervalId = undefined;
+  getAddressesBalances() {
+    return this.addressesBalances[this.selectedAccount.address];
   }
+
+  // poll() {
+  //   this.intervalId && this.stopPolling();
+  //   this.intervalId = setInterval(() => {
+  //     this.updateBalances();
+  //   }, 60000);
+  // }
+
+  // startPolling() {
+  //   this.updateBalances();
+  //   this.poll();
+  // }
+
+  // stopPolling() {
+  //   clearInterval(this.intervalId!);
+  //   this.intervalId = undefined;
+  // }
 }

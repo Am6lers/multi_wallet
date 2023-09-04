@@ -17,7 +17,7 @@ import {
   POLYGON_CHAIN_ID,
 } from '@constants/network';
 import { Addresses } from '../keyring';
-import { DEFAULT_TOKEN } from '@constants/asset';
+import { DEFAULT_TOKEN, NATIVE_TOKEN_ADDRESS } from '@constants/asset';
 
 export interface Asset {
   address: string;
@@ -50,6 +50,7 @@ export class AccountAssetController extends BaseController<
   BaseConfig,
   AccountAssetState
 > {
+  name = 'AccountAssetController';
   private _keyrings: CipherKeyringController;
   private _preferences: CipherPreferencesController;
   private _network: CipherMobileNetworkController;
@@ -70,7 +71,6 @@ export class AccountAssetController extends BaseController<
     const tokenCollection = database.collections.get<Token>(TokenTable);
     const tokenList = await tokenCollection.query().fetch();
     if (tokenList.length <= 0) {
-      console.log('Token test tokenList:', tokenList.length);
       Promise.all([
         this.saveTokens(MAINNET_CHAIN_ID, ethereumTokens.TokenList),
         this.saveTokens(POLYGON_CHAIN_ID, polygonTokens.TokenList),
@@ -82,14 +82,18 @@ export class AccountAssetController extends BaseController<
   }
 
   async saveTokens(chainId: string, tokens: TokenInfo[]) {
-    console.log('Token test tokens:', tokens);
+    const tokenCollection = database.collections.get<Token>(TokenTable);
     try {
-      await database.action(async () => {
-        console.log('Token test tokens:', tokens);
-        const tokenCollection = database.collections.get<Token>(TokenTable);
+      database.write(async () => {
         await database.batch(
           ...tokens.map(token => {
-            console.log('Token test token:', token);
+            console.log('tokenList token:', {
+              chainId,
+              address: token.Address,
+              name: token.Name,
+              symbol: token.Symbol,
+              decimals: token.Decimals,
+            });
             return tokenCollection.prepareCreate((t: Token) => {
               t.chainId = chainId;
               t.address = token.Address;
@@ -100,19 +104,30 @@ export class AccountAssetController extends BaseController<
           }),
         );
       });
-    } catch (e) {}
+    } catch (e) {
+      console.warn('tokenList error', e);
+    }
   }
 
   async getAllTokensByChainId(chainId?: string) {
     const tokenCollection = database.collections.get('tokens');
     if (chainId) {
-      return await tokenCollection.query(Q.where('chain_id', chainId)).fetch();
+      return (
+        await tokenCollection.query(Q.where('chain_id', chainId)).fetch()
+      ).map(token => {
+        return token?._raw;
+      });
     } else {
-      return await tokenCollection.query().fetch();
+      return (await tokenCollection.query().fetch()).map(token => {
+        return token?._raw;
+      });
     }
   }
 
   async getTokensByAddrAndChainId(address: string, chainId: string) {
+    if (address === NATIVE_TOKEN_ADDRESS) {
+      return [DEFAULT_TOKEN.find(token => token.chainId === chainId)!];
+    }
     const tokenCollection = database.collections.get('tokens');
     return await tokenCollection
       .query(Q.and(Q.where('chain_id', chainId), Q.where('address', address)))
@@ -143,11 +158,12 @@ export class AccountAssetController extends BaseController<
       },
     };
     this.update({
+      ...this.state,
       activatedAssetsList: this.activatedAssetsList,
     });
   }
 
-  getActivatedAssets(address: string) {
-    return this.activatedAssetsList[address];
+  getActivatedAssets() {
+    return this.activatedAssetsList[this._preferences.getSelectedAddress()];
   }
 }

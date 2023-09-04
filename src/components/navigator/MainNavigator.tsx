@@ -1,9 +1,12 @@
 import React from 'react';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { useRecoilValue } from 'recoil';
-import { isExistAccountState } from '@store/atoms';
+import {
+  NativeStackNavigationProp,
+  createNativeStackNavigator,
+} from '@react-navigation/native-stack';
 import HomeTabNavigator from './HomeTabNavigator';
-import CredentialDetail from '../screens/home/wallet/CredentialDetail';
+import { ParamListBase, useNavigation } from '@react-navigation/native';
+import engine from '@core/engine';
+import { B_TRACKER_EVENTS } from '@scripts/controllers/balances';
 
 export interface LoginInfo {
   loginId: string;
@@ -21,13 +24,6 @@ const MainStackNavigator = () => {
       <Stack.Screen
         name="HomeTabNavigator"
         component={HomeTabNavigator}
-        options={{
-          animationTypeForReplace: 'push',
-        }}
-      />
-      <Stack.Screen
-        name="CredentialDetail"
-        component={CredentialDetail}
         options={{
           animationTypeForReplace: 'push',
         }}
