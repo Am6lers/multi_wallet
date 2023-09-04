@@ -64,7 +64,6 @@ export default class DeepLinkController extends BaseController<
   }
 
   utilizeSavedDeepLink() {
-    console.log('DL useSavedDeepLink', this.savedLink);
     if (this.savedLink !== undefined) {
       this.hub.emit(DEEPLINK_EVENT.RECIEVE_DEEPLINK_DATA, this.savedLink);
       this.savedLink = undefined;

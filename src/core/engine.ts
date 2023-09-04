@@ -35,7 +35,9 @@ import { addressesObjectToString } from '../utils/address';
 import { Mutex } from 'await-semaphore';
 import { MessageManagerState } from '@metamask/controllers/dist/message-manager/AbstractMessageManager';
 import AppStateController from '@scripts/controllers/app-state';
-import DeepLinkController from '@scripts/controllers/deepLink';
+import DeepLinkController, {
+  DeepLinkControllerState,
+} from '@scripts/controllers/deepLink';
 import { cloneDeep } from 'lodash';
 import Web3 from 'web3';
 import {
@@ -58,7 +60,7 @@ export interface EngineContext {
   KeyringController: CipherKeyringController;
   NetworkController: CipherNetworkController;
   PreferencesController: CipherPreferencesController;
-  PhishingController: PhishingController;
+  // PhishingController: PhishingController;
   // TransactionController: CipherMobileTransactionController;
   MessageManager: MessageManager;
   PersonalMessageManager: PersonalMessageManager;
@@ -74,7 +76,7 @@ export type EngineInitState = {
   KeyringController?: KeyringState | undefined;
   NetworkController?: NetworkControllerState | undefined;
   PreferencesController?: PreferencesState | undefined;
-  PhishingController?: PhishingState | undefined;
+  // PhishingController?: PhishingState | undefined;
   // TransactionController?: TransactionState | undefined;
   MessageManager?: MessageManagerState<any> | undefined;
   PersonalMessageManager?: undefined;
@@ -82,7 +84,7 @@ export type EngineInitState = {
   ApprovalController?: ApprovalControllerState | undefined;
   // GasFeeController?: GasFeeController | undefined;
   // EncryptionController?: EncryptionControlState | undefined;
-  DeepLinkController?: DeepLinkController | undefined;
+  DeepLinkController?: DeepLinkControllerState | undefined;
   BalanceTrackingController?: BalanceTrackerState | undefined;
   AccountAssetController?: AccountAssetState | undefined;
 };
@@ -95,7 +97,7 @@ export type Controllers = [
   CipherKeyringController,
   CipherNetworkController,
   CipherPreferencesController,
-  PhishingController,
+  // PhishingController,
   // CipherMobileTransactionController,
   MessageManager,
   PersonalMessageManager,
@@ -111,7 +113,7 @@ export const controllerNames: EngineContextNames[] = [
   'KeyringController',
   'NetworkController',
   'PreferencesController',
-  'PhishingController',
+  // 'PhishingController',
   // 'TransactionController',
   'MessageManager',
   'PersonalMessageManager',
@@ -147,7 +149,7 @@ class Engine {
     KeyringController: {} as CipherKeyringController,
     NetworkController: {} as CipherNetworkController,
     PreferencesController: {} as CipherPreferencesController,
-    PhishingController: {} as PhishingController,
+    // PhishingController: {} as PhishingController,
     // TransactionController: {} as CipherMobileTransactionController,
     MessageManager: {} as MessageManager,
     PersonalMessageManager: {} as PersonalMessageManager,
@@ -171,6 +173,7 @@ class Engine {
    * Creates a CoreController instance
    */
   constructor(initialState: EngineInitState = {}) {
+    console.log('activatedAssetsList initialState: ', initialState);
     if (!Engine.instance) {
       const keyringController = new CipherKeyringController({
         initState: initialState?.KeyringController ?? undefined,
@@ -217,12 +220,12 @@ class Engine {
       // });
 
       const deepLinkController = new DeepLinkController({
-        initState: {},
+        initState: initialState.DeepLinkController,
         keyringController: keyringController,
       });
 
       const accountAssetController = new AccountAssetController({
-        initState: initialState?.AccountAssetController,
+        initState: initialState.AccountAssetController,
         keyringController: keyringController,
         preferencesController: preferencesController,
         networkController: networkController,
@@ -243,7 +246,7 @@ class Engine {
         keyringController,
         networkController,
         preferencesController,
-        new PhishingController(),
+        // new PhishingController(),
         // transactionController,
         new MessageManager(),
         new PersonalMessageManager(),
@@ -283,16 +286,16 @@ class Engine {
         KeyringController: controllers[0],
         NetworkController: controllers[1],
         PreferencesController: controllers[2],
-        PhishingController: controllers[3],
+        // PhishingController: controllers[3],
         // TransactionController: controllers[4],
-        MessageManager: controllers[4],
-        PersonalMessageManager: controllers[5],
-        TypedMessageManager: controllers[6],
-        ApprovalController: controllers[7],
+        MessageManager: controllers[3],
+        PersonalMessageManager: controllers[4],
+        TypedMessageManager: controllers[5],
+        ApprovalController: controllers[6],
         // EncryptionController: controllers[8],
-        DeepLinkController: controllers[8],
-        BalanceTrackingController: controllers[9],
-        AccountAssetController: controllers[10],
+        DeepLinkController: controllers[7],
+        BalanceTrackingController: controllers[8],
+        AccountAssetController: controllers[9],
       };
 
       const {
@@ -657,7 +660,6 @@ class Engine {
           name: entry.name,
           isNative,
         };
-        console.log('preferences tokenMeta', tokenMeta);
 
         addAccountTokens[walletAddress][entry.chainId].push(tokenMeta);
         if (!isNative) {
@@ -669,7 +671,6 @@ class Engine {
       //   newStateNativeCoinInvisible[evmAddress] = defaultInvisibleCoin;
       // }
     });
-    console.log('preferences addAccountTokens', addAccountTokens);
     PreferencesController.update({
       accountTokens: addAccountTokens,
       // assetImages,
@@ -879,7 +880,7 @@ export default {
       KeyringController,
       NetworkController,
       PreferencesController,
-      PhishingController,
+      // PhishingController,
       // TransactionController,
       MessageManager,
       PersonalMessageManager,
@@ -904,7 +905,7 @@ export default {
       KeyringController,
       NetworkController,
       PreferencesController,
-      PhishingController,
+      // PhishingController,
       // TransactionController,
       MessageManager,
       PersonalMessageManager,
@@ -974,7 +975,6 @@ export default {
     return instance.refreshTransactionHistory(forceCheck);
   },
   init(state: {} | undefined) {
-    console.log('engine state', state);
     instance = new Engine(state);
     Object.freeze(instance);
     return instance;

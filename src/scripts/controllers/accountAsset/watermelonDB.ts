@@ -22,6 +22,7 @@ export default class Token extends Model {
   @field('name') name!: string;
   @field('symbol') symbol!: string;
   @field('decimals') decimals!: number;
+  // static columns = ['chain_id', 'address', 'name', 'symbol', 'decimals'];
 }
 
 export const mySchema = appSchema({
@@ -32,7 +33,6 @@ export const mySchema = appSchema({
       columns: [
         { name: 'chain_id', type: 'string' },
         { name: 'address', type: 'string' },
-        { name: 'address', type: 'string' },
         { name: 'name', type: 'string' },
         { name: 'symbol', type: 'string' },
         { name: 'decimals', type: 'number' },
@@ -42,7 +42,8 @@ export const mySchema = appSchema({
 });
 
 const adapter = new SQLiteAdapter({
-  dbName: TokenInfos,
+  // dbName: TokenInfos,
+  dbName: TokenTable,
   schema: mySchema,
 });
 

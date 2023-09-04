@@ -11,9 +11,8 @@ import MMKVStorage from '@utils/storage/mmkvStorage';
 import SecureStorage from '@utils/storage/SecureStorage';
 import { Addresses, DisplayKeyring } from '@scripts/controllers/keyring';
 import WalletCard from '@components/organism/home/WalletCard';
-import TokenList from '@components/organism/home/TokenList';
-import NftList from '@components/organism/home/NftList';
 import AssetView from './AssetView';
+import TokenList from '@components/organism/home/TokenListCard';
 
 const Tab = createBottomTabNavigator();
 
@@ -49,8 +48,7 @@ const Wallet = () => {
         <Header />
         <RenderWalletCard />
         <AssetView />
-        {/* <TokenList />
-        <NftList /> */}
+        <TokenList />
       </View>
     </View>
   );

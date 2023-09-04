@@ -449,7 +449,6 @@ export default class EncryptionController extends BaseController<
 
   // 민감 정보 암호화
   encryptSensitiveInfo(sensitive: string) {
-    console.log('sensitive', sensitive);
     const cipher = Crypto.AES.encrypt(
       sensitive,
       Crypto.enc.Utf8.parse(this._randomKey),

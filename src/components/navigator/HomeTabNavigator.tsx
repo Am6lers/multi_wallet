@@ -9,6 +9,7 @@ import engine from '@core/engine';
 import { DisplayKeyring } from '@scripts/controllers/keyring';
 import { useRecoilState } from 'recoil';
 import { superMasterName } from '@store/atoms';
+import { B_TRACKER_EVENTS } from '@scripts/controllers/balances';
 
 export type Props = {};
 
@@ -22,16 +23,14 @@ const HomeTabNavigator = () => {
       PreferencesController,
       BalanceTrackingController,
     } = engine.context;
-    BalanceTrackingController.startPolling();
     const superAccount = KeyringController.getAllKeyrings().find(
       (keyring: DisplayKeyring) => keyring.superMaster == true,
     );
     const account = `${superAccount.accounts.evm}/${superAccount.accounts.btc}`;
     const identity = PreferencesController.getAccountIdentity(account);
     setSuperMasterName(identity.name);
-    return () => {
-      BalanceTrackingController.stopPolling();
-    };
+    BalanceTrackingController.hub.emit(B_TRACKER_EVENTS.UPDATE_BALANCES);
+    return () => {};
   }, []);
 
   return (

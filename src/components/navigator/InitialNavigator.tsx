@@ -35,10 +35,6 @@ const InitialStackNavigator = () => {
     if (
       has(state, ['engine', 'backgroundState', 'KeyringController', 'vault'])
     ) {
-      console.log(
-        'Vault',
-        state.engine.backgroundState.KeyringController.vault,
-      );
       return !!state.engine.backgroundState.KeyringController.vault;
     } else {
       return false;

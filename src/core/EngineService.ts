@@ -1,3 +1,4 @@
+import { Logger } from '@utils/Logger';
 import UntypedEngine from './engine';
 
 const UPDATE_BG_STATE_KEY = 'UPDATE_BG_STATE';
@@ -16,7 +17,7 @@ class EngineService {
    * @param store - Redux store
    */
   initalizeEngine = (store: any) => {
-    console.log(
+    Logger.log(
       "store EngineService's initalizeEngine called",
       store.getState().engine.backgroundState,
     );
@@ -29,7 +30,7 @@ class EngineService {
       { name: 'KeyringController' },
       { name: 'NetworkController' },
       { name: 'PreferencesController' },
-      { name: 'PhishingController' },
+      // { name: 'PhishingController' },
       { name: 'MessageManager' },
       { name: 'PersonalMessageManager' },
       { name: 'TypedMessageManager' },
@@ -38,6 +39,8 @@ class EngineService {
         key: `${Engine.context.ApprovalController.name}:stateChange`,
       },
       { name: 'DeepLinkController' },
+      { name: 'BalanceTrackingController' },
+      { name: 'AccountAssetController' },
     ];
 
     Engine?.datamodel?.subscribe?.(() => {
