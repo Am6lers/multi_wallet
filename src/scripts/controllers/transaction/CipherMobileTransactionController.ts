@@ -2,12 +2,12 @@ import {
   MAINNET,
   Network,
   ETH_INFURA_PROVIDER_CHAIN_ID,
+  isCustomNetwork,
 } from '@constants/network';
 import { EventEmitter } from 'events';
 import { addHexPrefix, bufferToHex, BN, isHexString } from 'ethereumjs-util';
 import { ethErrors } from 'eth-rpc-errors';
 import MethodRegistry from 'eth-method-registry';
-import EthQuery from '@utils/eth-query/index';
 import Common from '@ethereumjs/common';
 import { TransactionFactory, TypedTransaction } from '@ethereumjs/tx';
 import { v1 as random } from 'uuid';
@@ -19,7 +19,6 @@ import {
   Listener,
 } from '@metamask/controllers';
 import { BNToHex } from '../../../utils/number';
-import { isCustomNetwork } from '@utils/network';
 import {
   fractionBN,
   getIncreasedPriceFromExisting,
@@ -36,34 +35,18 @@ import {
   validateMinimumIncrease,
   validateTransaction,
 } from '@metamask/controllers/dist/util';
-import { NetworkControllerState } from '../network';
-import Web3ProviderEngine from '../network/lib/web3-provider-engine';
 // import Logger from '@common/Logger';
-import { NetworkState } from '../network/model/network';
+import { NetworkState } from '../network';
 import Web3 from 'web3';
 import { orderBy } from 'lodash';
-import CipherPreferencesController from '../preferences';
+import BiportPreferencesController from '../preferences';
+import EthQuery from '@utils/eth-query';
+import { NetworkControllerState } from '../network';
+import Web3ProviderEngine from '../network/utils';
 
 const HARDFORK = 'london';
 
 export const ESTIMATE_GAS_ERROR = 'eth_estimateGas rpc method error';
-
-export interface TransactionConfig {
-  from?: string;
-  to?: string;
-  value?: number | string;
-  gas?: number | string;
-  gasPrice?: number | string;
-  data?: string;
-  nonce?: number | string;
-  chainId?: number;
-  common?: Common;
-  chain?: string;
-  hardfork?: string;
-  gasLimit?: string;
-  maxPriorityFeePerGas?: number | string;
-  maxFeePerGas?: number | string;
-}
 
 /**
  * @type Result
@@ -173,7 +156,7 @@ type TransactionMetaBase = {
   blockNumber?: string;
   deviceConfirmedOn?: WalletDevice;
   verifiedOnBlockchain?: boolean;
-  _cipherchainid?: string;
+  _biportchainid?: string;
   swapHistoryId?: number;
   canceledConfirmed?: boolean;
   canceledTransactionHash?: string;
@@ -437,7 +420,7 @@ export class CipherMobileTransactionController extends BaseController<
     };
   };
 
-  private _preferences: CipherPreferencesController;
+  private _preferences: BiportPreferencesController;
 
   /**
    * EventEmitter instance used to listen to specific transactional events
@@ -481,7 +464,7 @@ export class CipherMobileTransactionController extends BaseController<
       ) => void;
       getProvider: () => any;
       getNetworkByChainId: (chainId: string) => NetworkState | null;
-      preferencesController: CipherPreferencesController;
+      preferencesController: BiportPreferencesController;
     },
     config?: Partial<TransactionConfig>,
     state?: Partial<TransactionState>,
@@ -521,6 +504,7 @@ export class CipherMobileTransactionController extends BaseController<
    */
   async poll(interval?: number): Promise<void> {
     interval && this.configure({ interval }, false, false);
+    //@ts-ignore
     this.handle && clearTimeout(this.handle);
     await safelyExecute(() => this.queryTransactionStatuses());
     this.handle = setTimeout(() => {
@@ -562,21 +546,21 @@ export class CipherMobileTransactionController extends BaseController<
    * @param transaction - The transaction object to add.
    * @param origin - The domain origin to append to the generated TransactionMeta.
    * @param deviceConfirmedOn - An enum to indicate what device the transaction was confirmed to append to the generated TransactionMeta.
-   * @param cipherChainId - muti provider chainId
+   * @param biportChainId - muti provider chainId
    * @returns Object containing a promise resolving to the transaction hash if approved.
    */
   async addTransaction(
     transaction: Transaction,
     origin?: string,
     deviceConfirmedOn?: WalletDevice,
-    cipherChainId?: string,
+    biportChainId?: string,
     opts?: AddTxOpts,
   ): Promise<Result> {
     console.log(
       'addTransaction -------',
       transaction,
       origin,
-      cipherChainId,
+      biportChainId,
       opts,
     );
     const { chainId } = this.getNetworkState();
@@ -584,7 +568,7 @@ export class CipherMobileTransactionController extends BaseController<
     transaction = normalizeTransaction(transaction);
     console.log('addTransaction ---?', transaction);
     validateTransaction(transaction);
-    const currentChainId = cipherChainId ? cipherChainId : chainId;
+    const currentChainId = biportChainId ? biportChainId : chainId;
     console.log('addTransaction - 0');
     const transactionMeta: TransactionMeta = {
       id: random(),
@@ -596,7 +580,7 @@ export class CipherMobileTransactionController extends BaseController<
       transaction,
       deviceConfirmedOn,
       verifiedOnBlockchain: false,
-      _cipherchainid: currentChainId,
+      _biportchainid: currentChainId,
     };
     console.log('addTransaction - 1');
     if (opts && opts?.swapHistoryId) {
@@ -677,6 +661,7 @@ export class CipherMobileTransactionController extends BaseController<
     currentChainId: string,
   ): TypedTransaction {
     return TransactionFactory.fromTxData(txParams, {
+      //@ts-ignore
       common: this.getCommonConfiguration(currentChainId),
       freeze: false,
     });
@@ -710,6 +695,7 @@ export class CipherMobileTransactionController extends BaseController<
     if (!name) {
       throw new Error('No network name.');
     }
+    //@ts-ignore
     if (ETH_INFURA_PROVIDER_CHAIN_ID.includes(currentChainId)) {
       return new Common({
         chain: newNetworkId, // TODO: test
@@ -730,10 +716,10 @@ export class CipherMobileTransactionController extends BaseController<
   getTxChainId(controllerChainId: string, txMeta: TransactionMeta): string {
     let currentChainId = controllerChainId;
     if (
-      Reflect.has(txMeta, '_cipherchainid') &&
-      typeof txMeta._cipherchainid === 'string'
+      Reflect.has(txMeta, '_biportchainid') &&
+      typeof txMeta._biportchainid === 'string'
     ) {
-      currentChainId = txMeta._cipherchainid;
+      currentChainId = txMeta._biportchainid;
     }
     return currentChainId;
   }
@@ -801,7 +787,7 @@ export class CipherMobileTransactionController extends BaseController<
       const isEIP1559TxData = isEIP1559Transaction(transactionMeta.transaction);
 
       const latestBlock = await query(
-        this.ethQuery.setOpts({ cipherChainId: currentChainId }),
+        this.ethQuery.setOpts({ biportChainId: currentChainId }),
         'getBlockByNumber',
         ['latest', false],
       );
@@ -854,7 +840,7 @@ export class CipherMobileTransactionController extends BaseController<
       console.log('approveTransaction - 7');
       let transactionHash;
       transactionHash = await query(
-        this.ethQuery.setOpts({ cipherChainId: currentChainId }),
+        this.ethQuery.setOpts({ biportChainId: currentChainId }),
         'sendRawTransaction',
         [rawTransaction],
       );
@@ -997,7 +983,7 @@ export class CipherMobileTransactionController extends BaseController<
     );
     const rawTransaction = bufferToHex(signedTx.serialize());
     const canceledTxHash = await query(
-      this.ethQuery.setOpts({ cipherChainId: txChainId }),
+      this.ethQuery.setOpts({ biportChainId: txChainId }),
       'sendRawTransaction',
       [rawTransaction],
     );
@@ -1105,7 +1091,7 @@ export class CipherMobileTransactionController extends BaseController<
     );
     const rawTransaction = bufferToHex(signedTx.serialize());
     const transactionHash = await query(
-      this.ethQuery.setOpts({ cipherChainId: txChainId }),
+      this.ethQuery.setOpts({ biportChainId: txChainId }),
       'sendRawTransaction',
       [rawTransaction],
     );
@@ -1144,7 +1130,7 @@ export class CipherMobileTransactionController extends BaseController<
    * @param transaction - The transaction to estimate gas for.
    * @returns The gas and gas price.
    */
-  async estimateGas(transaction: Transaction, cipherChainId: string) {
+  async estimateGas(transaction: Transaction, biportChainId: string) {
     const estimatedTransaction = { ...transaction };
     const {
       gas,
@@ -1156,17 +1142,17 @@ export class CipherMobileTransactionController extends BaseController<
     const gasPrice =
       typeof providedGasPrice === 'undefined'
         ? await query(
-            this.ethQuery.setOpts({ cipherChainId: cipherChainId }),
+            this.ethQuery.setOpts({ biportChainId: biportChainId }),
             'gasPrice',
           )
         : providedGasPrice;
-    const isCustomChain = isCustomNetwork(cipherChainId);
+    const isCustomChain = isCustomNetwork(biportChainId);
     // 1. If gas is already defined on the transaction, use it
     if (typeof gas !== 'undefined') {
       return { gas, gasPrice };
     }
     const latestBlock = await query(
-      this.ethQuery.setOpts({ cipherChainId: cipherChainId }),
+      this.ethQuery.setOpts({ biportChainId: biportChainId }),
       'getBlockByNumber',
       ['latest', false],
     );
@@ -1176,7 +1162,7 @@ export class CipherMobileTransactionController extends BaseController<
     /* istanbul ignore next */
     const code = to
       ? await query(
-          this.ethQuery.setOpts({ cipherChainId: cipherChainId }),
+          this.ethQuery.setOpts({ biportChainId: biportChainId }),
           'getCode',
           [to],
         )
@@ -1201,7 +1187,7 @@ export class CipherMobileTransactionController extends BaseController<
     let estimateGasError: string | undefined;
     try {
       gasHex = await query(
-        this.ethQuery.setOpts({ cipherChainId: cipherChainId }),
+        this.ethQuery.setOpts({ biportChainId: biportChainId }),
         'estimateGas',
         [estimatedTransaction],
       );
@@ -1254,7 +1240,7 @@ export class CipherMobileTransactionController extends BaseController<
           if (
             !meta.verifiedOnBlockchain &&
             meta.chainId &&
-            meta._cipherchainid &&
+            meta._biportchainid &&
             meta.transaction.to &&
             isSendTx
           ) {
@@ -1426,7 +1412,7 @@ export class CipherMobileTransactionController extends BaseController<
           (!tx.transaction.data || tx.transaction.data !== '0x')
         ) {
           const code = await query(
-            this.ethQuery.setOpts({ cipherChainId: tx.chainId }),
+            this.ethQuery.setOpts({ biportChainId: tx.chainId }),
             'getCode',
             [tx.transaction.to],
           );
@@ -1532,7 +1518,7 @@ export class CipherMobileTransactionController extends BaseController<
     switch (status) {
       case TransactionStatus.confirmed:
         const txReceipt = await query(
-          this.ethQuery.setOpts({ cipherChainId: txChainId }),
+          this.ethQuery.setOpts({ biportChainId: txChainId }),
           'getTransactionReceipt',
           [transactionHash],
         );
@@ -1557,7 +1543,7 @@ export class CipherMobileTransactionController extends BaseController<
         return [meta, true];
       case TransactionStatus.submitted:
         const txObj = await query(
-          this.ethQuery.setOpts({ cipherChainId: txChainId }),
+          this.ethQuery.setOpts({ biportChainId: txChainId }),
           'getTransactionByHash',
           [transactionHash],
         );
@@ -1607,7 +1593,7 @@ export class CipherMobileTransactionController extends BaseController<
       case TransactionStatus.cancelled:
         if (!meta?.canceledConfirmed && meta?.canceledTransactionHash) {
           const txReceiptForCanceled = await query(
-            this.ethQuery.setOpts({ cipherChainId: txChainId }),
+            this.ethQuery.setOpts({ biportChainId: txChainId }),
             'getTransactionReceipt',
             [meta.canceledTransactionHash],
           );
@@ -1630,7 +1616,7 @@ export class CipherMobileTransactionController extends BaseController<
             return [meta, true];
           } else {
             const originTxReceipt = await query(
-              this.ethQuery.setOpts({ cipherChainId: txChainId }),
+              this.ethQuery.setOpts({ biportChainId: txChainId }),
               'getTransactionReceipt',
               [meta.transactionHash],
             );
@@ -1677,7 +1663,7 @@ export class CipherMobileTransactionController extends BaseController<
     txChainId: string,
   ): Promise<boolean> {
     const txReceipt = await query(
-      this.ethQuery.setOpts({ cipherChainId: txChainId }),
+      this.ethQuery.setOpts({ biportChainId: txChainId }),
       'getTransactionReceipt',
       [txHash],
     );
@@ -1823,13 +1809,13 @@ export class CipherMobileTransactionController extends BaseController<
 
   async getHighestNonce(walletAddress: string, chainId: string) {
     const networkNonce = await query(
-      this.ethQuery.setOpts({ cipherChainId: chainId }),
+      this.ethQuery.setOpts({ biportChainId: chainId }),
       'getTransactionCount',
       [Web3.utils.toChecksumAddress(walletAddress), 'pending'],
     );
 
     const latestNonce = await query(
-      this.ethQuery.setOpts({ cipherChainId: chainId }),
+      this.ethQuery.setOpts({ biportChainId: chainId }),
       'getTransactionCount',
       [Web3.utils.toChecksumAddress(walletAddress), 'latest'],
     );
