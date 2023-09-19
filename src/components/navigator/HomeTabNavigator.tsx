@@ -1,5 +1,4 @@
 import React, { ReactElement, useCallback, useEffect, useMemo } from 'react';
-
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { View } from 'react-native-ui-lib';
 import Wallet from '@components/screens/home/wallet';
@@ -12,6 +11,7 @@ import { superMasterName } from '@store/atoms';
 import { B_TRACKER_EVENTS } from '@scripts/controllers/balances';
 import Friends from '../screens/home/friends';
 import Chat from '../screens/home/chat';
+import { ASSET_EVENTS } from '@scripts/controllers/accountAsset';
 
 export type Props = {};
 
@@ -24,6 +24,7 @@ const HomeTabNavigator = () => {
       KeyringController,
       PreferencesController,
       BalanceTrackingController,
+      AccountAssetController,
     } = engine.context;
     const superAccount = KeyringController.getAllKeyrings().find(
       (keyring: DisplayKeyring) => keyring.superMaster == true,
@@ -32,6 +33,7 @@ const HomeTabNavigator = () => {
     const identity = PreferencesController.getAccountIdentity(account);
     setSuperMasterName(identity.name);
     BalanceTrackingController.hub.emit(B_TRACKER_EVENTS.UPDATE_BALANCES);
+    AccountAssetController.hub.emit(ASSET_EVENTS.GET_PRICES);
     return () => {};
   }, []);
 

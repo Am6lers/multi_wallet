@@ -33,6 +33,7 @@ const WINDOW_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('screen').height;
 const BUTTON_S1 = 10;
 const PAGE_M1 = 20;
+const PAGE_M2 = 10;
 export const MILLISECOND = 1;
 export const SECOND = MILLISECOND * 1000;
 export const MINUTE = SECOND * 60;
@@ -63,4 +64,5 @@ export default {
   SCREEN_HEIGHT,
   BUTTON_S1,
   PAGE_M1,
+  PAGE_M2,
 };
