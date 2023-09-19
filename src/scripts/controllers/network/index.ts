@@ -21,7 +21,7 @@ import { PreferencesState } from '../preferences';
 import Web3ProviderEngine from './utils';
 import Constants from '@constants/app';
 
-interface NetworkState extends Network {
+export interface NetworkState extends Network {
   rpcPrefs?: any;
 }
 
@@ -65,6 +65,8 @@ interface MultiProviderUrls {
 
 type CustomRpcTargets = Record<string, NetworkState>;
 
+export type NetworkControllerState = BaseState & NetworkInitState;
+
 export interface BaseProviderParams {
   static: {
     eth_sendTransaction: <Payload>(
@@ -78,8 +80,6 @@ export interface BaseProviderParams {
   web3_clientVersion: string;
   getAccounts: (end: any, payload: any) => void;
 }
-
-export type NetworkControllerState = BaseState & NetworkInitState;
 
 export default class CipherMobileNetworkController extends BaseController<
   BaseConfig,
