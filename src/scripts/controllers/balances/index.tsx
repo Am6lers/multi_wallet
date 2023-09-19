@@ -9,12 +9,13 @@ import CipherMobileNetworkController from '../network';
 import { getContractAddress } from './lib/utils';
 import { BalanceMap } from 'eth-balance-checker/lib/common';
 import EventEmitter from 'events';
-import { AccountAssetController, Asset } from '../accountAsset';
+import { AccountAssetController, Asset, MoralisToken } from '../accountAsset';
 import {
   EvmNft,
   GetWalletNFTsResponseAdapter,
 } from '@moralisweb3/common-evm-utils';
 import Moralis from 'moralis/.';
+import BigNumber from 'bignumber.js';
 
 export const B_TRACKER_EVENTS = {
   BALANCES_UPDATED: 'balancesUpdate',
@@ -46,6 +47,21 @@ interface AddressesBalances {
 
 interface AddressesNfts {
   [address: string]: EvmNft[];
+}
+
+interface Token {
+  address: string;
+  decimals: number;
+  image: string;
+  iconUrl: string;
+  symbol: string;
+  name: string;
+  chainId: string;
+}
+
+export interface TokenData {
+  token: Token | MoralisToken;
+  balance: string;
 }
 
 export interface BalanceTrackerState extends BaseState {
@@ -113,7 +129,6 @@ export default class BalanceTrackingController extends BaseController<
     };
     this.activatedTokensByAddr = this._account.getActivatedAssets();
     this.startBalancesTracking();
-    // this.startPolling.bind(this)();
   }
 
   async updateBalances() {
@@ -124,8 +139,8 @@ export default class BalanceTrackingController extends BaseController<
       const selectedAddress = this.selectedAccount.address;
       //@ts-ignore
       const tokenInfos: DumyTokenInfos = this.activatedTokensByAddr;
-      const result = Object.entries(tokenInfos).map(
-        async ([chainId, tokenInfo]) => {
+      const result = await Promise.all(
+        Object.entries(tokenInfos).map(async ([chainId, tokenInfo]) => {
           let options = {
             contractAddress: getContractAddress(chainId),
           };
@@ -149,7 +164,7 @@ export default class BalanceTrackingController extends BaseController<
             });
             return { [chainId]: zeroBalances };
           }
-        },
+        }),
       );
       const balancesData: BalancesData = Object.assign({}, ...result);
       this.addressesBalances[selectedAddress] = balancesData;
@@ -191,20 +206,41 @@ export default class BalanceTrackingController extends BaseController<
     return this.addressesBalances[this.selectedAccount.address];
   }
 
-  // poll() {
-  //   this.intervalId && this.stopPolling();
-  //   this.intervalId = setInterval(() => {
-  //     this.updateBalances();
-  //   }, 60000);
-  // }
-
-  // startPolling() {
-  //   this.updateBalances();
-  //   this.poll();
-  // }
-
-  // stopPolling() {
-  //   clearInterval(this.intervalId!);
-  //   this.intervalId = undefined;
-  // }
+  async getTotalTokenData() {
+    const balanceData = this.getAddressesBalances();
+    const tokenPriceData = this._account.getTokenAndPriceDatas();
+    const data = (await Promise.all(
+      Object.entries(balanceData)?.map(async ([chainId, balances]) => {
+        const contract = Object.keys(balances)?.[0];
+        const token = (
+          await this._account.getTokensByAddrAndChainId(contract, chainId)
+        )?.[0] as Token;
+        if (token) {
+          const decimals = new BigNumber(10).pow(token.decimals);
+          const bigBalance = new BigNumber(balances[contract]);
+          const balance = bigBalance.isGreaterThan(0)
+            ? new BigNumber(balances[contract]).dividedBy(decimals).toFixed(6)
+            : '0';
+          const moralisToken = tokenPriceData[chainId].find(
+            value => value.tokenAddress.toLowerCase() === contract,
+          );
+          const holdPrice = moralisToken?.usdPrice.multipliedBy(balance);
+          return {
+            token: {
+              ...moralisToken,
+              tokenLogo: moralisToken?.tokenLogo ?? token.image,
+            },
+            balance: balance,
+            price: holdPrice?.isGreaterThan(0) ? holdPrice.toFixed(2) : '0',
+          };
+        }
+        return {
+          token: undefined,
+          balance: '0',
+          price: '0',
+        };
+      }),
+    )) as TokenData[];
+    return data;
+  }
 }
