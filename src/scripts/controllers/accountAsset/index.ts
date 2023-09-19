@@ -18,6 +18,27 @@ import {
 } from '@constants/network';
 import { Addresses } from '../keyring';
 import { DEFAULT_TOKEN, NATIVE_TOKEN_ADDRESS } from '@constants/asset';
+import { moralisApiUrl, nativepriceAPi } from './lib/apiOptions';
+import axios from 'axios';
+import Constants from '@constants/app';
+//@ts-ignore
+import { MORALIS_API_KEY } from '@env';
+import BigNumber from 'bignumber.js';
+import EventEmitter from 'events';
+import axiosClient from '@utils/axios';
+
+export const MoralisClient = axios.create({
+  timeout: Constants.REQUEST_TIMEOUT,
+  headers: {
+    accept: 'application/json',
+    'content-type': 'application/json',
+    'X-API-Key': MORALIS_API_KEY,
+  },
+});
+
+export const ASSET_EVENTS = {
+  PRICES_UPDATED: 'pricesUpdated',
+};
 
 export interface Asset {
   address: string;
@@ -35,8 +56,28 @@ interface ActivatedAssetList {
   };
 }
 
+export interface MoralisToken {
+  tokenName: string;
+  tokenSymbol: string;
+  tokenLogo: string;
+  usdPrice: BigNumber;
+  dayPercentChange: string;
+}
+
+interface MoralisTokenList {
+  [tokenAddress: string]: {
+    [chainId: string]: MoralisToken[];
+  };
+}
+
+interface TimeStampList {
+  [tokenAddress: string]: number;
+}
+
 export interface AccountAssetState extends BaseState {
   activatedAssetsList: ActivatedAssetList;
+  moralisTokenList: MoralisTokenList;
+  timeStampList: TimeStampList;
 }
 
 export interface AccountAssetOpts {
@@ -55,6 +96,10 @@ export class AccountAssetController extends BaseController<
   private _preferences: CipherPreferencesController;
   private _network: CipherMobileNetworkController;
   private activatedAssetsList: ActivatedAssetList = {};
+  private moralisTokenList: MoralisTokenList = {};
+  private timeStampList: TimeStampList = {};
+
+  hub = new EventEmitter();
 
   constructor(opts: AccountAssetOpts) {
     super(undefined, opts.initState ?? {});
@@ -62,9 +107,20 @@ export class AccountAssetController extends BaseController<
     this._preferences = opts.preferencesController;
     this._network = opts.networkController;
     this.activatedAssetsList = opts.initState?.activatedAssetsList ?? {};
+    this.moralisTokenList = opts.initState?.moralisTokenList ?? {};
+    this.timeStampList = opts.initState?.timeStampList ?? {};
     this.initialTokenInfos.bind(this)();
     this._keyrings.hub.on('newAccount', this.setDefaultTokens.bind(this));
     this.initialize();
+  }
+
+  fullUpdate() {
+    this.update({
+      ...this.state,
+      activatedAssetsList: this.activatedAssetsList,
+      moralisTokenList: this.moralisTokenList,
+      timeStampList: this.timeStampList,
+    });
   }
 
   async initialTokenInfos() {
@@ -157,13 +213,85 @@ export class AccountAssetController extends BaseController<
         ] as unknown as Asset[],
       },
     };
-    this.update({
-      ...this.state,
-      activatedAssetsList: this.activatedAssetsList,
-    });
+    this.fullUpdate();
+    await this.getCurrentPrices();
   }
 
   getActivatedAssets() {
     return this.activatedAssetsList[this._preferences.getSelectedAddress()];
+  }
+
+  async getCurrentPrices() {
+    const timestamp =
+      this.timeStampList[this._preferences.getSelectedAddress()];
+    if (timestamp && Date.now() - timestamp < 1000 * 60 * 5) {
+      this.hub.emit(
+        ASSET_EVENTS.PRICES_UPDATED,
+        this.moralisTokenList[this._preferences.getSelectedAddress()],
+      );
+      return;
+    }
+    const tokens = this.getActivatedAssets();
+    if (tokens) {
+      try {
+        const prices = await Promise.all(
+          Object.entries(tokens).map(async ([chainId, assets]) => {
+            const api = moralisApiUrl(chainId);
+            const tokenData = assets
+              .map(asset => {
+                return { token_address: asset.address };
+              })
+              .filter(token => token.token_address !== NATIVE_TOKEN_ADDRESS);
+            if (tokenData.length > 0) {
+              const result = await MoralisClient.post(
+                api,
+                JSON.stringify({ tokens: tokenData }),
+              );
+              if (result.data) {
+                console.log(
+                  'prices result',
+                  JSON.stringify({ tokens: tokenData }),
+                );
+                return {
+                  [chainId]: result.data.map((token: any) => {
+                    return {
+                      tokenName: token?.tokenName,
+                      tokenSymbol: token?.tokenSymbol,
+                      tokenLogo: token?.tokenLogo,
+                      usdPrice: new BigNumber(token?.usdPrice ?? 0),
+                      dayPercentChange: token?.['24hrPercentChange'],
+                    };
+                  }),
+                };
+              }
+              return { [chainId]: [] };
+            }
+            return { [chainId]: [] };
+          }),
+        );
+        const result = prices.reduce((acc, cur) => {
+          return { ...acc, ...cur };
+        });
+        const nativePrice = (await axiosClient.get(nativepriceAPi))?.data;
+        this.moralisTokenList = {
+          ...this.moralisTokenList,
+          [this._preferences.getSelectedAddress()]: {
+            ...result,
+            ['native']: nativePrice,
+          },
+        };
+        this.timeStampList = {
+          ...this.timeStampList,
+          [this._preferences.getSelectedAddress()]: Date.now(),
+        };
+        this.hub.emit(
+          ASSET_EVENTS.PRICES_UPDATED,
+          this.moralisTokenList[this._preferences.getSelectedAddress()],
+        );
+        this.fullUpdate();
+      } catch (e) {
+        console.log(e);
+      }
+    }
   }
 }

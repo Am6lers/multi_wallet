@@ -13,10 +13,13 @@ import { Addresses, DisplayKeyring } from '@scripts/controllers/keyring';
 import WalletCard from '@components/organism/home/WalletCard';
 import AssetView from './AssetView';
 import TokenList from '@components/organism/home/TokenListCard';
+import { moralisApiUrl } from '@scripts/controllers/accountAsset/lib/apiOptions';
+import { MoralisClient } from '@scripts/controllers/accountAsset';
 
 const Tab = createBottomTabNavigator();
 
 const Wallet = () => {
+  const { KeyringController } = Engine.context;
   const [accounts, setAccounts] = React.useState<Addresses[]>([]);
 
   useEffect(() => {
@@ -24,7 +27,6 @@ const Wallet = () => {
   }, []);
 
   const getAccountsInKeyrings = useCallback(async () => {
-    const { KeyringController } = Engine.context;
     const keyrings = KeyringController.getAllKeyrings();
     const accounts = keyrings.map(
       (keyring: DisplayKeyring) => keyring.accounts,

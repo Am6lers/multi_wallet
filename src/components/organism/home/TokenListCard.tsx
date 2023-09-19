@@ -4,6 +4,7 @@ import engine from '@core/engine';
 import { B_TRACKER_EVENTS, BalancesData } from '@scripts/controllers/balances';
 import { NATIVE_TOKEN_ADDRESS } from '@constants/asset';
 import { BalanceMap } from 'eth-balance-checker/lib/common';
+import { ASSET_EVENTS, MoralisToken } from '@scripts/controllers/accountAsset';
 
 interface TokenData {
   token: {
@@ -21,8 +22,11 @@ interface TokenData {
 const TokenListCard = () => {
   const { BalanceTrackingController, AccountAssetController } = engine.context;
   const [balanceList, setBalanceList] = useState<TokenData[]>([]);
+  const [prices, setPrices] = useState<Record<string, MoralisToken[]>>({});
 
   useEffect(() => {
+    AccountAssetController.hub.on(ASSET_EVENTS.PRICES_UPDATED, setPrices);
+    AccountAssetController.getCurrentPrices();
     getTokenData();
     BalanceTrackingController.hub.on(
       B_TRACKER_EVENTS.BALANCES_UPDATED,
@@ -32,6 +36,10 @@ const TokenListCard = () => {
       BalanceTrackingController.hub.removeListener(
         B_TRACKER_EVENTS.BALANCES_UPDATED,
         getTokenData,
+      );
+      AccountAssetController.hub.removeListener(
+        ASSET_EVENTS.PRICES_UPDATED,
+        setPrices,
       );
     };
   }, []);

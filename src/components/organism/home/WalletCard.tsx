@@ -6,9 +6,9 @@ import Colors from '@constants/colors';
 import { Addresses } from '@scripts/controllers/keyring';
 import engine from '@core/engine';
 import { Shadow } from 'react-native-shadow-2';
-import { CIPHER_LOGO } from '@assets/images/roots';
 import LottieView from 'lottie-react-native';
 import { LOTTIE_CARD_BG_2 } from '@assets/lottie/roots';
+import LinearGradient from 'react-native-linear-gradient';
 
 const WalletCard = ({ account }: { account: Addresses }) => {
   const { PreferencesController } = engine.context;
@@ -18,10 +18,6 @@ const WalletCard = ({ account }: { account: Addresses }) => {
   );
   const btcAccount = useMemo(
     () => `BTC: ${account?.btc?.slice(0, 5)}...${account?.btc?.slice(-5)}`,
-    [],
-  );
-  const DIDAccount = useMemo(
-    () => `DID:EVM:${account?.evm?.slice(0, 5)}...${account?.evm?.slice(-5)}`,
     [],
   );
   const accountName = useMemo(
@@ -34,16 +30,20 @@ const WalletCard = ({ account }: { account: Addresses }) => {
 
   return (
     <Shadow offset={[0, 4]} distance={5} style={styles.shadow}>
-      <View style={styles.card}>
-        <Text text65BO>{accountName}</Text>
-        <Text text90BL color={Colors.Gray}>
+      <LinearGradient
+        start={{ x: 0.0, y: 0.25 }}
+        end={{ x: 0.5, y: 1.0 }}
+        colors={['#B260B4', '#5F5BE2']}
+        style={styles.card}
+      >
+        <Text text65BO color={Colors.White}>
+          {accountName}
+        </Text>
+        <Text text90BL color={Colors.White}>
           {evmAccount}
         </Text>
-        {/* <Text text90BL color={Colors.Gray}>
+        <Text text90BL color={Colors.White}>
           {btcAccount}
-        </Text> */}
-        <Text text90BL color={Colors.Gray}>
-          {DIDAccount}
         </Text>
         <LottieView
           source={LOTTIE_CARD_BG_2}
@@ -51,7 +51,7 @@ const WalletCard = ({ account }: { account: Addresses }) => {
           style={styles.lottie}
           resizeMode="contain"
         />
-      </View>
+      </LinearGradient>
     </Shadow>
   );
 };
