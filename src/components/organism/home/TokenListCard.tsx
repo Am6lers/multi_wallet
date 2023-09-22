@@ -1,19 +1,18 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { View } from 'react-native-ui-lib';
+import { BorderRadiuses, View } from 'react-native-ui-lib';
 import engine from '@core/engine';
 import {
   B_TRACKER_EVENTS,
   BalancesData,
   TokenData,
 } from '@scripts/controllers/balances';
-import { ASSET_EVENTS, MoralisToken } from '@scripts/controllers/accountAsset';
+import { ASSET_EVENTS } from '@scripts/controllers/accountAsset';
 import TokenListItem from '@components/atoms/TokenListItem';
 import Animated from 'react-native-reanimated';
-import BigNumber from 'bignumber.js';
 import { Shadow } from 'react-native-shadow-2';
 import { StyleSheet } from 'react-native';
 import Colors from '@constants/colors';
-import { toChecksumHexAddress } from '@metamask/controllers/dist/util';
+import ListHeader from '@components/atoms/ListHeader';
 
 const TokenListCard = () => {
   const { BalanceTrackingController, AccountAssetController } = engine.context;
@@ -46,9 +45,11 @@ const TokenListCard = () => {
   return (
     <Shadow offset={[0, 4]} distance={5} style={styles.shadow}>
       <Animated.FlatList
+        scrollEnabled={false}
         style={styles.flatlist}
         data={balanceList}
         renderItem={TokenListItem}
+        ListHeaderComponent={ListHeader}
       />
     </Shadow>
   );
@@ -56,12 +57,12 @@ const TokenListCard = () => {
 
 const styles = StyleSheet.create({
   shadow: {
-    borderRadius: 20,
+    borderRadius: BorderRadiuses.br60,
     width: '100%',
   },
   flatlist: {
     backgroundColor: Colors.White,
-    borderRadius: 20,
+    borderRadius: BorderRadiuses.br60,
   },
 });
 

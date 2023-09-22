@@ -31,6 +31,7 @@ export type polygonChainId = '0x89';
 export type polygonTestChainId = '0x13881';
 export type bifrostChainId = '0xbfc';
 export type bifrostTestChainId = '0xbfc0';
+export type skaleChainId = '0x50877ed6';
 
 // Keys
 export const ROPSTEN = 'ropsten';
@@ -50,6 +51,7 @@ export const POLYGON = 'polygon-mainnet';
 export const POLYGON_MUMBAI = 'polygon-mumbai';
 export const BIFROST = 'bifrost';
 export const BIFROST_TEST = 'bifrosttest1';
+export const SKALE = 'skale';
 
 export const MAINNET_NETWORK_ID = '1';
 export const ROPSTEN_NETWORK_ID = '3';
@@ -68,6 +70,7 @@ export const POLYGON_NETWORK_ID = '137';
 export const POLYGON_MUMBAI_NETWORK_ID = '80001';
 export const BIFROST_NETWORK_ID = '3068';
 export const BIFROST_TEST_NETWORK_ID = '49088';
+export const SKALE_NETWORK_ID = '1351057110';
 
 // internal bitcoin chain id
 export const INTERNALLY_USED_BITCOIN_CHAIN_ID = '0x0';
@@ -91,6 +94,7 @@ export const POLYGON_CHAIN_ID: polygonChainId = '0x89';
 export const POLYGON_MUMBAI_CHAIN_ID: polygonTestChainId = '0x13881';
 export const BIFROST_CHAIN_ID: bifrostChainId = '0xbfc';
 export const BIFROST_TEST_CHAIN_ID: bifrostTestChainId = '0xbfc0';
+export const SKALE_CHAIN_ID: skaleChainId = '0x50877ed6';
 
 export type ChainId =
   | mainnetChainId
@@ -109,7 +113,8 @@ export type ChainId =
   | polygonChainId
   | polygonTestChainId
   | bifrostChainId
-  | bifrostTestChainId;
+  | bifrostTestChainId
+  | skaleChainId;
 
 /**
  * The largest possible chain ID we can handle.
@@ -133,6 +138,7 @@ export const POLYGON_DISPLAY_NAME = 'Polygon network';
 export const POLYGON_MUMBAI_DISPLAY_NAME = 'Polygon Mumbai Test';
 export const BIFROST_DISPLAY_NAME = 'Bifrost network';
 export const BIFROST_TEST_DISPLAY_NAME = 'Bifrost Testnet';
+export const SKALE_DISPLAY_NAME = 'Skale network';
 
 // mainnet image urls
 export const NetworkImages = {
@@ -146,6 +152,8 @@ export const NetworkImages = {
   polygon:
     'https://raw.githubusercontent.com/bifrost-platform/AssetInfo/master/Networks/polygon/image.png',
   bifrost:
+    'https://raw.githubusercontent.com/bifrost-platform/AssetInfo/master/Networks/bifrost/image.png',
+  skale:
     'https://raw.githubusercontent.com/bifrost-platform/AssetInfo/master/Networks/bifrost/image.png',
 };
 
@@ -233,6 +241,8 @@ export const Icons = (chainId: string, address: string) => {
     network = 'bifrost';
   } else if (chainId === BIFROST_TEST_CHAIN_ID) {
     network = 'bifrosttest1';
+  } else if (chainId === SKALE_CHAIN_ID) {
+    network = 'skale';
   }
   return `https://raw.githubusercontent.com/bifrost-platform/AssetInfo/master/Assets/${network}/tokens/images/128/${address}.png`;
 };
@@ -367,6 +377,8 @@ export const getRpcUrl = (network: string) => {
     url = 'https://polygon.llamarpc.com';
   } else if (GOERLI === network) {
     url = 'https://ethereum-goerli.publicnode.com';
+  } else if (SKALE === network) {
+    url = 'https://staging-v3.skalenodes.com/v1/staging-fast-active-bellatrix';
   } else {
     // url = `https://${network}.infura.io/v3/${INFURA_PROJECT_ID}`;
     url = 'https://eth.llamarpc.com';
@@ -386,6 +398,8 @@ export const getWsUrl = (network: string) => {
     url = 'wss://public-node-api.klaytnapi.com/v1/cypress/ws';
   } else if (KLAYTN_BAOBAB === network) {
     url = 'wss://public-node-api.klaytnapi.com/v1/baobab/ws';
+  } else if (SKALE === network) {
+    url = 'wss://staging-v3.skalenodes.com/v1/ws/staging-fast-active-bellatrix';
   }
   // TODO: bifrost, BSC node 확인
   return url;
@@ -407,6 +421,7 @@ export const POLYGON_RPC_URL = getRpcUrl(POLYGON);
 export const POLYGON_MUMBAI_RPC_URL = getRpcUrl(POLYGON_MUMBAI);
 export const BIFROST_RPC_URL = getRpcUrl(BIFROST);
 export const BIFROST_TEST_RPC_URL = getRpcUrl(BIFROST_TEST);
+export const SKALE_RPC_URL = getRpcUrl(SKALE);
 
 export const MAINNET_WS_URL = getWsUrl(MAINNET);
 export const GOERLI_WS_URL = getWsUrl(GOERLI);
@@ -414,6 +429,7 @@ export const AVAX_WS_URL = getWsUrl(AVAX);
 export const AVAX_TEST_WS_URL = getWsUrl(AVAXTEST);
 export const KLAYTN_CYPRESS_WS_URL = getWsUrl(KLAYTN_CYPRESS);
 export const KLAYTN_BAOBAB_WS_URL = getWsUrl(KLAYTN_BAOBAB);
+export const SKALE_WS_URL = getWsUrl(SKALE);
 
 export const ETH_SYMBOL = 'ETH';
 export const WETH_SYMBOL = 'WETH';
@@ -423,6 +439,7 @@ export const MATIC_SYMBOL = 'MATIC';
 export const AVAX_SYMBOL = 'AVAX';
 export const KLAY_SYMBOL = 'KLAY';
 export const BIFROST_SYMBOL = 'BFC';
+export const SKALE_SYMBOL = 'SKL';
 
 export const ETH_TOKEN_IMAGE_URL = getNativeCoinIcons(MAINNET_CHAIN_ID);
 export const TEST_ETH_TOKEN_IMAGE_URL = getNativeCoinIcons(ROPSTEN_CHAIN_ID);
@@ -563,6 +580,17 @@ export const MAIN_NETWORKS_MAP: { [key: string]: Network } = {
     logo: NetworkImages.polygon,
     coinType: 60,
     color: '#8247E5',
+  },
+  [SKALE]: {
+    key: SKALE,
+    name: SKALE_DISPLAY_NAME,
+    rpcTarget: SKALE_RPC_URL,
+    chainId: SKALE_CHAIN_ID,
+    networkId: SKALE_NETWORK_ID,
+    ticker: SKALE_SYMBOL,
+    logo: NetworkImages.polygon,
+    coinType: 60,
+    color: 'black',
   },
 };
 

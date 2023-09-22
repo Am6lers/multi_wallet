@@ -29,7 +29,7 @@ const TokenListItem = ({ item, index }: { item: TokenData; index: number }) => {
       style={styles.container}
     >
       <ListItem.Part left>
-        {/* <Image source={{ uri: item.token.image }} style={styles.image} /> */}
+        <Image source={{ uri: item.token.tokenLogo }} style={styles.image} />
       </ListItem.Part>
       <ListItem.Part middle column containerStyle={styles.border}>
         <ListItem.Part>
@@ -58,10 +58,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: Constants.PAGE_M2,
   },
   image: {
-    width: 54,
-    height: 54,
+    width: 40,
+    height: 40,
     borderRadius: BorderRadiuses.br20,
-    marginHorizontal: 14,
+    marginRight: Constants.PAGE_M2,
   },
   border: {
     borderColor: Colors.Gray,
