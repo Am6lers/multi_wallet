@@ -28,7 +28,9 @@ import { ERC1155_ABI } from '@constants/erc1155abi';
 import { ERC721_ABI } from '@constants/erc721abi';
 import { GasFeeEstimates } from 'gas-price-oracle/lib/services';
 import { FormattedPriceInfo } from '../../utils/numbers.utils';
-import { TransactionConfig } from '../transaction/CipherMobileTransactionController';
+import { TransactionConfig } from './model';
+import CipherMobileNetworkController from '../network';
+import { AccountAssetController } from '../accountAsset';
 
 export const GF_EVENTS = {
   RETURN_GAS_ORACLE_DATA: 'returnGasOracleData',
@@ -51,8 +53,8 @@ export interface GasFeeControlState extends BaseState {
 
 export interface GasFeeControlOpts {
   initState: GasFeeControlState | undefined;
-  networkController: BiportMobileNetworkController;
-  pricesController: PricesController;
+  networkController: CipherMobileNetworkController;
+  pricesController: AccountAssetController;
   interval: number;
 }
 
@@ -80,9 +82,9 @@ export default class GasFeeController extends BaseController<
   hub = new EventEmitter();
 
   private intervalDelay: number;
-  private _network: BiportMobileNetworkController;
-  private _currencyPrices: PricesController;
-  private pollingId: NodeJS.Timer | undefined;
+  private _network: CipherMobileNetworkController;
+  private _currencyPrices: AccountAssetController;
+  private pollingId: number | undefined;
   private gas: BigNumber;
   private gasData: GasOracleData | undefined;
   private chainId: ChainId | undefined;
@@ -339,7 +341,9 @@ export default class GasFeeController extends BaseController<
       const currentProvider = this._network.getWeb3Provider(this.chainId);
       const lastBlockNumber = await currentProvider.eth.getBlockNumber();
       const lastBlock = await currentProvider.eth.getBlock(lastBlockNumber);
-      const baseFee = new BigNumber(lastBlock.baseFeePerGas || 0).div(wei);
+      const baseFee = new BigNumber(
+        lastBlock.baseFeePerGas?.toString() || 0,
+      ).div(wei);
       const maxFee = new BigNumber(baseFee)
         .multipliedBy(baseMutipleValue)
         .dp(0, BigNumber.ROUND_FLOOR)
@@ -634,7 +638,7 @@ export default class GasFeeController extends BaseController<
         });
 
       this.gas = this.multipleGasAmount(chainId, new BigNumber(result));
-      return new BigNumber(result);
+      return new BigNumber(result.toString());
     } catch (e) {
       // Logger.error(e, 'web3 estimate gas error');
       this.gas = new BigNumber(0);
@@ -672,8 +676,11 @@ export default class GasFeeController extends BaseController<
         .estimateGas({
           from: transactionConfig.from,
         });
-      this.gas = this.multipleGasAmount(chainId, new BigNumber(result));
-      return new BigNumber(result);
+      this.gas = this.multipleGasAmount(
+        chainId,
+        new BigNumber(result.toString()),
+      );
+      return new BigNumber(result.toString());
     } catch (e) {
       this.gas = new BigNumber(0);
       // Logger.error(e, 'web3 estimate gas error');

@@ -1,69 +1,69 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { View } from 'react-native-ui-lib';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { BorderRadiuses, View } from 'react-native-ui-lib';
 import engine from '@core/engine';
-import { B_TRACKER_EVENTS, BalancesData } from '@scripts/controllers/balances';
-import { NATIVE_TOKEN_ADDRESS } from '@constants/asset';
-import { BalanceMap } from 'eth-balance-checker/lib/common';
-import { ASSET_EVENTS, MoralisToken } from '@scripts/controllers/accountAsset';
-
-interface TokenData {
-  token: {
-    address: string;
-    decimals: number;
-    image: string;
-    iconUrl: string;
-    symbol: string;
-    name: string;
-    chainId: string;
-  };
-  balance: BalanceMap;
-}
+import {
+  B_TRACKER_EVENTS,
+  BalancesData,
+  TokenData,
+} from '@scripts/controllers/balances';
+import { ASSET_EVENTS } from '@scripts/controllers/accountAsset';
+import TokenListItem from '@components/atoms/TokenListItem';
+import Animated from 'react-native-reanimated';
+import { Shadow } from 'react-native-shadow-2';
+import { StyleSheet } from 'react-native';
+import Colors from '@constants/colors';
+import ListHeader from '@components/atoms/ListHeader';
 
 const TokenListCard = () => {
   const { BalanceTrackingController, AccountAssetController } = engine.context;
   const [balanceList, setBalanceList] = useState<TokenData[]>([]);
-  const [prices, setPrices] = useState<Record<string, MoralisToken[]>>({});
 
   useEffect(() => {
-    AccountAssetController.hub.on(ASSET_EVENTS.PRICES_UPDATED, setPrices);
-    AccountAssetController.getCurrentPrices();
-    getTokenData();
+    AccountAssetController.hub.on(ASSET_EVENTS.PRICES_UPDATED, updateTokenData);
     BalanceTrackingController.hub.on(
       B_TRACKER_EVENTS.BALANCES_UPDATED,
-      getTokenData,
+      updateTokenData,
     );
+    updateTokenData();
     return () => {
       BalanceTrackingController.hub.removeListener(
         B_TRACKER_EVENTS.BALANCES_UPDATED,
-        getTokenData,
+        updateTokenData,
       );
       AccountAssetController.hub.removeListener(
         ASSET_EVENTS.PRICES_UPDATED,
-        setPrices,
+        updateTokenData,
       );
     };
   }, []);
 
-  const getTokenData = async (balancesData?: BalancesData) => {
-    const balanceData =
-      balancesData ?? BalanceTrackingController.getAddressesBalances();
-    const data = (await Promise.all(
-      Object.entries(balanceData)?.map(async ([chainId, balances]) => {
-        const contract = Object.keys(balances)?.[0];
-        const token = await AccountAssetController.getTokensByAddrAndChainId(
-          contract,
-          chainId,
-        );
-        return {
-          token: token?.[0],
-          balance: balances,
-        };
-      }),
-    )) as TokenData[];
+  const updateTokenData = useCallback(async () => {
+    const data = await BalanceTrackingController.getTotalTokenData();
     setBalanceList(data);
-  };
+  }, []);
 
-  return <View>{}</View>;
+  return (
+    <Shadow offset={[0, 4]} distance={5} style={styles.shadow}>
+      <Animated.FlatList
+        scrollEnabled={false}
+        style={styles.flatlist}
+        data={balanceList}
+        renderItem={TokenListItem}
+        ListHeaderComponent={ListHeader}
+      />
+    </Shadow>
+  );
 };
+
+const styles = StyleSheet.create({
+  shadow: {
+    borderRadius: BorderRadiuses.br60,
+    width: '100%',
+  },
+  flatlist: {
+    backgroundColor: Colors.White,
+    borderRadius: BorderRadiuses.br60,
+  },
+});
 
 export default TokenListCard;

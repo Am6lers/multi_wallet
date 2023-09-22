@@ -174,11 +174,11 @@ export default class CipherMobileNetworkController extends BaseController<
 
   // return web3 provider
   getWeb3Provider(chainId: string) {
-    // if (this.web3Providers && chainId && has(this.web3Providers, [chainId])) {
-    //   return this.web3Providers[chainId];
-    // } else {
-    //   return new Web3();
-    // }
+    if (this.web3Providers && chainId && has(this.web3Providers, [chainId])) {
+      return this.web3Providers[chainId];
+    } else {
+      return new Web3();
+    }
   }
 
   //return web3 providers
