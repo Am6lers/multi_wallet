@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { Image, StyleSheet } from 'react-native';
 import Constants from '@constants/app';
-import { Card, Text, View } from 'react-native-ui-lib';
+import { BorderRadiuses, Card, Text, View } from 'react-native-ui-lib';
 import Colors from '@constants/colors';
 import { Addresses } from '@scripts/controllers/keyring';
 import engine from '@core/engine';
@@ -64,10 +64,10 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: Colors.White,
     padding: 20,
-    borderRadius: 20,
+    borderRadius: BorderRadiuses.br60,
   },
   shadow: {
-    borderRadius: 20,
+    borderRadius: BorderRadiuses.br60,
     width: '100%',
   },
   lottie: {
