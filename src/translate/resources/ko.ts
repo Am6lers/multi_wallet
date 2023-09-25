@@ -48,6 +48,42 @@ const resource = {
   login: {
     title: '로그인을 위해 비밀번호를 입력해주세요',
   },
+  setting: {
+    top: {
+      all: '전체',
+    },
+    content: {
+      wallet: '지갑',
+      asset: '자산',
+      security: '보안',
+      setting: '설정',
+      support: '지원',
+    },
+    wallet: {
+      manage_wallet: '지갑 관리',
+      manage_token: '토큰 관리',
+    },
+    asset: {
+      send: '보내기',
+      receive: '받기',
+      send_nft: 'NFT 보내기',
+      transactions: '거래내역',
+    },
+    security: {
+      password: '비밀번호 및 생체 인증',
+      connected_site: '연결된 사이트 관리',
+    },
+    setting: {
+      currency: '기준 통화',
+      language: '언어',
+      notification: '알림 설정',
+    },
+    support: {
+      faq: 'FAQ',
+      website: '웹사이트',
+      contact_feedback: '문의 및 피드백',
+    },
+  },
 };
 
 export default resource;

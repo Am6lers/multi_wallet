@@ -12,6 +12,7 @@ import { superMasterName } from '@store/atoms';
 import { B_TRACKER_EVENTS } from '@scripts/controllers/balances';
 import Friends from '../screens/home/friends';
 import Chat from '../screens/home/chat';
+import SettingScreen from '../screens/home/settings';
 
 export type Props = {};
 
@@ -46,7 +47,7 @@ const HomeTabNavigator = () => {
       <Tab.Screen name="Friends" component={Friends} />
       <Tab.Screen name="Chats" component={Chat} />
       <Tab.Screen name="Wallet" component={Wallet} />
-      <Tab.Screen name="Setting" component={Wallet} />
+      <Tab.Screen name="Setting" component={SettingScreen} />
       {/* <Tab.Screen name="HomeAction" component={SendSelectScreenNoBack} />
     <Tab.Screen name="HomeMenu" component={HomeTabMenu} /> */}
     </Tab.Navigator>
