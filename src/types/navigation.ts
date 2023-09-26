@@ -18,5 +18,10 @@ export type RootStackParamList = {
         Website: undefined;
         ContactFeedback: undefined;
       }
+      Send: {
+        SendScreen: undefined;
+        SendToken: undefined;
+        SendNFT: undefined;
+      }
     }
   };
