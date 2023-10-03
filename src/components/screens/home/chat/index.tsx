@@ -223,6 +223,7 @@ const FriendsInfoCard = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+
     // paddingHorizontal: Constants.PAGE_M1,
     // width: '100%',
     alignItems: 'center',
