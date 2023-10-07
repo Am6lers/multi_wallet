@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { SectionList, SectionListData, StyleSheet, TextInput, Pressable, ListRenderItem, Touchable } from 'react-native';
-import Colors from '@constants/colors';
-import { Text, View, } from 'react-native-ui-lib';
+// import Colors from '@constants/colors';
+import { Text, View, Colors, Spacings, BorderRadiuses, Modifiers, TextField } from 'react-native-ui-lib';
 import Constants from '@constants/app';
 import TL from '@translate/index';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
@@ -30,7 +30,6 @@ const SettingList: FC<Props> = ( ) => {
       text: TL.t('setting.wallet.manage_wallet'),
       icon: '',
       action: () => navigation.navigate('ManageWallet'),
-      // action: () => navigation.navigate('Detail'),
     }, 
     {
       text: TL.t('setting.wallet.manage_token'),
@@ -109,27 +108,6 @@ const SettingList: FC<Props> = ( ) => {
     },
   ]
 
-  const renderItem: ListRenderItem<SettingItem> = ({ item }) => {
-    if(!item) return null
-    return (
-      <View  style={styles.item}>
-        <Text text70BO onPress={item.action}>{item.icon}{item.text}</Text>
-        </View>
-      // </TouchableOpacity>
-    )
-  }
-
-  const renderSectionHeader = ({ 
-    section 
-  }: { 
-    section: SectionListData<SettingItem, { title: string }>
-  }) => {
-    if (section.title === 'Settings') return null;
-    return (
-      <Text text50BO style={{marginVertical: 20}}>{section.title}</Text>
-    )
-  }
-
   const sections = [
     {
       title: TL.t('setting.content.wallet'),
@@ -153,12 +131,31 @@ const SettingList: FC<Props> = ( ) => {
     }
   ]
 
+  const renderItem: ListRenderItem<SettingItem> = ({ item }) => {
+    if(!item) return null
+    return (
+      <View marginV-5 padding-10>
+        <Text text70BO onPress={item.action}>{item.icon}{item.text}</Text>
+      </View>
+    )
+  }
+
+  const renderSectionHeader = ({ 
+    section 
+  }: { 
+    section: SectionListData<SettingItem, { title: string }>
+  }) => {
+    if (section.title === 'Settings') return null;
+    return (
+      <Text text50BO marginV-15>{section.title}</Text>
+    )
+  }
+
   return (
     <SectionList
       sections={sections}
       renderSectionHeader={renderSectionHeader}
       keyExtractor={(index) => index.toString()}
-      // keyExtractor={keyExtractor}
       renderItem={renderItem}
       
       stickySectionHeadersEnabled={false}
@@ -167,21 +164,30 @@ const SettingList: FC<Props> = ( ) => {
   );
 };
 
-const TextField = () => {
+const SearchField = () => {
   return (
-    <TextInput
+    <View >
+    <TextField marginV-30 marginH-20
+      placeholder={'⌥ Search for features'}
       returnKeyType='search'
-      placeholder='⌥ Search for features'
-      style={styles.input} />
-  );
-};
+      containerStyle={
+        {
+          borderRadius: BorderRadiuses.br30, 
+          backgroundColor: Colors.grey70,
+          padding: Spacings.s3
+        }
+      }
+    />
+    </View>
+  )
+}
 
 const SettingScreen = () => {
   return (
     <View style={styles.outline} useSafeArea>
       <View style={styles.container}>
       <Text grey40 text50BO>{TL.t('setting.top.all')}</Text>
-        <TextField/>
+        <SearchField />
         <SettingList navigation={useNavigation()} route={useRoute()}/>
       </View>
     </View>
@@ -192,31 +198,12 @@ const SettingScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.White,
+    backgroundColor: Colors.white,
     paddingHorizontal: Constants.PAGE_M1,
   },
   outline: {
     flex: 1,
   },
-  item: {
-    backgroundColor: Colors.White,
-    padding: 10,
-    marginVertical: 8,
-  },
-  header: {
-    fontSize: 32,
-    marginLeft: 10,
-    marginTop: 20,
-  },
-  input: {
-    backgroundColor: Colors.Light0,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    marginHorizontal: 10,
-    marginVertical: 40,
-    fontSize: 18,
-  }
 });
 
 export default SettingScreen;
