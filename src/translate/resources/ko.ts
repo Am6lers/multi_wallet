@@ -48,6 +48,12 @@ const resource = {
   login: {
     title: '로그인을 위해 비밀번호를 입력해주세요',
   },
+  createNewWallet: {
+    nickName: {
+      notificationWalletName: '닉네임을 설정해주세요',
+      walletName: '지갑 이름',
+    },
+  },
 };
 
 export default resource;

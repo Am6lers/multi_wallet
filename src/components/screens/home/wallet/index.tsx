@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
-import { Card, Carousel, Text, View } from 'react-native-ui-lib';
+import { Button, Card, Carousel, Text, View } from 'react-native-ui-lib';
 import { StyleSheet } from 'react-native';
 import Colors from '@constants/colors';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -15,10 +15,22 @@ import AssetView from './AssetView';
 import TokenList from '@components/organism/home/TokenListCard';
 import { moralisApiUrl } from '@scripts/controllers/accountAsset/lib/apiOptions';
 import { MoralisClient } from '@scripts/controllers/accountAsset';
+import {
+  NativeStackNavigationProp,
+  createNativeStackNavigator,
+} from '@react-navigation/native-stack';
+import MakeWalletView from './makeNewWallet/MakeWalletView';
+import {
+  ParamListBase,
+  RouteProp,
+  useNavigation,
+} from '@react-navigation/native';
 
-const Tab = createBottomTabNavigator();
+// const Tab = createBottomTabNavigator();
+// const Stack = createNativeStackNavigator();
 
 const Wallet = () => {
+  const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   const { KeyringController } = Engine.context;
   const [accounts, setAccounts] = React.useState<Addresses[]>([]);
 
@@ -51,6 +63,13 @@ const Wallet = () => {
         <RenderWalletCard />
         <AssetView />
         <TokenList />
+        {/* move to MakeWalletView */}
+        <Button
+          label="Make Wallet"
+          onPress={() => {
+            navigation.navigate('MakeWalletView');
+          }}
+        />
       </View>
     </View>
   );

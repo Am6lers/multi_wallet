@@ -11,6 +11,8 @@ import Import from '../screens/auth/import';
 import Engine from '@core/engine';
 import { has } from 'lodash';
 import { useSelector } from 'react-redux';
+import MakeWalletView from '../screens/home/wallet/makeNewWallet/MakeWalletView';
+import PinSetting from '../screens/home/wallet/makeNewWallet/PinSetting';
 
 export interface LoginInfo {
   loginId: string;
@@ -76,6 +78,8 @@ const InitialStackNavigator = () => {
         }}
       />
       <Stack.Screen name="MainStackNavigator" component={MainStackNavigator} />
+      <Stack.Screen name="MakeWalletView" component={MakeWalletView} />
+      <Stack.Screen name="PinSetting" component={PinSetting} />
     </Stack.Navigator>
   );
 };

@@ -50,6 +50,12 @@ const resource = {
   login: {
     title: 'Please enter your password to log in',
   },
+  createNewWallet: {
+    nickName: {
+      notificationWalletName: 'Please set a nickname',
+      walletName: 'Wallet Name',
+    },
+  },
 };
 
 export default resource;
