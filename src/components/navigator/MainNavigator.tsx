@@ -7,6 +7,10 @@ import HomeTabNavigator from './HomeTabNavigator';
 import { ParamListBase, useNavigation } from '@react-navigation/native';
 import engine from '@core/engine';
 import { B_TRACKER_EVENTS } from '@scripts/controllers/balances';
+import ManageWallet from '../screens/home/settings/detail/manage/manage_wallet';
+import ManageToken from '../screens/home/settings/detail/manage/manage_token';
+import Send from '../screens/home/settings/detail/assets/send';
+import Receive from '../screens/home/settings/detail/assets/receive';
 
 export interface LoginInfo {
   loginId: string;
@@ -27,6 +31,26 @@ const MainStackNavigator = () => {
         options={{
           animationTypeForReplace: 'push',
         }}
+      />
+      <Stack.Screen
+        name='ManageWallet'
+        component={ManageWallet}
+        options={{headerShown: true, title: ''}}
+      />
+      <Stack.Screen
+        name='ManageToken'
+        component={ManageToken}
+        options={{headerShown: true, title: ''}}
+      />
+      <Stack.Screen
+        name='Send'
+        component={Send}
+        options={{headerShown: true, title: ''}}
+      />
+      <Stack.Screen
+        name='Receive'
+        component={Receive}
+        options={{headerShown: true, title: ''}}
       />
     </Stack.Navigator>
   );
