@@ -12,9 +12,9 @@ import ManageToken from '../screens/home/settings/detail/manage/manage_token';
 import Send from '../screens/home/settings/detail/assets/send';
 import Receive from '../screens/home/settings/detail/assets/receive';
 import SendToken from '../screens/home/settings/detail/assets/send_token';
-import ConnectedSite from '../screens/home/settings/detail/securities/connected_site';
 import SendNFT from '../screens/home/settings/detail/assets/send_nft';
 import SendDetail from '../screens/home/settings/detail/assets/send_detail';
+
 export interface LoginInfo {
   loginId: string;
   password: string;
@@ -34,46 +34,6 @@ const MainStackNavigator = () => {
         options={{
           animationTypeForReplace: 'push',
         }}
-      />
-      <Stack.Screen
-        name='ManageWallet'
-        component={ManageWallet}
-        options={{headerShown: true, title: ''}}
-      />
-      <Stack.Screen
-        name='ManageToken'
-        component={ManageToken}
-        options={{headerShown: true, title: ''}}
-      />
-      <Stack.Screen
-        name='Send'
-        component={Send}
-        options={{headerShown: true, title: ''}}
-      />
-      <Stack.Screen
-        name='Receive'
-        component={Receive}
-        options={{headerShown: true, title: ''}}
-      />
-      <Stack.Screen
-        name='SendToken'
-        component={SendToken}
-        options={{headerShown: true, title: ''}}
-      />
-      <Stack.Screen
-        name='SendNFT'
-        component={SendNFT}
-        options={{headerShown: true, title: ''}}
-      />
-      <Stack.Screen
-        name='ConnectedSite'
-        component={ConnectedSite}
-        options={{headerShown: true, title: ''}}
-      />
-      <Stack.Screen
-        name='SendDetail'
-        component={SendDetail}
-        options={{headerShown: true, title: ''}}
       />
     </Stack.Navigator>
   );
