@@ -155,7 +155,7 @@ const SettingList: FC<Props> = ( ) => {
     <SectionList
       sections={sections}
       renderSectionHeader={renderSectionHeader}
-      keyExtractor={(index) => index.toString()}
+      keyExtractor={(item, index) => item + index.toString()}
       renderItem={renderItem}
       
       stickySectionHeadersEnabled={false}
@@ -166,7 +166,6 @@ const SettingList: FC<Props> = ( ) => {
 
 const SearchField = () => {
   return (
-    <View >
     <TextField marginV-30 marginH-20
       placeholder={'⌥ Search for features'}
       returnKeyType='search'
@@ -178,7 +177,6 @@ const SearchField = () => {
         }
       }
     />
-    </View>
   )
 }
 

@@ -22,6 +22,7 @@ export type RootStackParamList = {
       SendScreen: undefined;
       SendToken: undefined;
       SendNFT: undefined;
+      SendDetail: undefined;
     }
   }
 };
