@@ -51,6 +51,7 @@ const resource = {
     title: 'Please enter your password to log in',
   },
   createNewWallet: {
+    makeWallet: 'Make Wallet',
     nickName: {
       notificationWalletName: 'Please set a nickname',
       walletName: 'Wallet Name',

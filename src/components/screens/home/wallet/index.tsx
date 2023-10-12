@@ -25,6 +25,7 @@ import {
   RouteProp,
   useNavigation,
 } from '@react-navigation/native';
+import TL from '@translate/index';
 
 // const Tab = createBottomTabNavigator();
 // const Stack = createNativeStackNavigator();
@@ -66,7 +67,7 @@ const Wallet = () => {
           <TokenList />
           {/* move to MakeWalletView */}
           <Button
-            label="Make Wallet"
+            label={TL.t('createNewWallet.makeWallet')}
             backgroundColor={Colors.Navy}
             onPress={() => {
               // navigation.navigate('MakeWalletView');
