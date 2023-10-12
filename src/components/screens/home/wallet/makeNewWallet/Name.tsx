@@ -62,7 +62,7 @@ const Name = ({
             autoFocus={true}
             onChangeText={handleToChange}
             validate={['required']}
-            validationMessage={['지갑이름을 입력해주세요']}
+            validationMessage={[TL.t('createNewWallet.name.validation')]}
             value={nickname}
             style={{ marginTop: 30, fontSize: 20, fontWeight: 'bold' }}
             charCounterStyle={{ fontWeight: 'bold', fontSize: 20 }}
@@ -76,7 +76,7 @@ const Name = ({
           >
             {!isValidate && nickname.length !== 0 && (
               <Text style={{ color: 'red', marginBottom: 15 }}>
-                {'영문 대, 소문자 및 숫자만 입력 가능해요.'}
+                {TL.t('createNewWallet.name.notificationRightName')}
               </Text>
             )}
 

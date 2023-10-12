@@ -23,7 +23,7 @@ const PinSetting = ({
       <PinInput
         isCreate={true}
         setPin={setPwd}
-        cTitle={'새로운 비밀번호를 입력해주세요'}
+        cTitle={TL.t('createNewWallet.pin.inputNewPwd')}
       />
     </View>
   );

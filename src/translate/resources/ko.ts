@@ -53,6 +53,18 @@ const resource = {
       notificationWalletName: '닉네임을 설정해주세요',
       walletName: '지갑 이름',
     },
+    wizard: {
+      settingWalletName: '지갑 이름 설정',
+      settingPin: '핀 번호 설정',
+      complete: '완료',
+    },
+    name: {
+      validation: '지갑 이름을 입력해주세요.',
+      notificationRightName: '영문 대, 소문자 및 숫자만 입력 가능해요.',
+    },
+    pin: {
+      inputNewPwd: '새로운 비밀번호를 입력해주세요',
+    },
   },
 };
 

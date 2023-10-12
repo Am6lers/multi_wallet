@@ -55,6 +55,19 @@ const resource = {
       notificationWalletName: 'Please set a nickname',
       walletName: 'Wallet Name',
     },
+    wizard: {
+      settingWalletName: 'Set wallet name',
+      settingPin: 'Pin number setting',
+      complete: 'Complete',
+    },
+    name: {
+      validation: 'Please enter your wallet name.',
+      notificationRightName:
+        'Only uppercase and lowercase letters and numbers can be entered.',
+    },
+    pin: {
+      inputNewPwd: 'Please enter a new password.',
+    },
   },
 };
 

@@ -9,6 +9,7 @@ import PinSetting from './PinSetting';
 import { StyleSheet } from 'react-native';
 import Colors from '@constants/colors';
 import * as bip39 from 'bip39';
+import TL from '@translate/index';
 
 const MakeNewWallet = () => {
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
@@ -57,9 +58,18 @@ const MakeNewWallet = () => {
   return (
     <View useSafeArea={true} style={styles.container}>
       <Wizard activeIndex={page}>
-        <Wizard.Step state={getPageState(0)} label="지갑 이름 설정" />
-        <Wizard.Step state={getPageState(1)} label="핀 번호 설정" />
-        <Wizard.Step state={getPageState(2)} label="완료" />
+        <Wizard.Step
+          state={getPageState(0)}
+          label={TL.t('createNewWallet.wizard.settingWalletName')}
+        />
+        <Wizard.Step
+          state={getPageState(1)}
+          label={TL.t('createNewWallet.wizard.settingPin')}
+        />
+        <Wizard.Step
+          state={getPageState(2)}
+          label={TL.t('createNewWallet.wizard.complete')}
+        />
       </Wizard>
       {pageRenderer()}
     </View>
