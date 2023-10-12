@@ -57,7 +57,7 @@ const Wallet = () => {
   });
 
   return (
-    <ScrollView>
+    <ScrollView showsVerticalScrollIndicator={false}>
       <View style={styles.outline} useSafeArea>
         <View style={styles.container}>
           <Header />

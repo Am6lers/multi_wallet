@@ -45,7 +45,6 @@ const MakeNewWallet = () => {
   }, []);
 
   const pageRenderer = useCallback(() => {
-    // console.log('page', page);
     switch (page) {
       case 0:
         return <Name moveToNext={moveToNext} setName={setName} />;
