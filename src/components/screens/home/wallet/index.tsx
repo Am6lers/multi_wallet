@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
 import { Button, Card, Carousel, Text, View } from 'react-native-ui-lib';
-import { StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
 import Colors from '@constants/colors';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Constants from '@constants/app';
@@ -57,21 +57,25 @@ const Wallet = () => {
   });
 
   return (
-    <View style={styles.outline} useSafeArea>
-      <View style={styles.container}>
-        <Header />
-        <RenderWalletCard />
-        <AssetView />
-        <TokenList />
-        {/* move to MakeWalletView */}
-        <Button
-          label="Make Wallet"
-          onPress={() => {
-            navigation.navigate('MakeWalletView');
-          }}
-        />
+    <ScrollView>
+      <View style={styles.outline} useSafeArea>
+        <View style={styles.container}>
+          <Header />
+          <RenderWalletCard />
+          <AssetView />
+          <TokenList />
+          {/* move to MakeWalletView */}
+          <Button
+            label="Make Wallet"
+            backgroundColor={Colors.Navy}
+            onPress={() => {
+              // navigation.navigate('MakeWalletView');
+              navigation.navigate('MakeNewWallet');
+            }}
+          />
+        </View>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 

@@ -22,6 +22,6 @@ export default Header;
 const styles = StyleSheet.create({
   container: {
     height: 60,
-    paddingHorizontal: Constants.PAGE_M1,
+    // paddingHorizontal: Constants.PAGE_M1,
   },
 });

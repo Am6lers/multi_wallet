@@ -18,22 +18,32 @@ import TL from '@translate/index';
 
 const Stack = createNativeStackNavigator();
 
-const MakeWalletView = () => {
+const Name = ({
+  moveToNext,
+  setName,
+}: {
+  moveToNext: () => void;
+  setName: React.Dispatch<React.SetStateAction<string>>;
+}) => {
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
 
-  const [name, setName] = React.useState('');
+  const [nickname, setNickname] = React.useState('');
   const [isValidate, setIsValidate] = React.useState(false);
   const handleToChange = (inputName: string) => {
     // 유효성 검사 (영문 대,소문자, 숫자만 가능하게)
 
-    setName(inputName);
+    setNickname(inputName);
     // 정규식 사용해서 영문 대, 소문자, 숫자만 가능하게
     const pattern = /^[a-zA-Z0-9]*$/;
     setIsValidate(pattern.test(inputName));
   };
 
   const navigateToPinSetting = () => {
-    navigation.navigate('PinSetting', { name: name });
+    // navigation.navigate('PinSetting', { name: name });
+  };
+  const goToNextStep = () => {
+    setName(nickname);
+    moveToNext();
   };
 
   return (
@@ -53,7 +63,7 @@ const MakeWalletView = () => {
             onChangeText={handleToChange}
             validate={['required']}
             validationMessage={['지갑이름을 입력해주세요']}
-            value={name}
+            value={nickname}
             style={{ marginTop: 30, fontSize: 20, fontWeight: 'bold' }}
             charCounterStyle={{ fontWeight: 'bold', fontSize: 20 }}
           />
@@ -64,7 +74,7 @@ const MakeWalletView = () => {
               alignItems: 'center',
             }}
           >
-            {!isValidate && name.length !== 0 && (
+            {!isValidate && nickname.length !== 0 && (
               <Text style={{ color: 'red', marginBottom: 15 }}>
                 {'영문 대, 소문자 및 숫자만 입력 가능해요.'}
               </Text>
@@ -72,14 +82,14 @@ const MakeWalletView = () => {
 
             <Button
               label={TL.t('initial.agree.next')}
-              backgroundColor={Colors.Navy}
               size={Button.sizes.large}
               borderRadius={15}
               // 버튼 색상은 Figma 참고해서 수정할 것
+              backgroundColor="navy"
               enableShadow={true}
               style={styles.button}
               disabled={!isValidate}
-              onPress={navigateToPinSetting}
+              onPress={goToNextStep}
             />
           </View>
         </View>
@@ -112,4 +122,4 @@ const styles = StyleSheet.create({
     width: 340,
   },
 });
-export default MakeWalletView;
+export default Name;

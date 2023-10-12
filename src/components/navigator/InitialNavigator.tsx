@@ -12,7 +12,10 @@ import Engine from '@core/engine';
 import { has } from 'lodash';
 import { useSelector } from 'react-redux';
 import MakeWalletView from '../screens/home/wallet/makeNewWallet/MakeWalletView';
+import MakeNewWallet from '../screens/home/wallet/makeNewWallet/index';
 import PinSetting from '../screens/home/wallet/makeNewWallet/PinSetting';
+import MakeDone from '../screens/home/wallet/makeDone/index';
+import Backup from '../screens/home/backup';
 
 export interface LoginInfo {
   loginId: string;
@@ -77,9 +80,18 @@ const InitialStackNavigator = () => {
           animationTypeForReplace: 'push',
         }}
       />
+      <Stack.Screen
+        name="MakeDone"
+        component={MakeDone}
+        options={{
+          animationTypeForReplace: 'push',
+        }}
+      />
       <Stack.Screen name="MainStackNavigator" component={MainStackNavigator} />
       <Stack.Screen name="MakeWalletView" component={MakeWalletView} />
-      <Stack.Screen name="PinSetting" component={PinSetting} />
+      <Stack.Screen name="MakeNewWallet" component={MakeNewWallet} />
+      <Stack.Screen name="Backup" component={Backup} />
+      {/* <Stack.Screen name="PinSetting" component={PinSetting} /> */}
     </Stack.Navigator>
   );
 };
