@@ -4,6 +4,17 @@ import Web3Personal from 'web3-shh';
 import CipherKeyringController from '../keyring/cipherKeyringController';
 import CipherKeyring from '../keyring/cipherKeyring';
 import Web3 from 'web3';
+import {
+  WakuMessage,
+  connect,
+  isStarted,
+  newNode,
+  onMessage,
+  peerID,
+  relayPublish,
+  relaySubscribe,
+  start,
+} from '@waku/react-native';
 
 /*
 1:1 chat topic rule
@@ -64,7 +75,7 @@ export interface MsgControlOpts {
 
 const wssEndPoint = 'wss://rpc-mainnet.matic.network';
 
-export default class MessageController extends BaseController<
+export default class WakuMessageController extends BaseController<
   BaseConfig,
   MsgControllerState
 > {
@@ -74,43 +85,66 @@ export default class MessageController extends BaseController<
   private _keyring: CipherKeyringController;
   private messageData: MessageData = {};
   private interval: number | null = null;
-  private shh: Web3Personal;
   private superMasterKeyring: CipherKeyring;
+  private peerId: string | null = null;
 
   constructor(opts: MsgControlOpts) {
     super(undefined, opts.initState ?? {});
     this._keyring = opts.keyringController;
     this.messageData = opts.initState?.messageData ?? {};
     this.interval = opts.interval;
-    this.shh = new Web3Personal(wssEndPoint);
     this.superMasterKeyring = this._keyring.getSuperMasterKeyring();
-    // this.hub.on(MESSAGE_EVENT.RECEIVE_MESSAGE,this.messageProcessing)
+    this.hub.emit(MESSAGE_EVENT.SEND_MESSAGE_SUCCESS, this.messageProcessing);
   }
 
   async init() {
     const key = await this._keyring.getSuperMasterPrivateKey();
     if (key) {
-      this.shh
-        .subscribe('messages', {
-          privateKeyID: key,
-        })
-        .on('data', (message: Notification) => {
-          this.messageProcessing(message);
-        });
+      const nodeStarted = await isStarted();
+      if (!nodeStarted) {
+        await newNode(null);
+        await start();
+        this.peerId = await peerID();
+        await relaySubscribe();
+        await this.subscribeMessage();
+      }
     }
   }
 
-  async messageProcessing(message: Notification) {
-    if (!message.sig) {
-      return;
+  async subscribeMessage() {
+    onMessage(event => {
+      console.log(
+        'Message received: ',
+        new TextDecoder().decode(event.wakuMessage.payload),
+      );
+    });
+    try {
+      await connect(
+        '/dns4/node-01.ac-cn-hongkong-c.wakuv2.test.statusim.net/tcp/30303/p2p/16Uiu2HAkvWiyFsgRhuJEb9JfjYxEkoHLgnUQmr1N5mKWnYjxYRVm',
+        5000,
+      );
+    } catch (err) {
+      console.log('Could not connect to peers');
     }
-    const receivedMessage = Web3.utils.toAscii(message.payload);
-    const messageType = message.topic.startsWith('OTO:')
+
+    try {
+      await connect(
+        '/dns4/node-01.do-ams3.wakuv2.test.statusim.net/tcp/30303/p2p/16Uiu2HAmPLe7Mzm8TsYUubgCAW1aJoeFScxrLj8ppHFivPo97bUZ',
+        5000,
+      );
+    } catch (err) {
+      console.log('Could not connect to peers');
+    }
+  }
+
+  async messageProcessing(message: WakuMessage) {
+    const receivedMessage = new TextDecoder().decode(message.payload);
+    const messageType = message.contentTopic?.startsWith('OTO:')
       ? MESSAGE_TYPE.OTO
       : MESSAGE_TYPE.NTN;
-    const sender = message.sig;
+    const sender = message.contentTopic?.split(':')[1];
     const timestamp = message.timestamp;
-    const group = message.topic;
+    const group = message.contentTopic?.split(':')[1] || '';
 
     const isRegistered = true; // api
     const isFriends = true; // api
@@ -140,25 +174,17 @@ export default class MessageController extends BaseController<
   }
 
   async sendMessage(message: string, receiveAddresses: string[]) {
+    let msg = new WakuMessage();
+    msg.contentTopic = 'OTO:0x191ee2600fc9f0fbf5ca7236e285b19f123dcec7';
+    msg.payload = new TextEncoder().encode('Hi BoB');
+    msg.timestamp = new Date();
+    msg.version = 0;
+
     try {
-      const senderAddress =
-        this.superMasterKeyring.evmWallet?.getAddressString() ?? '';
-      await Promise.all(
-        receiveAddresses.map(async receiveAddress => {
-          await this.shh.post({
-            ttl: 10,
-            topic: senderAddress,
-            powTarget: 2.01,
-            powTime: 2,
-            payload: Web3.utils.fromAscii(message),
-            pubKey: receiveAddress, // B의 공개 키
-            sig: senderAddress, // A의 키 페어 ID
-          });
-        }),
-      );
-      this.hub.emit(MESSAGE_EVENT.SEND_MESSAGE_SUCCESS, true);
+      let messageID = await relayPublish(msg);
+      this.hub.emit(MESSAGE_EVENT.SEND_MESSAGE_SUCCESS, msg);
     } catch (e) {
-      this.hub.emit(MESSAGE_EVENT.SEND_MESSAGE_FAIL, false);
+      this.hub.emit(MESSAGE_EVENT.SEND_MESSAGE_FAIL, msg);
     }
   }
 
