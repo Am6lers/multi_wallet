@@ -36,6 +36,7 @@
     "@types/shelljs": "^0.8.12",
     "@types/url-parse": "^1.4.8",
     "@types/valid-url": "^1.0.4",
+    "@waku/react-native": "^0.2.0",
     "@walletconnect/react-native-compat": "^2.9.2",
     "@walletconnect/sign-client": "^2.9.2",
     "@walletconnect/types": "^2.9.2",

@@ -52,12 +52,12 @@ interface MessageData {
   };
 }
 
-export interface GasFeeControlState extends BaseState {
+export interface MsgControllerState extends BaseState {
   messageData: MessageData;
 }
 
-export interface GasFeeControlOpts {
-  initState: GasFeeControlState | undefined;
+export interface MsgControlOpts {
+  initState: MsgControllerState | undefined;
   interval: number;
   keyringController: CipherKeyringController;
 }
@@ -66,9 +66,9 @@ const wssEndPoint = 'wss://rpc-mainnet.matic.network';
 
 export default class MessageController extends BaseController<
   BaseConfig,
-  GasFeeControlState
+  MsgControllerState
 > {
-  name = 'GasFeeController';
+  name = 'MessageController';
   hub = new EventEmitter();
 
   private _keyring: CipherKeyringController;
@@ -77,24 +77,27 @@ export default class MessageController extends BaseController<
   private shh: Web3Personal;
   private superMasterKeyring: CipherKeyring;
 
-  constructor(opts: GasFeeControlOpts) {
+  constructor(opts: MsgControlOpts) {
     super(undefined, opts.initState ?? {});
     this._keyring = opts.keyringController;
     this.messageData = opts.initState?.messageData ?? {};
     this.interval = opts.interval;
     this.shh = new Web3Personal(wssEndPoint);
-    this.superMasterKeyring = this._keyring.getSuperMasgerKeyring();
+    this.superMasterKeyring = this._keyring.getSuperMasterKeyring();
     // this.hub.on(MESSAGE_EVENT.RECEIVE_MESSAGE,this.messageProcessing)
   }
 
-  init() {
-    this.shh
-      .subscribe('messages', {
-        privateKeyID: this.superMasterKeyring.evmWallet?.getPrivateKeyString(),
-      })
-      .on('data', (message: Notification) => {
-        this.messageProcessing(message);
-      });
+  async init() {
+    const key = await this._keyring.getSuperMasterPrivateKey();
+    if (key) {
+      this.shh
+        .subscribe('messages', {
+          privateKeyID: key,
+        })
+        .on('data', (message: Notification) => {
+          this.messageProcessing(message);
+        });
+    }
   }
 
   async messageProcessing(message: Notification) {

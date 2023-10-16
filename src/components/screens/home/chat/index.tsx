@@ -19,8 +19,86 @@ import { Addresses, DisplayKeyring } from '@scripts/controllers/keyring';
 import { useRecoilValue } from 'recoil';
 import { superMasterName } from '@store/atoms';
 import UserProfileAndIconHeader from '@components/organism/home/UserProfileAndIconHeader';
+import Web3Personal from 'web3-shh';
+import engine from '@core/engine';
+import Web3 from 'web3';
+import {
+  defaultPubsubTopic,
+  newNode,
+  start,
+  isStarted,
+  stop,
+  peerID,
+  relayEnoughPeers,
+  listenAddresses,
+  connect,
+  peerCnt,
+  peers,
+  relayPublish,
+  relayUnsubscribe,
+  relaySubscribe,
+  WakuMessage,
+  onMessage,
+  StoreQuery,
+  storeQuery,
+  Config,
+  FilterSubscription,
+  ContentFilter,
+  filterSubscribe,
+  dnsDiscovery,
+} from '@waku/react-native';
 
 const Chat = () => {
+  useEffect(() => {
+    (async () => {
+      const nodeStarted = await isStarted();
+      if (!nodeStarted) {
+        await newNode(null);
+        await start();
+      }
+      console.log('The node ID:', await peerID());
+      await relaySubscribe();
+      onMessage(event => {
+        if (
+          event.wakuMessage.contentTopic !==
+          '0x191ee2600fc9f0fbf5ca7236e285b19f123dcec7'
+        )
+          return;
+        console.log(
+          'Message received: ' +
+            event.wakuMessage.timestamp +
+            ' - payload :[' +
+            new TextDecoder().decode(event.wakuMessage.payload) +
+            ']',
+        );
+        console.log('Message received: ', event);
+      });
+      try {
+        await connect(
+          '/dns4/node-01.ac-cn-hongkong-c.wakuv2.test.statusim.net/tcp/30303/p2p/16Uiu2HAkvWiyFsgRhuJEb9JfjYxEkoHLgnUQmr1N5mKWnYjxYRVm',
+          5000,
+        );
+      } catch (err) {
+        console.log('Could not connect to peers');
+      }
+
+      try {
+        await connect(
+          '/dns4/node-01.do-ams3.wakuv2.test.statusim.net/tcp/30303/p2p/16Uiu2HAmPLe7Mzm8TsYUubgCAW1aJoeFScxrLj8ppHFivPo97bUZ',
+          5000,
+        );
+      } catch (err) {
+        console.log('Could not connect to peers');
+      }
+      let msg = new WakuMessage();
+      msg.contentTopic = '0x191ee2600fc9f0fbf5ca7236e285b19f123dcec7';
+      msg.payload = new TextEncoder().encode('Hi BoB');
+      msg.timestamp = new Date();
+      msg.version = 0;
+
+      let messageID = await relayPublish(msg);
+    })();
+  }, []);
   return (
     <View style={styles.container} useSafeArea>
       <View
@@ -48,42 +126,6 @@ const ProfileImage = () => {
     ></View>
   );
 };
-
-// const UserProfileAndIconHeader = () => {
-//   const masterName = useRecoilValue(superMasterName);
-//   return (
-//     <View
-//       style={{
-//         flexDirection: 'row',
-//         alignItems: 'center',
-//         justifyContent: 'space-between',
-//         paddingBottom: 25,
-//       }}
-//     >
-//       <View style={styles.row}>
-//         <ProfileImage></ProfileImage>
-//         <Text
-//           text65BO
-//           style={{
-//             fontSize: 22,
-//             paddingLeft: 5,
-//             paddingTop: 9,
-//             color: 'gray',
-//             opacity: 0.7,
-//           }}
-//         >
-//           {masterName}
-//         </Text>
-//       </View>
-//       <View>
-//         <View style={styles.row}>
-//           <EvilIcon name="refresh" size={24} style={styles.icon} />
-//           <Icon name="line-scan" size={24} style={styles.icon} />
-//         </View>
-//       </View>
-//     </View>
-//   );
-// };
 
 const ChatList = () => {
   return (

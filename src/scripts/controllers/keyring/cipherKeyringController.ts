@@ -838,9 +838,13 @@ export default class CipherKeyringController extends BaseController<
     );
   }
 
-  getSuperMasgerKeyring() {
+  async getSuperMasterPrivateKey() {
+    return this.getSuperMasterKeyring().accounts.evm;
+  }
+
+  getSuperMasterKeyring() {
     const { keyrings } = this.memStore.getState();
-    return keyrings.filter((keyring: any) => keyring.superMaster == true);
+    return keyrings.filter((keyring: any) => keyring.superMaster == true)[0];
   }
 
   async displayForAllKeyrings() {

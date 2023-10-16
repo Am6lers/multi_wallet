@@ -3653,6 +3653,14 @@
     "@typescript-eslint/types" "5.62.0"
     eslint-visitor-keys "^3.3.0"
 
+"@waku/react-native@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@waku/react-native/-/react-native-0.2.0.tgz#324e87f8b1aecd4180f1d7ed668ffdcbea0ef3ad"
+  integrity sha512-Tcsu9fXHz0DLCpJoxbn8Y1C8OS7H0X1M51bNkul7sdI+JfihN32BR9OpAxditd6dCI7Melf3q3NAp6s0jt9EoA==
+  dependencies:
+    big-integer "^1.6.51"
+    buffer "^6.0.3"
+
 "@walletconnect/auth-client@2.1.1":
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/@walletconnect/auth-client/-/auth-client-2.1.1.tgz#45548fc5d5e5ac155503d1b42ac97a96a2cba98d"
