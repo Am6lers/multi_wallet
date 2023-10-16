@@ -173,7 +173,7 @@ export default class WakuMessageController extends BaseController<
     this.hub.emit(MESSAGE_EVENT.RECEIVE_MESSAGE, newMessage);
   }
 
-  async sendMessage(message: string, receiveAddresses: string[]) {
+  async sendMessage(message: string, receiveAddresses?: string[]) {
     let msg = new WakuMessage();
     msg.contentTopic = 'OTO:0x191ee2600fc9f0fbf5ca7236e285b19f123dcec7';
     msg.payload = new TextEncoder().encode('Hi BoB');

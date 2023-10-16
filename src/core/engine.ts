@@ -52,6 +52,7 @@ import {
   AccountAssetController,
   AccountAssetState,
 } from '@scripts/controllers/accountAsset';
+import WakuMessageController from '@scripts/controllers/message';
 
 const encryptor = new Encryptor();
 let currentChainId: any;
@@ -70,6 +71,7 @@ export interface EngineContext {
   DeepLinkController: DeepLinkController;
   BalanceTrackingController: BalanceTrackingController;
   AccountAssetController: AccountAssetController;
+  WakuMessageController: WakuMessageController;
 }
 
 export type EngineInitState = {
@@ -87,6 +89,7 @@ export type EngineInitState = {
   DeepLinkController?: DeepLinkControllerState | undefined;
   BalanceTrackingController?: BalanceTrackerState | undefined;
   AccountAssetController?: AccountAssetState | undefined;
+  WakuMessageController?: WakuMessageController | undefined;
 };
 
 export type EngineContextNames = keyof EngineContext;
@@ -107,6 +110,7 @@ export type Controllers = [
   DeepLinkController,
   BalanceTrackingController,
   AccountAssetController,
+  WakuMessageController,
 ];
 
 export const controllerNames: EngineContextNames[] = [
@@ -123,6 +127,7 @@ export const controllerNames: EngineContextNames[] = [
   'DeepLinkController',
   'BalanceTrackingController',
   'AccountAssetController',
+  'WakuMessageController',
 ];
 
 interface SyncParams {
@@ -159,6 +164,7 @@ class Engine {
     DeepLinkController: {} as DeepLinkController,
     BalanceTrackingController: {} as BalanceTrackingController,
     AccountAssetController: {} as AccountAssetController,
+    WakuMessageController: {} as WakuMessageController,
   };
 
   /**
@@ -231,6 +237,12 @@ class Engine {
         networkController: networkController,
       });
 
+      const wakuMessageController = new WakuMessageController({
+        initState: initialState.WakuMessageController,
+        keyringController: keyringController,
+        interval: 15000,
+      });
+
       const balanceTrackingController = new BalanceTrackingController({
         initState: initialState?.BalanceTrackingController,
         keyringController: keyringController,
@@ -261,6 +273,7 @@ class Engine {
         deepLinkController,
         balanceTrackingController,
         accountAssetController,
+        wakuMessageController,
       ];
 
       for (const controller of controllers) {
@@ -296,6 +309,7 @@ class Engine {
         DeepLinkController: controllers[7],
         BalanceTrackingController: controllers[8],
         AccountAssetController: controllers[9],
+        WakuMessageController: controllers[10],
       };
 
       const {
@@ -891,6 +905,7 @@ export default {
       DeepLinkController,
       BalanceTrackingController,
       AccountAssetController,
+      WakuMessageController,
     } = instance.datamodel.state;
 
     // const modifiedCurrencyRateControllerState = {
@@ -916,6 +931,7 @@ export default {
       DeepLinkController,
       BalanceTrackingController,
       AccountAssetController,
+      WakuMessageController,
     };
   },
   get datamodel() {
