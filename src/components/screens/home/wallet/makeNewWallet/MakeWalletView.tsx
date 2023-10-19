@@ -54,18 +54,12 @@ const MakeWalletView = () => {
             validate={['required']}
             validationMessage={['지갑이름을 입력해주세요']}
             value={name}
-            style={{ marginTop: 30, fontSize: 20, fontWeight: 'bold' }}
-            charCounterStyle={{ fontWeight: 'bold', fontSize: 20 }}
+            style={styles.textField}
+            charCounterStyle={styles.charCounterStyle}
           />
-          <View
-            style={{
-              flex: 1,
-              justifyContent: 'flex-end',
-              alignItems: 'center',
-            }}
-          >
+          <View style={styles.buttonAndNoti}>
             {!isValidate && name.length !== 0 && (
-              <Text style={{ color: 'red', marginBottom: 15 }}>
+              <Text style={styles.notiText}>
                 {'영문 대, 소문자 및 숫자만 입력 가능해요.'}
               </Text>
             )}
@@ -111,5 +105,13 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     width: 340,
   },
+  buttonAndNoti: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  notiText: { color: 'red', marginBottom: 15 },
+  textField: { marginTop: 30, fontSize: 20, fontWeight: 'bold' },
+  charCounterStyle: { fontWeight: 'bold', fontSize: 20 },
 });
 export default MakeWalletView;

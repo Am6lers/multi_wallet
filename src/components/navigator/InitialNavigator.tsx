@@ -16,7 +16,9 @@ import MakeNewWallet from '../screens/home/wallet/makeNewWallet/index';
 import PinSetting from '../screens/home/wallet/makeNewWallet/PinSetting';
 import MakeDone from '../screens/home/wallet/makeDone/index';
 import Backup from '../screens/home/backup';
-
+import BackupFin from '../screens/home/backup/BackupFin';
+import ProvideWalletRecovery from '../screens/home/backup/ProvideWalletRecovery';
+import Wallet from '@components/screens/home/wallet';
 export interface LoginInfo {
   loginId: string;
   password: string;
@@ -87,10 +89,16 @@ const InitialStackNavigator = () => {
           animationTypeForReplace: 'push',
         }}
       />
+      <Stack.Screen name="Wallet" component={Wallet} />
       <Stack.Screen name="MainStackNavigator" component={MainStackNavigator} />
       <Stack.Screen name="MakeWalletView" component={MakeWalletView} />
       <Stack.Screen name="MakeNewWallet" component={MakeNewWallet} />
       <Stack.Screen name="Backup" component={Backup} />
+      <Stack.Screen name="BackupFin" component={BackupFin} />
+      <Stack.Screen
+        name="ProvideWalletRecovery"
+        component={ProvideWalletRecovery}
+      />
       {/* <Stack.Screen name="PinSetting" component={PinSetting} /> */}
     </Stack.Navigator>
   );

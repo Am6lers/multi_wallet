@@ -67,6 +67,31 @@ const resource = {
       inputNewPwd: '새로운 비밀번호를 입력해주세요',
     },
   },
+  backup: {
+    header: '지갑 백업하기',
+    notification: {
+      understand: '복구구문 및 개인 키 이해하기',
+      understandDetail:
+        '1. 복구구문 및 개인키가 있으면 지갑 비밀번호를 잊었을 때 지갑을 복구할 수 있어요.\n2. 복구구문과 개인키를 반드시 안전한 곳에 저장해주세요.\n3. 절대 이 정보를 다른 사람과 공유하지 마세요.',
+      agree: '동의하기',
+      agreeDetail:
+        '복구구문 및 개인키 분실 시 지갑을 복구할 수 없다는 사실을 인지합니다.',
+    },
+    backupSeed: {
+      notification: '내 지갑의 복구구문을\n백업하세요',
+      notificationDetail:
+        '복구구문 또는 개인키를 아래와 같은 순서로 종이에 적거나 안전한 곳에 보관하세요.\n\n해당 단어들을 이용하면 언제든지갑을 복구할 수 있어요.',
+      recovery: '복구구문',
+      privateKey: '개인키',
+      copy: '복사하기',
+    },
+    done: {
+      notification: '지갑이름을\n성공적으로 불러왔어요!',
+      notificationDetail:
+        '이제부터 Pockie와 함께 다양한 네트워크의\n디지털 자산을 안전하게 활용해보세요!',
+      complete: '완료',
+    },
+  },
 };
 
 export default resource;

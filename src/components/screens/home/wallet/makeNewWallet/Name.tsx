@@ -64,8 +64,8 @@ const Name = ({
             validate={['required']}
             validationMessage={[TL.t('createNewWallet.name.validation')]}
             value={nickname}
-            style={{ marginTop: 30, fontSize: 20, fontWeight: 'bold' }}
-            charCounterStyle={{ fontWeight: 'bold', fontSize: 20 }}
+            style={styles.textField}
+            charCounterStyle={styles.charCounterStyle}
           />
           <View
             style={{
@@ -75,7 +75,7 @@ const Name = ({
             }}
           >
             {!isValidate && nickname.length !== 0 && (
-              <Text style={{ color: 'red', marginBottom: 15 }}>
+              <Text style={styles.notiText}>
                 {TL.t('createNewWallet.name.notificationRightName')}
               </Text>
             )}
@@ -121,5 +121,8 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     width: 340,
   },
+  notiText: { color: 'red', marginBottom: 15 },
+  textField: { marginTop: 30, fontSize: 20, fontWeight: 'bold' },
+  charCounterStyle: { fontWeight: 'bold', fontSize: 20 },
 });
 export default Name;

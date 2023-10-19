@@ -70,7 +70,6 @@ const Wallet = () => {
             label={TL.t('createNewWallet.makeWallet')}
             backgroundColor={Colors.Navy}
             onPress={() => {
-              // navigation.navigate('MakeWalletView');
               navigation.navigate('MakeNewWallet');
             }}
           />

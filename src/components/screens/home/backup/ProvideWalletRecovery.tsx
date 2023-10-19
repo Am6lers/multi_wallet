@@ -9,16 +9,12 @@ import TL from '@translate/index';
 import { ParamListBase, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-const Backup = () => {
+const ProvideWalletRecovery = () => {
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
-  const [accetp, setAccept] = useState(false);
-  const handleToAccept = () => {
-    setAccept(!accetp);
+  const navigateToBackupFin = () => {
+    navigation.navigate('BackupFin');
   };
 
-  const navigateToPinSetting = () => {
-    navigation.navigate('ProvideWalletRecovery');
-  };
   return (
     <View style={styles.outline} useSafeArea>
       <Header title={TL.t('backup.header')} />
@@ -29,31 +25,49 @@ const Backup = () => {
         <View>
           <View style={styles.cards}>
             <View style={styles.backupIcon}>
-              <BackupIcon />
-            </View>
-            <View style={styles.cardBackground1}>
-              <Text text60M style={styles.cardTextBold}>
-                {TL.t('backup.notification.understand')}
+              <Text marginT-24 text50BL center>
+                {TL.t('backup.backupSeed.notification')}
               </Text>
-              <Text text70BO style={styles.cardTextFaint}>
-                {TL.t('backup.notification.understandDetail')}
+              <Text marginT-24 marginB-40 text80H>
+                {TL.t('backup.backupSeed.notificationDetail')}
               </Text>
             </View>
-            <View style={styles.cardBackground2}>
-              <View style={styles.textAndCheckbox}>
+            <View style={styles.cardBackground}>
+              <View style={styles.textAndButton}>
                 <Text text60M style={styles.cardTextBold}>
-                  {TL.t('backup.notification.agree')}
+                  {TL.t('backup.backupSeed.recovery')}
                 </Text>
-                <Checkbox
-                  marginR-16
+                <Button
                   marginT-16
-                  style={styles.checkbox}
-                  value={accetp}
-                  onValueChange={handleToAccept}
+                  marginR-16
+                  backgroundColor="#5F5BE2"
+                  label={TL.t('backup.backupSeed.copy')}
+                  labelStyle={{ fontWeight: '600' }}
+                  style={styles.clipboardButton}
+                  size={Button.sizes.small}
                 />
               </View>
               <Text text70BO style={styles.cardTextFaint}>
-                {TL.t('backup.notification.agreeDetail')}
+                {'여기는 복구구문'}
+              </Text>
+            </View>
+            <View style={styles.cardBackground} marginT-8>
+              <View style={styles.textAndButton}>
+                <Text text60M style={styles.cardTextBold}>
+                  {TL.t('backup.backupSeed.privateKey')}
+                </Text>
+                <Button
+                  marginT-16
+                  marginR-16
+                  backgroundColor="#5F5BE2"
+                  label={TL.t('backup.backupSeed.copy')}
+                  labelStyle={{ fontWeight: '600' }}
+                  style={styles.clipboardButton}
+                  size={Button.sizes.small}
+                />
+              </View>
+              <Text text70BO style={styles.cardTextFaint}>
+                {'여기는 개인키'}
               </Text>
             </View>
           </View>
@@ -64,11 +78,10 @@ const Backup = () => {
             backgroundColor={Colors.Navy}
             size={Button.sizes.large}
             borderRadius={15}
-            // 버튼 색상은 Figma 참고해서 수정할 것
             enableShadow={true}
             style={styles.button}
-            disabled={!accetp}
-            onPress={navigateToPinSetting}
+            disabled={false}
+            onPress={navigateToBackupFin}
           />
         </View>
       </ScrollView>
@@ -76,40 +89,30 @@ const Backup = () => {
   );
 };
 
-export default Backup;
+export default ProvideWalletRecovery;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'space-between',
     backgroundColor: Colors.Light0,
+    justifyContent: 'space-between',
   },
   outline: {
     backgroundColor: Colors.Light0,
     flex: 1,
   },
   backupIcon: {
-    flexDirection: 'row',
     justifyContent: 'center',
   },
   cards: {
     paddingHorizontal: Constants.PAGE_M1,
   },
-  cardBackground1: {
+  cardBackground: {
     zIndex: 1,
     elevation: 1,
     backgroundColor: Colors.White,
     width: 327,
-    height: 192,
-    borderRadius: 24,
-  },
-  cardBackground2: {
-    marginTop: 8,
-    zIndex: 1,
-    elevation: 1,
-    backgroundColor: Colors.White,
-    width: 327,
-    height: 112,
+    height: 130,
     borderRadius: 24,
   },
   cardTextBold: {
@@ -125,7 +128,7 @@ const styles = StyleSheet.create({
     paddingTop: 16,
     color: Colors.Gray,
   },
-  textAndCheckbox: {
+  textAndButton: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
@@ -136,6 +139,9 @@ const styles = StyleSheet.create({
   button: {
     marginBottom: 30,
     width: 340,
+  },
+  clipboardButton: {
+    borderRadius: 12,
   },
   footer: {
     alignItems: 'center',
