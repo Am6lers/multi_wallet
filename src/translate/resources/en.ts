@@ -95,6 +95,42 @@ const resource = {
       complete: 'Complete',
     },
   },
+  setting: {
+    top: {
+      all: 'ALL',
+    },
+    content: {
+      wallet: 'Wallet',
+      asset: 'Asset',
+      security: 'Security',
+      setting: 'Setting',
+      support: 'Support',
+    },
+    wallet: {
+      manage_wallet: 'Manage Wallet',
+      manage_token: 'Manage Token',
+    },
+    asset: {
+      send: 'Send',
+      receive: 'Receive',
+      send_nft: 'Sending an NFT',
+      transactions: 'Transactions',
+    },
+    security: {
+      password: 'Password and Biometrics',
+      connected_site: 'Manage connected sites',
+    },
+    setting: {
+      currency: 'Currency',
+      language: 'Language',
+      notification: 'Notifications',
+    },
+    support: {
+      faq: 'FAQ',
+      website: 'Website',
+      contact_feedback: 'Contact and Feedback',
+    },
+  },
 };
 
 export default resource;
