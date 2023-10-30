@@ -24,7 +24,6 @@ const Theme = {
   Pupple: '#5F5BE2',
   Pink: '#F561A6',
   Gray: '#B7BDD2',
-  Navy: '#0D2638',
 };
 
 const Palette = {
