@@ -50,6 +50,51 @@ const resource = {
   login: {
     title: 'Please enter your password to log in',
   },
+  createNewWallet: {
+    makeWallet: 'Make Wallet',
+    nickName: {
+      notificationWalletName: 'Please set a nickname',
+      walletName: 'Wallet Name',
+    },
+    wizard: {
+      settingWalletName: 'Set wallet name',
+      settingPin: 'Pin number setting',
+      complete: 'Complete',
+    },
+    name: {
+      validation: 'Please enter your wallet name.',
+      notificationRightName:
+        'Only uppercase and lowercase letters and numbers can be entered.',
+    },
+    pin: {
+      inputNewPwd: 'Please enter a new password.',
+    },
+  },
+  backup: {
+    header: 'Back up your wallet',
+    notification: {
+      understand: 'Understanding recovery syntax and private keys',
+      understandDetail:
+        '1. If you have the recovery phrase and private key, you can recover your wallet if you forget your wallet password.\n2. Be sure to save the recovery phrase and private key in a safe place.\n3. Never share this information with anyone.',
+      agree: 'Agree',
+      agreeDetail:
+        'I acknowledge that my wallet cannot be recovered if the recovery phrase and private key are lost.',
+    },
+    backupSeed: {
+      notification: "Back up your wallet's\n recovery phrase",
+      notificationDetail:
+        'Write the recovery phrase or private key on paper in the following order or store it in a safe place.\n\nYou can recover your wallet at any time using the corresponding words.',
+      recovery: 'recovery syntax',
+      privateKey: 'Private Key',
+      copy: 'Copy',
+    },
+    done: {
+      notification: 'The wallet name was successfully loaded!',
+      notificationDetail:
+        'From now on, use digital assets from various networks safely with Pockie!',
+      complete: 'Complete',
+    },
+  },
   setting: {
     top: {
       all: 'ALL',

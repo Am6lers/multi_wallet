@@ -4,15 +4,16 @@ import CommonButton from '@components/atoms/CommonButton';
 import Constants from '@constants/app';
 import { StyleSheet } from 'react-native';
 import TL from '@translate/index';
-import { ParamListBase, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { ParamListBase, useNavigation } from '@react-navigation/native';
 
-const SugestBackup = ({ moveToNext }: { moveToNext: () => void }) => {
+const SuggestBackup = ({ moveToNext }: { moveToNext: () => void }) => {
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
 
   const moveToBackup = () => {
     navigation.navigate('Backup');
   };
+
   return (
     <View style={styles.container}>
       <Text text40 style={styles.title}>
@@ -21,7 +22,10 @@ const SugestBackup = ({ moveToNext }: { moveToNext: () => void }) => {
       <CommonButton
         label={TL.t('initial.backup.backup')}
         secondLabel={TL.t('initial.backup.skip')}
+        // Go to backup
         onPress={moveToBackup}
+        // Skip
+        // 백업 뷰로 이동
         onPressOther={moveToNext}
         isMulti
       />
@@ -29,7 +33,7 @@ const SugestBackup = ({ moveToNext }: { moveToNext: () => void }) => {
   );
 };
 
-export default SugestBackup;
+export default SuggestBackup;
 
 const styles = StyleSheet.create({
   container: {
