@@ -90,7 +90,6 @@
     "react-native-aes-crypto-forked": "git+https://github.com/MetaMask/react-native-aes-crypto-forked.git#397d5db5250e8e7408294807965b5b9fd4ca6a25",
     "react-native-background-timer": "^2.4.1",
     "react-native-biometrics": "2.2.0",
-    "react-native-bip39": "^2.3.0",
     "react-native-camera": "^4.2.1",
     "react-native-crypto": "^2.1.0",
     "react-native-device-info": "8.4.8",
