@@ -14,7 +14,10 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 const BackupFin = () => {
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   const navigateToWallet = () => {
-    navigation.navigate('Wallet');
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'MainStackNavigator' }],
+    });
   };
   return (
     <View style={styles.outline} useSafeArea>
