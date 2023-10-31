@@ -2,12 +2,22 @@ import React from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { Text, View } from 'react-native-ui-lib';
 import GoBack from '@assets/icons/goBack.svg';
+import Add from '@assets/icons/Add.svg';
 import Constants from '@constants/app';
 import { ParamListBase, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-const Header = ({ title }: { title?: string }) => {
+const Header = ({
+  title,
+  rightIcon,
+  action,
+}: {
+  title?: string;
+  rightIcon?: string;
+  action?: () => void;
+}) => {
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
+
   return (
     <View style={styles.container}>
       <TouchableOpacity
@@ -17,6 +27,12 @@ const Header = ({ title }: { title?: string }) => {
         <GoBack />
       </TouchableOpacity>
       <Text text60BL>{title}</Text>
+
+      {rightIcon === 'add' && (
+        <TouchableOpacity style={styles.rightIcon} onPress={action}>
+          <Add />
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
@@ -35,5 +51,9 @@ const styles = StyleSheet.create({
   header: {
     position: 'absolute',
     left: 0,
+  },
+  rightIcon: {
+    position: 'absolute',
+    right: 0,
   },
 });

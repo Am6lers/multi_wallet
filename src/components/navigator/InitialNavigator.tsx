@@ -19,6 +19,8 @@ import Backup from '../screens/home/backup';
 import BackupFin from '../screens/home/backup/BackupFin';
 import ProvideWalletRecovery from '../screens/home/backup/ProvideWalletRecovery';
 import Wallet from '@components/screens/home/wallet';
+import AddToken from '../screens/home/settings/detail/manage/AddToken';
+import ManageToken from '../screens/home/settings/detail/manage/manage_token';
 export interface LoginInfo {
   loginId: string;
   password: string;
@@ -95,10 +97,12 @@ const InitialStackNavigator = () => {
       <Stack.Screen name="MakeNewWallet" component={MakeNewWallet} />
       <Stack.Screen name="Backup" component={Backup} />
       <Stack.Screen name="BackupFin" component={BackupFin} />
+      <Stack.Screen name="AddToken" component={AddToken} />
       <Stack.Screen
         name="ProvideWalletRecovery"
         component={ProvideWalletRecovery}
       />
+      <Stack.Screen name="ManageToken" component={ManageToken} />
       {/* <Stack.Screen name="PinSetting" component={PinSetting} /> */}
     </Stack.Navigator>
   );
