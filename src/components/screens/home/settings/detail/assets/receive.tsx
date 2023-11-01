@@ -7,12 +7,12 @@ import Constants from '@constants/app';
 const Receive = () => {
   return (
     <View style={styles.outline} useSafeArea>
-    <View style={styles.container}>
+      <View style={styles.container}>
         <Text>Manage Token</Text>
-    </View>
+      </View>
     </View>
   );
-}
+};
 const styles = StyleSheet.create({
   container: {
     flex: 1,

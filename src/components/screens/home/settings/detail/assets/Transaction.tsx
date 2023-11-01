@@ -4,15 +4,15 @@ import { Text, StyleSheet } from 'react-native';
 import Colors from '@constants/colors';
 import Constants from '@constants/app';
 
-const SendNFT = () => {
+const Transactions = () => {
   return (
     <View style={styles.outline} useSafeArea>
-    <View style={styles.container}>
+      <View style={styles.container}>
         <Text>Manage Token</Text>
-    </View>
+      </View>
     </View>
   );
-}
+};
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -24,5 +24,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SendNFT;
-
+export default Transactions;
