@@ -142,6 +142,11 @@ const resource = {
       selectToken: '추가할 토큰을 선택하세요',
     },
   },
+  assets: {
+    transaction: {
+      header: '거래내역',
+    },
+  },
 };
 
 export default resource;
