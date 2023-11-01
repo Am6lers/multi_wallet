@@ -62,10 +62,13 @@ const resource = {
     wallet: {
       manage_wallet: '지갑 관리',
       manage_token: '토큰 관리',
+      token: '토큰',
+      nft: 'NFT',
     },
     asset: {
       send: '보내기',
       receive: '받기',
+      send_token: '토큰 보내기',
       send_nft: 'NFT 보내기',
       transactions: '거래내역',
     },

@@ -1,42 +1,42 @@
-import React, { FC } from 'react';
+import React from 'react';
 import {
   SectionList,
   SectionListData,
   StyleSheet,
   ListRenderItem,
 } from 'react-native';
-// import Colors from '@constants/colors';
 import {
   Text,
   View,
   Colors,
   Spacings,
   BorderRadiuses,
-  Modifiers,
   TextField,
 } from 'react-native-ui-lib';
 import Constants from '@constants/app';
 import TL from '@translate/index';
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import {
+  ParamListBase,
+  RouteProp,
+  useNavigation,
+} from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from 'types/navigation';
-
-type SettingsNavigationProp = NativeStackNavigationProp<
-  RootStackParamList['APP']['Settings'],
-  'SettingScreen'
->;
+import SearchField from '@components/atoms/SearchField';
+import Icon from 'react-native-vector-icons/FontAwesome6';
 
 type SettingItem = {
   text?: string;
-  icon?: string;
+  icon: string;
   action?: () => void;
 };
 
 const renderItem: ListRenderItem<SettingItem> = ({ item, index }) => {
   return (
-    <View marginV-5 padding-10 key={`${item.text}+${index}`}>
+    <View left row marginV-5 padding-10 key={`${item.text}+${index}`}>
+      <View paddingH-5>
+        <Icon name={item.icon} size={30} color={Colors.black} />
+      </View>
       <Text text70BO onPress={item.action}>
-        {item.icon}
         {item.text}
       </Text>
     </View>
@@ -56,39 +56,39 @@ const renderSectionHeader = ({
 };
 
 const SettingList = () => {
-  const navigation = useNavigation<SettingsNavigationProp>();
+  const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   const manages = [
     {
-      text: TL.t('setting.wallet.manage_wallet'),
-      icon: '',
-      action: () => navigation.navigate('ManageWallet'),
+      text: TL.t('setting.wallet.token'),
+      icon: 'coins',
+      action: () => navigation.navigate('TokenList'),
     },
     {
-      text: TL.t('setting.wallet.manage_token'),
-      icon: '',
-      action: () => navigation.navigate('ManageToken'),
+      text: TL.t('setting.wallet.nft'),
+      icon: 'coins',
+      action: () => navigation.navigate('NFTList'),
     },
   ];
 
   const assets = [
     {
-      text: TL.t('setting.asset.send'),
-      icon: '',
-      action: () => navigation.navigate('Send'),
-    },
-    {
-      text: TL.t('setting.asset.receive'),
-      icon: '',
-      action: () => navigation.navigate('Receive'),
+      text: TL.t('setting.asset.send_token'),
+      icon: 'coins',
+      action: () => navigation.navigate('SendToken'),
     },
     {
       text: TL.t('setting.asset.send_nft'),
-      icon: '',
+      icon: 'coins',
       action: () => navigation.navigate('SendNFT'),
     },
     {
+      text: TL.t('setting.asset.receive'),
+      icon: 'coins',
+      action: () => navigation.navigate('Receive'),
+    },
+    {
       text: TL.t('setting.asset.transactions'),
-      icon: '',
+      icon: 'coins',
       action: () => navigation.navigate('Transactions'),
     },
   ];
@@ -96,46 +96,46 @@ const SettingList = () => {
   const securities = [
     {
       text: TL.t('setting.security.password'),
-      icon: '',
+      icon: 'coins',
       action: () => navigation.navigate('Password'),
     },
     {
       text: TL.t('setting.security.connected_site'),
-      icon: '',
+      icon: 'coins',
       action: () => navigation.navigate('ConnectedSite'),
     },
   ];
   const settings = [
     {
       text: TL.t('setting.setting.currency'),
-      icon: '',
+      icon: 'coins',
       action: () => navigation.navigate('Currency'),
     },
     {
       text: TL.t('setting.setting.language'),
-      icon: '',
+      icon: 'coins',
       action: () => navigation.navigate('Language'),
     },
     {
       text: TL.t('setting.setting.notification'),
-      icon: '',
+      icon: 'coins',
       action: () => navigation.navigate('Notification'),
     },
   ];
   const supports = [
     {
       text: TL.t('setting.support.faq'),
-      icon: '',
+      icon: 'coins',
       action: () => navigation.navigate('FAQ'),
     },
     {
       text: TL.t('setting.support.website'),
-      icon: '',
+      icon: 'coins',
       action: () => navigation.navigate('Website'),
     },
     {
       text: TL.t('setting.support.contact_feedback'),
-      icon: '',
+      icon: 'coins',
       action: () => navigation.navigate('ContactFeedback'),
     },
   ];
@@ -174,28 +174,14 @@ const SettingList = () => {
   );
 };
 
-const SearchField = () => {
-  return (
-    <View>
-      <TextField
-        marginV-30
-        marginH-20
-        placeholder={'⌥ Search for features'}
-        returnKeyType="search"
-        containerStyle={styles.search}
-      />
-    </View>
-  );
-};
-
 const SettingScreen = () => {
   return (
     <View style={styles.outline} useSafeArea>
       <View style={styles.container}>
-        <Text grey40 text50BO>
+        <Text grey40 text50BO marginT-20>
           {TL.t('setting.top.all')}
         </Text>
-        <SearchField />
+        <SearchField text={'⌥ Search for features'} />
         <SettingList />
       </View>
     </View>
@@ -210,11 +196,6 @@ const styles = StyleSheet.create({
   },
   outline: {
     flex: 1,
-  },
-  search: {
-    borderRadius: BorderRadiuses.br30,
-    backgroundColor: Colors.grey70,
-    padding: Spacings.s3,
   },
 });
 

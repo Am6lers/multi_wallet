@@ -64,10 +64,13 @@ const resource = {
     wallet: {
       manage_wallet: 'Manage Wallet',
       manage_token: 'Manage Token',
+      token: 'Token',
+      nft: 'NFT',
     },
     asset: {
       send: 'Send',
       receive: 'Receive',
+      send_token: 'Sending a token',
       send_nft: 'Sending an NFT',
       transactions: 'Transactions',
     },
