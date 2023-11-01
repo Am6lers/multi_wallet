@@ -7,6 +7,7 @@ import {
   View,
   Button,
   Switch,
+  Image,
 } from 'react-native-ui-lib';
 import { StyleSheet, ScrollView, FlatList } from 'react-native';
 import Colors from '@constants/colors';
@@ -25,14 +26,54 @@ interface TokenItem {
   isShow: boolean;
 }
 
-const data: TokenItem[] = new Array(10).fill(0).map((_, index) => ({
-  id: index,
-  name: 'Token ' + index,
-  symbol: 'SYM' + index,
-  balance: 'Balance ' + index,
-  price: 'Price ' + index,
-  isShow: true,
-}));
+const dummyDatas: TokenItem[] = [
+  {
+    id: 0,
+    name: 'Polygon',
+    symbol:
+      'https://raw.githubusercontent.com/bifrost-platform/AssetInfo/master/Assets/polygon/coin/coinImage.png',
+    balance: '00.0000 MATIC',
+    price: '$1,000.00',
+    isShow: true,
+  },
+  {
+    id: 1,
+    name: 'Ethereum',
+    symbol:
+      'https://raw.githubusercontent.com/bifrost-platform/AssetInfo/master/Assets/ethereum/coin/coinImage.png',
+    balance: '00.0000 ETH',
+    price: '$1,000.00',
+    isShow: true,
+  },
+  {
+    id: 2,
+    name: 'Avalanche',
+    symbol:
+      'https://raw.githubusercontent.com/bifrost-platform/AssetInfo/master/Assets/avalanche/coin/coinImage.png',
+    balance: '00.0000 AVAX',
+    price: '$1,000.00',
+    isShow: true,
+  },
+  {
+    id: 3,
+    name: 'Binance',
+    symbol:
+      'https://raw.githubusercontent.com/bifrost-platform/AssetInfo/master/Assets/binance/coin/coinImage.png',
+    balance: '00.0000 BNB',
+    price: '$1,000.00',
+    isShow: true,
+  },
+  {
+    id: 4,
+    name: 'Klaytn',
+    symbol:
+      'https://raw.githubusercontent.com/bifrost-platform/AssetInfo/master/Assets/klaytn/coin/coinImage.png',
+    balance: '00.0000 KLAY',
+    price: '$1,000.00',
+    isShow: true,
+  },
+];
+
 const TokenListItem: React.FC<{ item: TokenItem }> = ({ item }) => {
   const [isShow, setIsShow] = useState(item.isShow);
 
@@ -52,11 +93,21 @@ const TokenListItem: React.FC<{ item: TokenItem }> = ({ item }) => {
       }}
     >
       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-        <View paddingL-10 paddingR-10 paddingT-5>
-          <Text>{item.name}</Text>
-          <Text>{item.symbol}</Text>
-          <Text>{item.balance}</Text>
-          <Text>{item.price}</Text>
+        <View paddingL-10 paddingR-10 paddingT-5 style={styles.tokenCard}>
+          <View>
+            <Image
+              marginT-15
+              source={{
+                uri: item.symbol,
+              }}
+              style={styles.image}
+            />
+          </View>
+          <View>
+            <Text text70BO>{item.name}</Text>
+            <Text>{item.balance}</Text>
+            <Text>{item.price}</Text>
+          </View>
         </View>
         <Switch
           marginT-25
@@ -83,15 +134,14 @@ const ManageToken = () => {
 
   return (
     <View style={styles.outline} useSafeArea>
-      <Header title={'토큰 관리'} rightIcon="add" action={moveToAddToken} />
-      {/* <ScrollView
-        contentContainerStyle={styles.container}
-        showsVerticalScrollIndicator={false}
-      > */}
+      <Header
+        title={TL.t('tokenManagement.assets.header')}
+        rightIcon="add"
+        action={moveToAddToken}
+      />
       <SearchField onTextChange={handleSearchTextChange} />
       <AssertScreen />
       <TokenListCard searchText={searchText} />
-      {/* </ScrollView> */}
     </View>
   );
 };
@@ -106,7 +156,7 @@ const SearchField = ({
       <TextField
         marginH-20
         marginB-30
-        placeholder={'🔍 이름/주소로 토큰을 검색해보세요'}
+        placeholder={TL.t('tokenManagement.assets.search')}
         // returnKeyType="search"
         containerStyle={styles.search}
         onChangeText={onTextChange}
@@ -115,27 +165,37 @@ const SearchField = ({
   );
 };
 
+const totalAsset = dummyDatas
+  .reduce((acc, item) => {
+    const priceNumber = parseFloat(
+      item.price.replace('$', '').replace(',', ''),
+    );
+    return acc + priceNumber;
+  }, 0)
+  .toFixed(2);
+
 const AssertScreen = () => {
   return (
-    <View marginB-10 style={styles.assert}>
+    <View marginB-10 style={styles.asset}>
       <Text color={Colors.Gray} text60BL marginB-10>
-        {'총 자산'}
+        {TL.t('tokenManagement.assets.total')}
       </Text>
-      <Text text30BO style={styles.assertDeco}>
-        {'$0,000,000.00'}
+      <Text text30BO style={styles.assetDeco}>
+        {/* {'$0,000,000.00'} */}
+        {'$' + totalAsset}
       </Text>
-      <Text color={Colors.Gray}>{'숨겨진 자산이 포함된 금액이에요.'}</Text>
+      <Text color={Colors.Gray}>{TL.t('tokenManagement.assets.sub')}</Text>
     </View>
   );
 };
 
 const TokenListCard: React.FC<{ searchText: string }> = ({ searchText }) => {
   const filteredData = searchText
-    ? data.filter(
+    ? dummyDatas.filter(
         item =>
           item.name.includes(searchText) || item.balance.includes(searchText),
       )
-    : data;
+    : dummyDatas;
   return (
     <View
       style={{
@@ -168,11 +228,11 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.White,
     padding: Spacings.s3,
   },
-  assert: {
+  asset: {
     alignItems: 'center',
     justifyContent: 'center',
   },
-  assertDeco: {
+  assetDeco: {
     textDecorationLine: 'underline',
     textDecorationStyle: 'solid',
     textDecorationColor: 'gray',
@@ -187,6 +247,15 @@ const styles = StyleSheet.create({
   flatlist: {
     backgroundColor: Colors.White,
     borderRadius: BorderRadiuses.br60,
+  },
+  image: {
+    width: 40,
+    height: 40,
+    borderRadius: BorderRadiuses.br20,
+    marginRight: Constants.PAGE_M2,
+  },
+  tokenCard: {
+    flexDirection: 'row',
   },
 });
 
