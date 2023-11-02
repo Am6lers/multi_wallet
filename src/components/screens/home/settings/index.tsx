@@ -1,11 +1,10 @@
-import React, { FC } from 'react';
+import React from 'react';
 import {
   SectionList,
   SectionListData,
   StyleSheet,
   ListRenderItem,
 } from 'react-native';
-// import Colors from '@constants/colors';
 import {
   Text,
   View,
@@ -17,26 +16,24 @@ import {
 } from 'react-native-ui-lib';
 import Constants from '@constants/app';
 import TL from '@translate/index';
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { ParamListBase, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from 'types/navigation';
-
-type SettingsNavigationProp = NativeStackNavigationProp<
-  RootStackParamList['APP']['Settings'],
-  'SettingScreen'
->;
+import SearchField from '@components/atoms/SearchField';
+import Icon from 'react-native-vector-icons/FontAwesome6';
 
 type SettingItem = {
   text?: string;
-  icon?: string;
+  icon: string;
   action?: () => void;
 };
 
 const renderItem: ListRenderItem<SettingItem> = ({ item, index }) => {
   return (
-    <View marginV-5 padding-10 key={`${item.text}+${index}`}>
+    <View left row marginV-5 padding-10 key={`${item.text}+${index}`}>
+      <View paddingH-5>
+        <Icon name={item.icon} size={30} color={Colors.black} />
+      </View>
       <Text text70BO onPress={item.action}>
-        {item.icon}
         {item.text}
       </Text>
     </View>
@@ -56,7 +53,7 @@ const renderSectionHeader = ({
 };
 
 const SettingList = () => {
-  const navigation = useNavigation<SettingsNavigationProp>();
+  const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   const manages = [
     {
       text: TL.t('setting.wallet.manage_wallet'),
@@ -174,20 +171,6 @@ const SettingList = () => {
   );
 };
 
-const SearchField = () => {
-  return (
-    <View>
-      <TextField
-        marginV-30
-        marginH-20
-        placeholder={'⌥ Search for features'}
-        returnKeyType="search"
-        containerStyle={styles.search}
-      />
-    </View>
-  );
-};
-
 const SettingScreen = () => {
   return (
     <View style={styles.outline} useSafeArea>
@@ -195,7 +178,7 @@ const SettingScreen = () => {
         <Text grey40 text50BO>
           {TL.t('setting.top.all')}
         </Text>
-        <SearchField />
+        <SearchField text={'⌥ Search for features'} />
         <SettingList />
       </View>
     </View>
@@ -210,11 +193,6 @@ const styles = StyleSheet.create({
   },
   outline: {
     flex: 1,
-  },
-  search: {
-    borderRadius: BorderRadiuses.br30,
-    backgroundColor: Colors.grey70,
-    padding: Spacings.s3,
   },
 });
 

@@ -21,6 +21,20 @@ import ProvideWalletRecovery from '../screens/home/backup/ProvideWalletRecovery'
 import Wallet from '@components/screens/home/wallet';
 import AddToken from '../screens/home/settings/detail/manage/AddToken';
 import ManageToken from '../screens/home/settings/detail/manage/manage_token';
+import Send from '../screens/home/settings/detail/assets/Send';
+import SendToken from '../screens/home/settings/detail/assets/SendToken';
+import SetSendTokenWhere from '../screens/home/settings/detail/assets/SetSendTokenWhere';
+import SetSendTokenCharge from '../screens/home/settings/detail/assets/SetSendTokenCharge';
+import SetSendTokenAmount from '../screens/home/settings/detail/assets/SetSendTokenAmount';
+import SetSendNFTAmount from '../screens/home/settings/detail/assets/SetSendNFTAmount';
+import SetSendNFTCharge from '../screens/home/settings/detail/assets/SetSendNFTCharge';
+import SetSendNFTWhere from '../screens/home/settings/detail/assets/SetSendNFTWhere';
+import SendNFT from '../screens/home/settings/detail/assets/SendNFT';
+import ManageWallet from '../screens/home/settings/detail/manage/manage_wallet';
+import TokenList from '../screens/home/settings/detail/manage/TokenList';
+import TokenDetail from '../screens/home/settings/detail/manage/TokenDetail';
+import NFTDetail from '../screens/home/settings/detail/manage/NFTDetail';
+import NFTList from '../screens/home/settings/detail/manage/NFTList';
 import Transactions from '../screens/home/settings/detail/assets/transactions';
 
 export interface LoginInfo {
@@ -105,7 +119,22 @@ const InitialStackNavigator = () => {
         component={ProvideWalletRecovery}
       />
       <Stack.Screen name="ManageToken" component={ManageToken} />
+      <Stack.Screen name="ManageWallet" component={ManageWallet} />
+      <Stack.Screen name="TokenList" component={TokenList} />
+      <Stack.Screen name="TokenDetail" component={TokenDetail} />
+      <Stack.Screen name="NFTList" component={NFTList} />
+      <Stack.Screen name="NFTDetail" component={NFTDetail} />  
+      <Stack.Screen name="Send" component={Send} />
+      <Stack.Screen name="SendToken" component={SendToken} />
+      <Stack.Screen name="SetSendTokenWhere" component={SetSendTokenWhere} />
+      <Stack.Screen name="SetSendTokenAmount" component={SetSendTokenAmount} />
+      <Stack.Screen name="SetSendTokenCharge" component={SetSendTokenCharge} />
+      <Stack.Screen name="SendNFT" component={SendNFT} />
+      <Stack.Screen name="SetSendNFTWhere" component={SetSendNFTWhere} />
+      <Stack.Screen name="SetSendNFTAmount" component={SetSendNFTAmount} />
+      <Stack.Screen name="SetSendNFTCharge" component={SetSendNFTCharge} />
       <Stack.Screen name="Transactions" component={Transactions} />
+      {/* <Stack.Screen name="PinSetting" component={PinSetting} /> */}
     </Stack.Navigator>
   );
 };
