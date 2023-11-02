@@ -131,6 +131,20 @@ const resource = {
       contact_feedback: 'Contact and Feedback',
     },
   },
+  tokenManagement: {
+    assets: {
+      header: 'Token Management',
+      total: 'total assets',
+      search: '🔍 Search for tokens by name/address',
+      sub: 'This amount includes hidden assets.',
+    },
+    addToken: {
+      notification: 'Please enter the address of the token to add',
+      placeholder: 'Please enter the address of the token you want to add',
+      error: 'There are no search results',
+      selectToken: 'Select the token you want to add',
+    },
+  },
 };
 
 export default resource;

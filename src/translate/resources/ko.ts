@@ -128,6 +128,20 @@ const resource = {
       contact_feedback: '문의 및 피드백',
     },
   },
+  tokenManagement: {
+    assets: {
+      header: '토큰 관리',
+      total: '총 자산',
+      search: '🔍 이름/주소로 토큰을 검색해보세요',
+      sub: '숨겨진 자산이 포함된 금액이에요.',
+    },
+    addToken: {
+      notification: '추가할 토큰의 주소를 입력해주세요',
+      placeholder: '추가하고 싶은 토큰의 주소를 입력해주세요',
+      error: '검색 결과가 없어요',
+      selectToken: '추가할 토큰을 선택하세요',
+    },
+  },
 };
 
 export default resource;
