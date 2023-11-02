@@ -21,6 +21,8 @@ import ProvideWalletRecovery from '../screens/home/backup/ProvideWalletRecovery'
 import Wallet from '@components/screens/home/wallet';
 import AddToken from '../screens/home/settings/detail/manage/AddToken';
 import ManageToken from '../screens/home/settings/detail/manage/manage_token';
+import Transactions from '../screens/home/settings/detail/assets/transactions';
+
 export interface LoginInfo {
   loginId: string;
   password: string;
@@ -103,7 +105,7 @@ const InitialStackNavigator = () => {
         component={ProvideWalletRecovery}
       />
       <Stack.Screen name="ManageToken" component={ManageToken} />
-      {/* <Stack.Screen name="PinSetting" component={PinSetting} /> */}
+      <Stack.Screen name="Transactions" component={Transactions} />
     </Stack.Navigator>
   );
 };
