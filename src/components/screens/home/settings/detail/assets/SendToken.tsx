@@ -17,55 +17,63 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import SearchField from '@components/atoms/SearchField';
 
 export interface TokenItem {
-  title: string;
-  image: string;
-  value: number;
-  amount: number;
-};
+  id: number;
+  name: string;
+  symbol: string;
+  balance: string;
+  price: string;
+}
 
-export const Tokenitems: TokenItem[] = [
+const dummyDatas: TokenItem[] = [
   {
-    title: 'Etherium',
-    image:
-      'https://upload.wikimedia.org/wikipedia/commons/0/05/Ethereum_logo_2014.svg',
-    value: 8850,
-    amount: 4.92,
+    id: 0,
+    name: 'Ethereum',
+    symbol:
+      'https://raw.githubusercontent.com/bifrost-platform/AssetInfo/master/Assets/ethereum/coin/coinImage.png',
+    balance: '4.92 ETH',
+    price: '$8,850.40',
   },
   {
-    title: 'Etherium',
-    image:
-      'https://upload.wikimedia.org/wikipedia/commons/0/05/Ethereum_logo_2014.svg',
-    value: 1000,
-    amount: 4.92,
+    id: 1,
+    name: 'Ethereum',
+    symbol:
+      'https://raw.githubusercontent.com/bifrost-platform/AssetInfo/master/Assets/ethereum/coin/coinImage.png',
+    balance: '00.0000 ETH',
+    price: '$1,000.00',
   },
   {
-    title: 'Bifrost',
-    image:
-      'https://upload.wikimedia.org/wikipedia/commons/0/05/Ethereum_logo_2014.svg',
-    value: 1000,
-    amount: 4.92,
+    id: 2,
+    name: 'Bifrost',
+    symbol:
+      'https://raw.githubusercontent.com/bifrost-platform/AssetInfo/master/Assets/bifrost/coin/coinImage.png',
+    balance: '00.0000 BFC',
+    price: '$1,000.00',
   },
   {
-    title: 'Bifrost',
-    image:
-      'https://upload.wikimedia.org/wikipedia/commons/0/05/Ethereum_logo_2014.svg',
-    value: 1000,
-    amount: 4.92,
+    id: 3,
+    name: 'Bifrost',
+    symbol:
+      'https://raw.githubusercontent.com/bifrost-platform/AssetInfo/master/Assets/bifrost/coin/coinImage.png',
+    balance: '00.0000 BFC',
+    price: '$1,000.00',
   },
   {
-    title: 'USD Coin',
-    image: 'https://cryptologos.cc/logos/usd-coin-usdc-logo.svg?v=026',
-    value: 1000,
-    amount: 4.92,
+    id: 4,
+    name: 'USD Coin',
+    symbol:
+      'https://raw.githubusercontent.com/bifrost-platform/AssetInfo/master/Assets/klaytn/coin/coinImage.png',
+    balance: '00.0000 USDC',
+    price: '$1,000.00',
   },
   {
-    title: 'USD Coin',
-    image: 'https://cryptologos.cc/logos/usd-coin-usdc-logo.svg?v=026',
-    value: 1000,
-    amount: 4.92,
+    id: 4,
+    name: 'USD Coin',
+    symbol:
+      'https://raw.githubusercontent.com/bifrost-platform/AssetInfo/master/Assets/klaytn/coin/coinImage.png',
+    balance: '00.0000 USDC',
+    price: '$1,000.00',
   },
 ];
-
 
 const TokenListView = () => {
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
@@ -75,36 +83,34 @@ const TokenListView = () => {
 
   return (
     <GridList
-      data={Tokenitems}
+      data={dummyDatas}
       renderItem={({ item, index }) => (
         <ListItem onPress={() => ItemPress(item)} style={styles.charge}>
           <ListItem.Part left>
             <View>
               <Image
                 source={{
-                  uri: 'https://upload.wikimedia.org/wikipedia/commons/0/05/Ethereum_logo_2014.svg',
+                  uri: item.symbol,
                 }}
-                style={{ maxWidth: 30, maxHeight: 30 }}
+                style={{ width: 40, height: 40 }}
               />
             </View>
           </ListItem.Part>
           <ListItem.Part middle column>
             <ListItem.Part>
-              <View>
-                <Text text70BO numberOfLines={1}>
-                  Etherium
-                </Text>
+              <View marginL-5>
+                <Text text70BO>{item.name}</Text>
               </View>
-              <View>
-                <Text>$8,850.40</Text>
-                <Text>4.92ETH</Text>
+              <View right marginR-25>
+                <Text>{item.price}</Text>
+                <Text>{item.balance}</Text>
               </View>
             </ListItem.Part>
           </ListItem.Part>
         </ListItem>
       )}
       numColumns={1}
-      keyExtractor={(item, index) => `${item.title}+${index}`}
+      keyExtractor={(item, index) => `${item.name}+${index}`}
     />
   );
 };

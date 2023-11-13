@@ -15,6 +15,8 @@ import { StyleSheet, ActivityIndicator } from 'react-native';
 import Constants from '@constants/app';
 import TL from '@translate/index';
 import { TokenItem } from './SendToken';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { ParamListBase, useNavigation } from '@react-navigation/native';
 
 interface EstimatedFeesProps {
   isSend: boolean;
@@ -29,7 +31,13 @@ interface SetSendTokenChargeProps {
   };
 }
 
-const SendButton = ({ isSend, setIsSend }: EstimatedFeesProps) => {
+const SendButton = ({
+  item,
+  isSend,
+  setIsSend,
+}: EstimatedFeesProps & { item: TokenItem }) => {
+  const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
+
   return (
     <View>
       {!isSend && (
@@ -50,6 +58,12 @@ const SendButton = ({ isSend, setIsSend }: EstimatedFeesProps) => {
             size="large"
             label="Go to Wallet"
             onPress={() => setIsSend(false)}
+          />
+          <Button
+            br40
+            marginV-20
+            label="result"
+            onPress={() => navigation.navigate('SendTokenResult', { item: item })}
           />
         </View>
       )}
@@ -76,14 +90,14 @@ const AssetDisplay = ({
         <View marginT-10 row>
           <Image
             borderRadius={BorderRadiuses.br100}
-            source={{ uri: item.image }}
-            style={{ maxWidth: 100, maxHeight: 100 }}
+            source={{ uri: item.symbol }}
+            style={{ width: 100, height: 100 }}
           />
         </View>
 
-        <Text text50>{item.title}</Text>
+        <Text text50>{item.name}</Text>
         <Text text70BO grey40>
-          {item.value}
+          {item.balance}
         </Text>
       </View>
     </View>
@@ -112,9 +126,9 @@ const ChargeItem = () => {
         <View>
           <Image
             source={{
-              uri: 'https://upload.wikimedia.org/wikipedia/commons/0/05/Ethereum_logo_2014.svg',
+              uri: 'https://raw.githubusercontent.com/bifrost-platform/AssetInfo/master/Assets/ethereum/coin/coinImage.png',
             }}
-            style={{ maxWidth: 30, maxHeight: 30 }}
+            style={{ width: 30, height: 30 }}
           />
         </View>
       </ListItem.Part>
@@ -188,30 +202,21 @@ const EstimatedFees = ({ isSend, setIsSend }: EstimatedFeesProps) => {
           </Text>
           <View row spread style={styles.charge}>
             <View>
-              <ListItem>
-                <ListItem.Part left>
-                  <View>
-                    <Image
-                      source={{
-                        uri: 'https://upload.wikimedia.org/wikipedia/commons/0/05/Ethereum_logo_2014.svg',
-                      }}
-                      style={{ maxWidth: 30, maxHeight: 30 }}
-                    />
-                  </View>
-                </ListItem.Part>
-                <ListItem.Part middle column>
-                  <ListItem.Part>
-                    <View>
-                      <Text>$00.00</Text>
-                      <Text>0.000ETH</Text>
-                    </View>
-                    <View>
-                      <SetFeesModal />
-                    </View>
-                  </ListItem.Part>
-                </ListItem.Part>
-              </ListItem>
+              <Image
+                source={{
+                  uri: 'https://raw.githubusercontent.com/bifrost-platform/AssetInfo/master/Assets/ethereum/coin/coinImage.png',
+                }}
+                style={{ width: 40, height: 40 }}
+              />
             </View>
+            <View>
+              <Text text70BO>0.01ETH</Text>
+              <Text text80 grey40>
+                $0.00
+              </Text>
+            </View>
+
+            <SetFeesModal />
           </View>
         </View>
       )}
@@ -243,7 +248,7 @@ const SetSendTokenCharge = ({ route }: SetSendTokenChargeProps) => {
         <AssetDisplay item={item} isSend={isSend} setIsSend={setIsSend} />
         <Address />
         <EstimatedFees isSend={isSend} setIsSend={setIsSend} />
-        <SendButton isSend={isSend} setIsSend={setIsSend} />
+        <SendButton item={item} isSend={isSend} setIsSend={setIsSend} />
       </View>
     </View>
   );

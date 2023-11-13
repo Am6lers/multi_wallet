@@ -9,16 +9,9 @@ import {
   Text,
   View,
 } from 'react-native-ui-lib';
+import Constants from '@constants/app';
 import { ParamListBase, useNavigation } from '@react-navigation/native';
-
-interface NFTItem {
-  title?: string;
-  image?: string;
-  description?: string;
-  standard?: string;
-  soulbound?: boolean;
-  amount: number;
-};
+import { NFTItem } from '../assets/SendNFT';
 
 interface NFTDetailProps {
   route: {
@@ -36,22 +29,36 @@ const NFTDetail = ({ route }: NFTDetailProps) => {
       <View flex center marginT-20>
         <Image
           source={{ uri: item.image }}
-          style={{ width: 200, height: 200 }}
+          style={{ width: 300, height: 300 }}
         />
-        <Text text70BO>{item.standard}</Text>
       </View>
       <View flex padding-40>
+        <View row padding-5>
+          <Image
+            source={{
+              uri: 'https://raw.githubusercontent.com/bifrost-platform/AssetInfo/master/Assets/ethereum/coin/coinImage.png',
+            }}
+            style={{ width: 30, height: 30 }}
+          />
+          <Text marginL-10 text70 grey40>
+            {item.standard}
+          </Text>
+        </View>
         {item.soulbound && (
-          <View marginB-10>
-            <Text text70BO blue20>Soulbound Token</Text>
+          <View padding-5>
+            <Text text70BO blue20>
+              Soulbound Token
+            </Text>
             <Text text80BO grey40>
               Soulbound Token(SBT)는 소유자에게 귀속되며, 거래가 불가능한 토큰
               입니다.
             </Text>
           </View>
         )}
-        <Text text50BO>{item.title}</Text>
-        <Text text70BO>{item.description}</Text>
+        <View>
+          <Text text50BO>{item.name}</Text>
+          <Text text70BO>{item.description}</Text>
+        </View>
       </View>
       <View center>
         <Button

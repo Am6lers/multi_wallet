@@ -89,7 +89,9 @@ const NextButton = ({ item }: { item: TokenItem }) => {
         marginV-20
         size="large"
         label="Next"
-        onPress={() => navigation.navigate('SetSendTokenCharge', { item: item })}
+        onPress={() =>
+          navigation.navigate('SetSendTokenCharge', { item: item })
+        }
       />
     </View>
   );
@@ -119,18 +121,21 @@ const AssetInfo = ({ item }: { item: TokenItem }) => {
         <View>
           <Image
             source={{
-              uri: 'https://upload.wikimedia.org/wikipedia/commons/0/05/Ethereum_logo_2014.svg',
+              uri: item.symbol,
             }}
             borderRadius={BorderRadiuses.br100}
-            style={{ maxWidth: 50, maxHeight: 50 }}
+            style={{ width: 50, height: 50 }}
           />
         </View>
       </ListItem.Part>
       <ListItem.Part middle column>
         <ListItem.Part>
           <View paddingL-20>
-            <Text text70BO>Collection Name</Text>
-            <Text text70BO>NFT Name {item.title}</Text>
+            <Text text70BO>{item.name}</Text>
+          </View>
+          <View right>
+            <Text text70BO>{item.price}</Text>
+            <Text text80BO grey40>{item.balance}</Text>
           </View>
         </ListItem.Part>
       </ListItem.Part>

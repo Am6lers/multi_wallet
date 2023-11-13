@@ -15,7 +15,8 @@ import { StyleSheet, ActivityIndicator } from 'react-native';
 import Constants from '@constants/app';
 import TL from '@translate/index';
 import { NFTItem } from './SendNFT';
-
+import { ParamListBase, useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 interface EstimatedFeesProps {
   isSend: boolean;
@@ -30,7 +31,13 @@ interface SetSendNFTChargeProps {
   };
 }
 
-const SendButton = ({ isSend, setIsSend }: EstimatedFeesProps) => {
+const SendButton = ({
+  item,
+  isSend,
+  setIsSend,
+}: EstimatedFeesProps & { item: NFTItem }) => {
+  const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
+
   return (
     <View>
       {!isSend && (
@@ -51,6 +58,12 @@ const SendButton = ({ isSend, setIsSend }: EstimatedFeesProps) => {
             size="large"
             label="Go to Wallet"
             onPress={() => setIsSend(false)}
+          />
+          <Button
+            br40
+            marginV-20
+            label="result"
+            onPress={() => navigation.navigate('SendNFTResult', { item: item })}
           />
         </View>
       )}
@@ -82,7 +95,7 @@ const AssetDisplay = ({
           />
         </View>
 
-        <Text text50>{item.title}</Text>
+        <Text text50>{item.name}</Text>
         <Text text70BO grey40>
           {item.standard}
         </Text>
@@ -113,9 +126,9 @@ const ChargeItem = () => {
         <View>
           <Image
             source={{
-              uri: 'https://upload.wikimedia.org/wikipedia/commons/0/05/Ethereum_logo_2014.svg',
+              uri: 'https://raw.githubusercontent.com/bifrost-platform/AssetInfo/master/Assets/ethereum/coin/coinImage.png',
             }}
-            style={{ maxWidth: 30, maxHeight: 30 }}
+            style={{ width: 30, height: 30 }}
           />
         </View>
       </ListItem.Part>
@@ -145,7 +158,7 @@ const SetFeesModal = () => {
         onRequestClose={() => setVisible(!visible)}
         presentationStyle="formSheet"
       >
-        <View style={{ maxHeight: '50%' }}>
+        <View style={{ height: '50%' }}>
           <View padding-30 row spread>
             <Text text50BO>Set up fees</Text>
             <Button
@@ -187,32 +200,23 @@ const EstimatedFees = ({ isSend, setIsSend }: EstimatedFeesProps) => {
           <Text text70BO marginB-10>
             Estimated fees
           </Text>
-          <View row spread style={styles.charge}>
+          <View row style={styles.charge}>
             <View>
-              <ListItem>
-                <ListItem.Part left>
-                  <View>
-                    <Image
-                      source={{
-                        uri: 'https://upload.wikimedia.org/wikipedia/commons/0/05/Ethereum_logo_2014.svg',
-                      }}
-                      style={{ maxWidth: 30, maxHeight: 30 }}
-                    />
-                  </View>
-                </ListItem.Part>
-                <ListItem.Part middle column>
-                  <ListItem.Part>
-                    <View>
-                      <Text>$00.00</Text>
-                      <Text>0.000ETH</Text>
-                    </View>
-                    <View>
-                      <SetFeesModal />
-                    </View>
-                  </ListItem.Part>
-                </ListItem.Part>
-              </ListItem>
+              <Image
+                source={{
+                  uri: 'https://raw.githubusercontent.com/bifrost-platform/AssetInfo/master/Assets/ethereum/coin/coinImage.png',
+                }}
+                style={{ width: 40, height: 40 }}
+              />
             </View>
+            <View row center>
+              <Text text70BO>0.01ETH</Text>
+              <Text text80 grey40>
+                $0.00
+              </Text>
+            </View>
+
+            <SetFeesModal />
           </View>
         </View>
       )}
@@ -244,7 +248,7 @@ const SetSendNFTCharge = ({ route }: SetSendNFTChargeProps) => {
         <AssetDisplay item={item} isSend={isSend} setIsSend={setIsSend} />
         <Address />
         <EstimatedFees isSend={isSend} setIsSend={setIsSend} />
-        <SendButton isSend={isSend} setIsSend={setIsSend} />
+        <SendButton item={item} isSend={isSend} setIsSend={setIsSend} />
       </View>
     </View>
   );
@@ -267,6 +271,7 @@ const styles = StyleSheet.create({
   charge: {
     backgroundColor: Colors.grey80,
     borderRadius: BorderRadiuses.br50,
+    justifyContent: 'space-between',
     padding: Spacings.s3,
   },
   paste: {
@@ -292,9 +297,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   modal: {
-    justifyContent: 'flex-start',
+    justifyContent: 'flex-end',
     alignItems: 'center',
-    height: 200,
   },
   image: {
     width: 40,

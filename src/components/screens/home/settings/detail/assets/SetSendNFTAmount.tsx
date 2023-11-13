@@ -119,10 +119,10 @@ const AssetInfo = ({ item }: { item: NFTItem }) => {
         <View>
           <Image
             source={{
-              uri: 'https://upload.wikimedia.org/wikipedia/commons/0/05/Ethereum_logo_2014.svg',
+              uri: item.image,
             }}
             borderRadius={BorderRadiuses.br100}
-            style={{ maxWidth: 50, maxHeight: 50 }}
+            style={{ width: 50, height: 50 }}
           />
         </View>
       </ListItem.Part>
@@ -130,7 +130,7 @@ const AssetInfo = ({ item }: { item: NFTItem }) => {
         <ListItem.Part>
           <View paddingL-20>
             <Text text70BO>Collection Name</Text>
-            <Text text70BO>NFT Name {item.title}</Text>
+            <Text text70BO>NFT Name {item.name}</Text>
             <Text text70BO>{item.standard}</Text>
           </View>
         </ListItem.Part>
