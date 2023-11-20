@@ -145,6 +145,11 @@ const resource = {
       selectToken: 'Select the token you want to add',
     },
   },
+  assets: {
+    transaction: {
+      header: 'transaction',
+    },
+  },
 };
 
 export default resource;

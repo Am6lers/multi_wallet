@@ -37,6 +37,8 @@ import NFTDetail from '../screens/home/settings/detail/manage/NFTDetail';
 import NFTList from '../screens/home/settings/detail/manage/NFTList';
 import SendNFTResult from '../screens/home/settings/detail/assets/SendNFTResult';
 import SendTokenResult from '../screens/home/settings/detail/assets/SendTokenResult';
+import Transactions from '../screens/home/settings/detail/assets/transactions';
+
 export interface LoginInfo {
   loginId: string;
   password: string;
@@ -135,6 +137,8 @@ const InitialStackNavigator = () => {
       <Stack.Screen name="SetSendNFTAmount" component={SetSendNFTAmount} />
       <Stack.Screen name="SetSendNFTCharge" component={SetSendNFTCharge} />
       <Stack.Screen name="SendNFTResult" component={SendNFTResult} />
+      <Stack.Screen name="Transactions" component={Transactions} />
+
       {/* <Stack.Screen name="PinSetting" component={PinSetting} /> */}
     </Stack.Navigator>
   );
