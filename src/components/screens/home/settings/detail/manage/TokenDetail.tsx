@@ -1,5 +1,11 @@
-import React from 'react';
-import { FlatList, ScrollView, StyleSheet } from 'react-native';
+import React, { Component, useState } from 'react';
+import {
+  FlatList,
+  ListRenderItem,
+  ScrollView,
+  SectionList,
+  StyleSheet,
+} from 'react-native';
 import {
   Text,
   View,
@@ -12,129 +18,237 @@ import {
   Button,
   ListItem,
   SortableList,
+  Modifiers,
 } from 'react-native-ui-lib';
 import Constants from '@constants/app';
 import TL from '@translate/index';
+import { TokenItem } from './TokenList';
+import simplelincions from 'react-native-vector-icons/SimpleLineIcons';
+import Accordion from 'react-native-collapsible/Accordion';
+import Icon from 'react-native-vector-icons/SimpleLineIcons';
+import { G } from 'react-native-svg';
+import Collapsible from 'react-native-collapsible';
+
+interface TokenDetailProps {
+  route: {
+    params: {
+      item: TokenItem;
+    };
+  };
+}
 
 type transactionItem = {
-  time: string;
-  sendingAddress: string;
-  receivingAddress: string;
-  amount: string;
+  type: string;
+  time?: string;
+  balance?: string;
+  sendingAddress?: string;
+  receivingAddress?: string;
+  charge?: string;
+  connectAddress?: string;
 };
 
-const data: transactionItem[] = [
-  {
-    time: '12:00:00',
-    sendingAddress: '0x00000000000',
-    receivingAddress: '0x00000000000',
-    amount: '0.00000000000',
-  },
-  {
-    time: '12:00:00',
-    sendingAddress: '0x00000000000',
-    receivingAddress: '0x00000000000',
-    amount: '0.00000000000',
-  },
-  {
-    time: '12:00:00',
-    sendingAddress: '0x00000000000',
-    receivingAddress: '0x00000000000',
-    amount: '0.00000000000',
-  },
-];
-
-const TransactionItem = ({
-  item,
-  index,
-}: {
-  item: transactionItem;
-  index: number;
-}) => {
+const WalletConnectTx = () => {
+  const [isCollapsed, setIsCollapsed] = useState(true);
   return (
-    <ListItem
-      activeBackgroundColor={Colors.Gray}
-      activeOpacity={0.3}
-      height={77}
-      onPress={() => {}}
-      style={styles.container}
-    >
-      <ListItem.Part left></ListItem.Part>
-      <ListItem.Part middle column containerStyle={styles.border}>
-        <ListItem.Part containerStyle={{ paddingVertical: Spacings.s5 }}>
+    <View padding-10>
+      <View row>
+        <Image
+          source={{
+            uri: 'https://raw.githubusercontent.com/WalletConnect/walletconnect-assets/master/Icon/Blue%20(Default)/Icon.png',
+          }}
+          style={{ width: 25, height: 25 }}
+        />
+        <Text marginL-5 text60>
+          WalletConnect Tx
+        </Text>
+
+        <TouchableOpacity onPress={() => setIsCollapsed(!isCollapsed)}>
+          {isCollapsed ? (
+            <Icon name="arrow-up" size={20} style={{ marginLeft: 10 }} />
+          ) : (
+            <Icon name="arrow-down" size={20} style={{ marginLeft: 10 }} />
+          )}
+        </TouchableOpacity>
+      </View>
+      <View>
+        <View row marginV-20>
           <Image
             source={{
-              uri: 'https://ethereum.org/static/35454ef2502c2ae2f3b44c703d9fed4b/7db56/eth-diamond-black.webp',
+              uri: 'https://raw.githubusercontent.com/bifrost-platform/AssetInfo/master/Assets/bifrost/coin/coinImage.png',
             }}
-            style={styles.image}
+            style={{ width: 40, height: 40 }}
           />
+          <Text text70 grey40 marginH-10 numberOfLines={2}>
+            0xefa4856393e4d74361ee61e0145446237b1af38e
+          </Text>
+        </View>
+
+        <Collapsible collapsed={isCollapsed} align="center">
           <View>
-            <Text dark text80BO>
-              balance
-            </Text>
-            <Text text90 grey40>
-              address
+            <Text blue30 text70L>
+              Check directly with the scanner ⌕
             </Text>
           </View>
-        </ListItem.Part>
-        <ListItem.Part>
-          <View>
-            <Text text90 grey40>
-              거래 일시
-            </Text>
-            <Text text90 grey40>
-              보낸 주소
-            </Text>
-            <Text text90 grey40>
-              보낸 주소
-            </Text>
-            <Text text90 grey40>
-              보낸 주소
-            </Text>
-          </View>
-          <View right>
-            <Text text90 grey40 numberOfLines={1}>
-              {item.time}
-            </Text>
-            <Text text90 grey40 numberOfLines={1}>
-              {item.sendingAddress}
-            </Text>
-            <Text text90 grey40 numberOfLines={1}>
-              {item.receivingAddress}
-            </Text>
-            <Text text90 grey40 numberOfLines={1}>
-              {item.amount}
-            </Text>
-          </View>
-        </ListItem.Part>
-      </ListItem.Part>
-    </ListItem>
+        </Collapsible>
+      </View>
+    </View>
   );
 };
 
-const TransactionList = () => {
+const CollapsibleList = () => {
+  const dummyDatas: transactionItem[] = [
+    {
+      type: 'connect',
+      connectAddress: '0xefa4856393e4d74361ee61e0145446237b1af38e',
+    },
+    {
+      type: 'Send',
+      time: '13:50:36',
+      balance: '0.00.00BFC',
+      sendingAddress: '0x121.56b54',
+      receivingAddress: '0x234.aabbb',
+      charge: '0.21',
+    },
+    {
+      type: 'Send',
+      time: '13:50:36',
+      balance: '0.00.00BFC',
+      sendingAddress: '0x121.56b54',
+      receivingAddress: '0x234.aabbb',
+      charge: '0.21',
+    },
+    {
+      type: 'Receive',
+      time: '13:50:36',
+      balance: '0.00.00BFC',
+      sendingAddress: '0x121.56b54',
+      receivingAddress: '0x234.aabbb',
+      charge: '0.21',
+    },
+    {
+      type: 'Receive',
+      time: '13:50:36',
+      balance: '0.00.00BFC',
+      sendingAddress: '0x121.56b54',
+      receivingAddress: '0x234.aabbb',
+      charge: '0.21',
+    },
+  ];
+
   return (
     <FlatList
-      data={data}
-      renderItem={TransactionItem}
-      style={styles.flatlist}
+      data={dummyDatas}
+      renderItem={({ item }) => <CollapsibleBox item={item} />}
+      keyExtractor={(item, index) => `${item.time}+${index}`}
+      numColumns={1}
+      showsVerticalScrollIndicator={false}
     />
   );
 };
 
-const TokenDetail = () => {
+const CollapsibleBox = ({ item }: { item: transactionItem }) => {
+  if (item.type === 'connect') return <WalletConnectTx />;
+  const [isCollapsed, setIsCollapsed] = useState(true);
+
+  return (
+    <View padding-10>
+      <View row>
+        <Text text60>{item.type} 완료</Text>
+        <TouchableOpacity onPress={() => setIsCollapsed(!isCollapsed)}>
+          {isCollapsed ? (
+            <Icon name="arrow-up" size={20} style={{ marginLeft: 10 }} />
+          ) : (
+            <Icon name="arrow-down" size={20} style={{ marginLeft: 10 }} />
+          )}
+        </TouchableOpacity>
+      </View>
+      <View>
+        <View row spread marginV-20>
+          <Image
+            source={{
+              uri: 'https://raw.githubusercontent.com/bifrost-platform/AssetInfo/master/Assets/bifrost/coin/coinImage.png',
+            }}
+            style={{ width: 40, height: 40 }}
+          />
+          <View right>
+            {item.type === 'Send' ? (
+              <View>
+                <Text text80BO>-{item.balance}</Text>
+                <Text text80BO grey40>
+                  {item.sendingAddress}
+                </Text>
+              </View>
+            ) : (
+              <View>
+                <Text text80BO>+{item.balance}</Text>
+                <Text text80BO grey40>
+                  {item.receivingAddress}
+                </Text>
+              </View>
+            )}
+          </View>
+        </View>
+
+        <Collapsible collapsed={isCollapsed} align="center">
+          <View>
+            <View row spread>
+              <Text text80 grey40>
+                거래 일시
+              </Text>
+              <Text text80 grey40>
+                {item.time}
+              </Text>
+            </View>
+
+            {item.type === 'Send' ? (
+              <View row spread>
+                <Text text80 grey40>
+                  보낸 주소
+                </Text>
+                <Text text80 grey40>
+                  {item.sendingAddress}
+                </Text>
+              </View>
+            ) : (
+              <View row spread>
+                <Text text80 grey40>
+                  받은 주소
+                </Text>
+                <Text text80 grey40>
+                  {item.receivingAddress}
+                </Text>
+              </View>
+            )}
+
+            <View row spread>
+              <Text text80 grey40>
+                수수료
+              </Text>
+              <Text text80 grey40>
+                {item.charge}
+              </Text>
+            </View>
+          </View>
+        </Collapsible>
+      </View>
+    </View>
+  );
+};
+
+const TokenDetail = ({ route }: TokenDetailProps) => {
   return (
     <View style={styles.outline} useSafeArea>
       <View style={styles.container}>
         <View center>
-          <Text>Network Name</Text>
+          <Text>Wrapped Decentraland MANA</Text>
+          <Text marginV-20>Network Name</Text>
           <View marginT-20 padding-5 row>
             <Text text50>100,123.00</Text>
-            <Text text50 grey40>
+            <Text marginL-5 text50 grey40>
               MANA
             </Text>
           </View>
-          <Text text70 blue1>
+          <Text text60 blue10>
             $213,212.00
           </Text>
         </View>
@@ -142,7 +256,7 @@ const TokenDetail = () => {
           <Button marginR-5 backgroundColor={Colors.black} label="Receive" />
           <Button marginL-5 backgroundColor={Colors.black} label="Send" />
         </View>
-        <TransactionList />
+        <CollapsibleList />
       </View>
     </View>
   );
@@ -178,6 +292,11 @@ const styles = StyleSheet.create({
   flatlist: {
     backgroundColor: Colors.White,
     borderRadius: BorderRadiuses.br60,
+  },
+  transaction: {
+    backgroundColor: Colors.grey80,
+    padding: Spacings.s5,
+    borderRadius: BorderRadiuses.br50,
   },
 });
 

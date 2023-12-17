@@ -16,7 +16,8 @@ import { ParamListBase, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 interface NFTItem {
-  title?: string;
+  id: number;
+  name?: string;
   image?: string;
   description?: string;
   standard?: string;
@@ -24,50 +25,57 @@ interface NFTItem {
   amount: number;
 };
 
+
 export const NFTitems: NFTItem[] = [
   {
-    title: 'item 1',
-    image: 'https://reactnative.dev/img/tiny_logo.png',
+    id: 0,
+    name: 'Creatures #0000',
+    image: 'https://i.seadn.io/s/raw/files/b915d9ab2718f1b2d9a3dc4c79c99430.png?auto=format&dpr=1&h=500',
     description: 'Creatures',
     standard: 'ERC-721',
     soulbound: false,
     amount: 1,
   },
   {
-    title: 'item 2',
-    image: 'https://reactnative.dev/img/tiny_logo.png',
+    id: 1,
+    name: 'Creatures #0000',
+    image: 'https://i.seadn.io/gae/RBX3jwgykdaQO3rjTcKNf5OVwdukKO46oOAV3zZeiaMb8VER6cKxPDTdGZQdfWcDou75A8KtVZWM_fEnHG4d4q6Um8MeZIlw79BpWPA?auto=format&dpr=1&h=500',
     description: 'Creatures',
     standard: 'ERC-721',
     soulbound: true,
     amount: 2,
   },
   {
-    title: 'item 3',
-    image: 'https://reactnative.dev/img/tiny_logo.png',
+    id: 2,
+    name: 'Creatures #0000',
+    image: 'https://i.seadn.io/s/raw/files/19e4902580b6488e6f8da66fbdad5e2d.png?auto=format&dpr=1&h=500',
     description: 'Creatures',
     standard: 'ERC-721',
     soulbound: true,
     amount: 1,
   },
   {
-    title: 'item 4',
-    image: 'https://reactnative.dev/img/tiny_logo.png',
+    id: 3,
+    name: 'Creatures #0000',
+    image: 'https://i.seadn.io/s/raw/files/30d1b38e8895ee9e8a962180f696d38e.png?auto=format&dpr=1&h=500',
     description: 'Creatures',
     standard: 'ERC-721',
     soulbound: true,
     amount: 1,
   },
   {
-    title: 'item 5',
-    image: 'https://reactnative.dev/img/tiny_logo.png',
+    id: 4,
+    name: 'Creatures #0000',
+    image: 'https://i.seadn.io/gae/ppMol-GqnTJ3-D698dX6hfIk2LBmk-x-bwalMcHrjry0zttv5upSAJY4aYJWLPrmW7ps544qm3TvxoOgNR6hPigIMrZhq3QkrCal?auto=format&dpr=1&h=500',
     description: 'Creatures',
     standard: 'ERC-721',
     soulbound: true,
     amount: 1,
   },
   {
-    title: 'item 6',
-    image: 'https://reactnative.dev/img/tiny_logo.png',
+    id: 5,
+    name: 'Creatures #0000',
+    image: 'https://i.seadn.io/gcs/files/37a55137d881df11271ce7acdcff7bf7.png?auto=format&dpr=1&h=500',
     description: 'Creatures',
     standard: 'ERC-721',
     soulbound: true,
@@ -83,21 +91,22 @@ const NFTGridView = () => {
   return (
     <GridList
       data={NFTitems}
-      renderItem={({ item, index }) => (
-        <View marginV-20 key={`${item.title}+${index}`}>
+      renderItem={({ item }) => (
+        <View marginV-20>
           <TouchableOpacity onPress={() => ItemPress(item)}>
             <Image
               source={{ uri: item.image }}
               style={{ width: 140, height: 140 }}
               resizeMode="contain"
             />
-            <Text text70BO>{item.title}</Text>
+            <Text text70BO>{item.name}</Text>
           </TouchableOpacity>
         </View>
       )}
       numColumns={2}
       itemSpacing={Spacings.s3}
       listPadding={Spacings.s5}
+      keyExtractor={(item, index) => `${item.name}+${index}`}
     />
   );
 };

@@ -17,53 +17,62 @@ import TL from '@translate/index';
 import { ParamListBase, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-interface TokenItem {
-  title: string;
-  image: string;
-  value: number;
-  amount: number;
-};
+export interface TokenItem {
+  id: number;
+  name: string;
+  symbol: string;
+  balance: string;
+  price: string;
+}
 
-export const Tokenitems: TokenItem[] = [
+const dummyDatas: TokenItem[] = [
   {
-    title: 'Etherium',
-    image:
-      'https://upload.wikimedia.org/wikipedia/commons/0/05/Ethereum_logo_2014.svg',
-    value: 8850,
-    amount: 4.92,
+    id: 0,
+    name: 'Ethereum',
+    symbol:
+      'https://raw.githubusercontent.com/bifrost-platform/AssetInfo/master/Assets/ethereum/coin/coinImage.png',
+    balance: '4.92 ETH',
+    price: '$8,850.40',
   },
   {
-    title: 'Etherium',
-    image:
-      'https://upload.wikimedia.org/wikipedia/commons/0/05/Ethereum_logo_2014.svg',
-    value: 1000,
-    amount: 4.92,
+    id: 1,
+    name: 'Ethereum',
+    symbol:
+      'https://raw.githubusercontent.com/bifrost-platform/AssetInfo/master/Assets/ethereum/coin/coinImage.png',
+    balance: '00.0000 ETH',
+    price: '$1,000.00',
   },
   {
-    title: 'Bifrost',
-    image:
-      'https://upload.wikimedia.org/wikipedia/commons/0/05/Ethereum_logo_2014.svg',
-    value: 1000,
-    amount: 4.92,
+    id: 2,
+    name: 'Bifrost',
+    symbol:
+      'https://raw.githubusercontent.com/bifrost-platform/AssetInfo/master/Assets/bifrost/coin/coinImage.png',
+    balance: '00.0000 BFC',
+    price: '$1,000.00',
   },
   {
-    title: 'Bifrost',
-    image:
-      'https://upload.wikimedia.org/wikipedia/commons/0/05/Ethereum_logo_2014.svg',
-    value: 1000,
-    amount: 4.92,
+    id: 3,
+    name: 'Bifrost',
+    symbol:
+      'https://raw.githubusercontent.com/bifrost-platform/AssetInfo/master/Assets/bifrost/coin/coinImage.png',
+    balance: '00.0000 BFC',
+    price: '$1,000.00',
   },
   {
-    title: 'USD Coin',
-    image: 'https://cryptologos.cc/logos/usd-coin-usdc-logo.svg?v=026',
-    value: 1000,
-    amount: 4.92,
+    id: 4,
+    name: 'USD Coin',
+    symbol:
+      'https://raw.githubusercontent.com/bifrost-platform/AssetInfo/master/Assets/klaytn/coin/coinImage.png',
+    balance: '00.0000 USDC',
+    price: '$1,000.00',
   },
   {
-    title: 'USD Coin',
-    image: 'https://cryptologos.cc/logos/usd-coin-usdc-logo.svg?v=026',
-    value: 1000,
-    amount: 4.92,
+    id: 4,
+    name: 'USD Coin',
+    symbol:
+      'https://raw.githubusercontent.com/bifrost-platform/AssetInfo/master/Assets/klaytn/coin/coinImage.png',
+    balance: '00.0000 USDC',
+    price: '$1,000.00',
   },
 ];
 
@@ -75,34 +84,28 @@ const TokenListView = () => {
 
   return (
     <GridList
-      data={Tokenitems}
+      data={dummyDatas}
       renderItem={({ item, index }) => (
-        <ListItem
-          activeBackgroundColor={Colors.Gray}
-          activeOpacity={0.3}
-          height={70}
-          onPress={() => ItemPress(item)}
-          style={styles.container}
-        >
+        <ListItem onPress={() => ItemPress(item)} style={styles.charge}>
           <ListItem.Part left>
             <View>
               <Image
-                source={{ uri: item.image }}
-                style={{ maxWidth: 30, maxHeight: 30 }}
+                source={{
+                  uri: item.symbol,
+                }}
+                style={{ width: 40, height: 40 }}
               />
             </View>
           </ListItem.Part>
           <ListItem.Part middle column>
-            <ListItem.Part containerStyle={{ paddingVertical: Spacings.s5 }}>
-              <View>
-                <Text dark text80BO>
-                  {item.title}
-                </Text>
+            <ListItem.Part>
+              <View marginL-5>
+                <Text text70BO>{item.name}</Text>
               </View>
-              <View>
-                <Text text80BO>{item.value}</Text>
+              <View right marginR-25>
+                <Text text80BO>{item.price}</Text>
                 <Text text90 grey40>
-                  {item.amount}
+                  {item.balance}
                 </Text>
               </View>
             </ListItem.Part>
@@ -110,8 +113,7 @@ const TokenListView = () => {
         </ListItem>
       )}
       numColumns={1}
-      itemSpacing={Spacings.s3}
-      listPadding={Spacings.s5}
+      keyExtractor={(item, index) => `${item.name}+${index}`}
     />
   );
 };
@@ -120,6 +122,9 @@ const TokenList = () => {
   return (
     <View style={styles.outline} useSafeArea>
       <View style={styles.container}>
+        <View marginV-10>
+          <Text text40BO>Token</Text>
+        </View>
         <TokenListView />
       </View>
     </View>
@@ -134,6 +139,11 @@ const styles = StyleSheet.create({
   },
   outline: {
     flex: 1,
+  },
+  charge: {
+    backgroundColor: Colors.grey80,
+    borderRadius: BorderRadiuses.br50,
+    padding: Spacings.s3,
   },
 });
 

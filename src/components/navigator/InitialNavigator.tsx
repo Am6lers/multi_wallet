@@ -35,6 +35,8 @@ import TokenList from '../screens/home/settings/detail/manage/TokenList';
 import TokenDetail from '../screens/home/settings/detail/manage/TokenDetail';
 import NFTDetail from '../screens/home/settings/detail/manage/NFTDetail';
 import NFTList from '../screens/home/settings/detail/manage/NFTList';
+import SendNFTResult from '../screens/home/settings/detail/assets/SendNFTResult';
+import SendTokenResult from '../screens/home/settings/detail/assets/SendTokenResult';
 import Transactions from '../screens/home/settings/detail/assets/transactions';
 
 export interface LoginInfo {
@@ -129,11 +131,14 @@ const InitialStackNavigator = () => {
       <Stack.Screen name="SetSendTokenWhere" component={SetSendTokenWhere} />
       <Stack.Screen name="SetSendTokenAmount" component={SetSendTokenAmount} />
       <Stack.Screen name="SetSendTokenCharge" component={SetSendTokenCharge} />
+      <Stack.Screen name="SendTokenResult" component={SendTokenResult} />
       <Stack.Screen name="SendNFT" component={SendNFT} />
       <Stack.Screen name="SetSendNFTWhere" component={SetSendNFTWhere} />
       <Stack.Screen name="SetSendNFTAmount" component={SetSendNFTAmount} />
       <Stack.Screen name="SetSendNFTCharge" component={SetSendNFTCharge} />
+      <Stack.Screen name="SendNFTResult" component={SendNFTResult} />
       <Stack.Screen name="Transactions" component={Transactions} />
+
       {/* <Stack.Screen name="PinSetting" component={PinSetting} /> */}
     </Stack.Navigator>
   );
